@@ -33,13 +33,44 @@ interface MinaNetworkInstance {
 
 let currentNetwork: MinaNetworkInstance | undefined = undefined;
 
-function getNetworkIdHash(chainId: blockchain | undefined = undefined): Field {
-  if (chainId === undefined && Mina.getNetworkId().toString() === "testnet")
-    throw new Error("Network ID is not set");
-  return CircuitString.fromString(
-    chainId ?? Mina.getNetworkId().toString()
-  ).hash();
+function getNetworkIdHash(): Field {
+  if (currentNetwork === undefined) {
+    throw new Error("Network is not initialized");
+  }
+  return currentNetwork.networkIdHash;
 }
+
+/*function getNetworkIdHash(params: {
+  chainId?: blockchain;
+  verbose?: boolean;
+}): Field {
+  const { chainId, verbose } = params;
+  if (chainId !== undefined) {
+    if (verbose) console.log(`Chain ID: ${chainId}`);
+    return CircuitString.fromString(chainId).hash();
+  }
+  const networkId = Mina.getNetworkId();
+  if (verbose) console.log(`Network ID: ${networkId}`);
+  if (networkId === "testnet")
+    throw new Error(
+      "Network ID is not set, please call initBlockchain() first"
+    );
+
+  if (networkId === "mainnet")
+    return CircuitString.fromString("mainnet").hash();
+  else {
+    if (
+      networkId.custom === undefined ||
+      typeof networkId.custom !== "string"
+    ) {
+      throw new Error(
+        "Network ID is not set, please call initBlockchain() first"
+      );
+    }
+    return CircuitString.fromString(networkId.custom).hash();
+  }
+}
+*/
 
 function initBlockchain(
   instance: blockchain,
@@ -52,13 +83,12 @@ function initBlockchain(
   if (instance === "local") {
     const local = Mina.LocalBlockchain({
       proofsEnabled: true,
-      networkId: { custom: "local" },
     });
     Mina.setActiveInstance(local);
     currentNetwork = {
       keys: local.testAccounts,
       network: Local,
-      networkIdHash: getNetworkIdHash("local"),
+      networkIdHash: CircuitString.fromString("local").hash(),
     };
     return currentNetwork;
   }
@@ -71,7 +101,6 @@ function initBlockchain(
   const networkInstance = Mina.Network({
     mina: network.mina,
     archive: network.archive,
-    networkId: { custom: network.chainId },
     lightnetAccountManager: network.accountManager,
   });
   Mina.setActiveInstance(networkInstance);
@@ -102,7 +131,11 @@ function initBlockchain(
     }
   }
 
-  currentNetwork = { keys, network, networkIdHash: getNetworkIdHash(instance) };
+  currentNetwork = {
+    keys,
+    network,
+    networkIdHash: CircuitString.fromString(instance).hash(),
+  };
   return currentNetwork;
 }
 

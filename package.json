@@ -1,5 +1,5 @@
 {
-  "name": "zkCloudWorker",
+  "name": "zkcloudworker",
   "description": "zkCloudWorker library",
   "keywords": [
     "cloud",
@@ -16,7 +16,7 @@
     "web3",
     "zero knowledge"
   ],
-  "version": "0.1.10",
+  "version": "0.1.12",
   "homepage": "https://docs.zkcloudworker.com",
   "repository": "git@zkcloudworker.github.com:zkcloudworker/zkcloudworker-lib.git",
   "main": "src/index.ts",
@@ -55,5 +55,5 @@
       "./jest-config.ts"
     ]
   },
-  "packageManager": "yarn@4.1.0"
+  "packageManager": "yarn@4.1.1"
 }
