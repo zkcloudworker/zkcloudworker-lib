@@ -1,6 +1,6 @@
 export { networks, getNetworkIdHash, Mainnet, Berkeley, Zeko, TestWorld2, Lightnet, Local, };
 import { Mina, CircuitString } from "o1js";
-function getNetworkIdHash(chainId) {
+function getNetworkIdHash(chainId = undefined) {
     if (chainId === undefined && Mina.getNetworkId().toString() === "testnet")
         throw new Error("Network ID is not set");
     return CircuitString.fromString(chainId !== null && chainId !== void 0 ? chainId : Mina.getNetworkId().toString()).hash();

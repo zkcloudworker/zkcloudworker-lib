@@ -30,7 +30,7 @@ interface MinaNetwork {
   explorerTransactionUrl?: string;
 }
 
-function getNetworkIdHash(chainId: blockchain | undefined): Field {
+function getNetworkIdHash(chainId: blockchain | undefined = undefined): Field {
   if (chainId === undefined && Mina.getNetworkId().toString() === "testnet")
     throw new Error("Network ID is not set");
   return CircuitString.fromString(
