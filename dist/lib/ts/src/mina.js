@@ -5,12 +5,44 @@ const o1js_1 = require("o1js");
 const networks_1 = require("./networks");
 let currentNetwork = undefined;
 exports.currentNetwork = currentNetwork;
-function getNetworkIdHash(chainId = undefined) {
-    if (chainId === undefined && o1js_1.Mina.getNetworkId().toString() === "testnet")
-        throw new Error("Network ID is not set");
-    return o1js_1.CircuitString.fromString(chainId ?? o1js_1.Mina.getNetworkId().toString()).hash();
+function getNetworkIdHash() {
+    if (currentNetwork === undefined) {
+        throw new Error("Network is not initialized");
+    }
+    return currentNetwork.networkIdHash;
 }
 exports.getNetworkIdHash = getNetworkIdHash;
+/*function getNetworkIdHash(params: {
+  chainId?: blockchain;
+  verbose?: boolean;
+}): Field {
+  const { chainId, verbose } = params;
+  if (chainId !== undefined) {
+    if (verbose) console.log(`Chain ID: ${chainId}`);
+    return CircuitString.fromString(chainId).hash();
+  }
+  const networkId = Mina.getNetworkId();
+  if (verbose) console.log(`Network ID: ${networkId}`);
+  if (networkId === "testnet")
+    throw new Error(
+      "Network ID is not set, please call initBlockchain() first"
+    );
+
+  if (networkId === "mainnet")
+    return CircuitString.fromString("mainnet").hash();
+  else {
+    if (
+      networkId.custom === undefined ||
+      typeof networkId.custom !== "string"
+    ) {
+      throw new Error(
+        "Network ID is not set, please call initBlockchain() first"
+      );
+    }
+    return CircuitString.fromString(networkId.custom).hash();
+  }
+}
+*/
 function initBlockchain(instance, deployersNumber = 0) {
     if (instance === "mainnet") {
         throw new Error("Mainnet is not supported yet by zkApps");
@@ -18,13 +50,12 @@ function initBlockchain(instance, deployersNumber = 0) {
     if (instance === "local") {
         const local = o1js_1.Mina.LocalBlockchain({
             proofsEnabled: true,
-            networkId: { custom: "local" },
         });
         o1js_1.Mina.setActiveInstance(local);
         exports.currentNetwork = currentNetwork = {
             keys: local.testAccounts,
             network: networks_1.Local,
-            networkIdHash: getNetworkIdHash("local"),
+            networkIdHash: o1js_1.CircuitString.fromString("local").hash(),
         };
         return currentNetwork;
     }
@@ -35,7 +66,6 @@ function initBlockchain(instance, deployersNumber = 0) {
     const networkInstance = o1js_1.Mina.Network({
         mina: network.mina,
         archive: network.archive,
-        networkId: { custom: network.chainId },
         lightnetAccountManager: network.accountManager,
     });
     o1js_1.Mina.setActiveInstance(networkInstance);
@@ -57,7 +87,11 @@ function initBlockchain(instance, deployersNumber = 0) {
             }
         }
     }
-    exports.currentNetwork = currentNetwork = { keys, network, networkIdHash: getNetworkIdHash(instance) };
+    exports.currentNetwork = currentNetwork = {
+        keys,
+        network,
+        networkIdHash: o1js_1.CircuitString.fromString(instance).hash(),
+    };
     return currentNetwork;
 }
 exports.initBlockchain = initBlockchain;
