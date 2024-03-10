@@ -1,15 +1,16 @@
-export { blockchain, initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, MinaNetwork, };
-import { PublicKey, PrivateKey, UInt64 } from "o1js";
-import { MinaNetworkURL } from "./networks";
-type blockchain = "local" | "berkeley" | "lighnet" | "mainnet" | "testworld2";
-interface MinaNetwork {
+export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, MinaNetworkInstance, currentNetwork, };
+import { PublicKey, PrivateKey, UInt64, Field } from "o1js";
+import { blockchain, MinaNetwork } from "./networks";
+interface MinaNetworkInstance {
     keys: {
         publicKey: PublicKey;
         privateKey: PrivateKey;
     }[];
-    url?: MinaNetworkURL;
+    network: MinaNetwork;
+    networkIdHash: Field;
 }
-declare function initBlockchain(instance: blockchain): MinaNetwork;
+declare let currentNetwork: MinaNetworkInstance | undefined;
+declare function initBlockchain(instance: blockchain, deployersNumber?: number): MinaNetworkInstance;
 declare function accountBalance(address: PublicKey): Promise<UInt64>;
 declare function accountBalanceMina(address: PublicKey): Promise<number>;
 declare function sleep(ms: number): Promise<unknown>;

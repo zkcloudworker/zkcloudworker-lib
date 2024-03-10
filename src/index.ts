@@ -1,7 +1,6 @@
 export { zkCloudWorker } from "./api/api";
 export { Cloud } from "./cloud/cloud";
 export {
-  blockchain,
   initBlockchain,
   Memory,
   makeString,
@@ -9,10 +8,22 @@ export {
   accountBalance,
   accountBalanceMina,
   formatTime,
-  MinaNetwork,
+  MinaNetworkInstance,
+  currentNetwork,
 } from "./mina";
 export { fee } from "./fee";
-export { MinaNetworkURL, Berkeley, Lightnet, TestWorld2 } from "./networks";
+export {
+  blockchain,
+  MinaNetwork,
+  networks,
+  getNetworkIdHash,
+  Mainnet,
+  Berkeley,
+  Zeko,
+  TestWorld2,
+  Lightnet,
+  Local,
+} from "./networks";
 export {
   TxnPayload,
   IsError,
