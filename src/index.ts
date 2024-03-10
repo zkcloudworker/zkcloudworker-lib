@@ -10,13 +10,13 @@ export {
   formatTime,
   MinaNetworkInstance,
   currentNetwork,
+  getNetworkIdHash,
 } from "./mina";
 export { fee } from "./fee";
 export {
   blockchain,
   MinaNetwork,
   networks,
-  getNetworkIdHash,
   Mainnet,
   Berkeley,
   Zeko,
