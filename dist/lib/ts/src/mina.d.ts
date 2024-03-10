@@ -1,4 +1,4 @@
-export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, MinaNetworkInstance, currentNetwork, };
+export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, MinaNetworkInstance, currentNetwork, getNetworkIdHash, };
 import { PublicKey, PrivateKey, UInt64, Field } from "o1js";
 import { blockchain, MinaNetwork } from "./networks";
 interface MinaNetworkInstance {
@@ -10,6 +10,7 @@ interface MinaNetworkInstance {
     networkIdHash: Field;
 }
 declare let currentNetwork: MinaNetworkInstance | undefined;
+declare function getNetworkIdHash(chainId?: blockchain | undefined): Field;
 declare function initBlockchain(instance: blockchain, deployersNumber?: number): MinaNetworkInstance;
 declare function accountBalance(address: PublicKey): Promise<UInt64>;
 declare function accountBalanceMina(address: PublicKey): Promise<number>;

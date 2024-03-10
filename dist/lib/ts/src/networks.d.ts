@@ -1,5 +1,4 @@
-export { blockchain, MinaNetwork, networks, getNetworkIdHash, Mainnet, Berkeley, Zeko, TestWorld2, Lightnet, Local, };
-import { Field } from "o1js";
+export { blockchain, MinaNetwork, networks, Mainnet, Berkeley, Zeko, TestWorld2, Lightnet, Local, };
 type blockchain = "local" | "berkeley" | "lighnet" | "mainnet" | "testworld2" | "zeko";
 interface MinaNetwork {
     mina: string[];
@@ -10,7 +9,6 @@ interface MinaNetwork {
     explorerAccountUrl?: string;
     explorerTransactionUrl?: string;
 }
-declare function getNetworkIdHash(chainId?: blockchain | undefined): Field;
 declare const Mainnet: MinaNetwork;
 declare const Local: MinaNetwork;
 declare const Berkeley: MinaNetwork;

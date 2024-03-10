@@ -1,13 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.getNetworkIdHash = exports.networks = void 0;
-const o1js_1 = require("o1js");
-function getNetworkIdHash(chainId = undefined) {
-    if (chainId === undefined && o1js_1.Mina.getNetworkId().toString() === "testnet")
-        throw new Error("Network ID is not set");
-    return o1js_1.CircuitString.fromString(chainId ?? o1js_1.Mina.getNetworkId().toString()).hash();
-}
-exports.getNetworkIdHash = getNetworkIdHash;
+exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.networks = void 0;
 const Mainnet = {
     mina: [],
     archive: [],

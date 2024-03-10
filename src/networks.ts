@@ -2,7 +2,6 @@ export {
   blockchain,
   MinaNetwork,
   networks,
-  getNetworkIdHash,
   Mainnet,
   Berkeley,
   Zeko,
@@ -10,7 +9,6 @@ export {
   Lightnet,
   Local,
 };
-import { Mina, CircuitString, Field } from "o1js";
 
 type blockchain =
   | "local"
@@ -28,14 +26,6 @@ interface MinaNetwork {
   accountManager?: string;
   explorerAccountUrl?: string;
   explorerTransactionUrl?: string;
-}
-
-function getNetworkIdHash(chainId: blockchain | undefined = undefined): Field {
-  if (chainId === undefined && Mina.getNetworkId().toString() === "testnet")
-    throw new Error("Network ID is not set");
-  return CircuitString.fromString(
-    chainId ?? Mina.getNetworkId().toString()
-  ).hash();
 }
 
 const Mainnet: MinaNetwork = {

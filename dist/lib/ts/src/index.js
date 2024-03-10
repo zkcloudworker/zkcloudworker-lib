@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.zkCloudWorkerAPI = exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.getNetworkIdHash = exports.networks = exports.fee = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = exports.Cloud = exports.zkCloudWorker = void 0;
+exports.zkCloudWorkerAPI = exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.networks = exports.fee = exports.getNetworkIdHash = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = exports.Cloud = exports.zkCloudWorker = void 0;
 var api_1 = require("./api/api");
 Object.defineProperty(exports, "zkCloudWorker", { enumerable: true, get: function () { return api_1.zkCloudWorker; } });
 var cloud_1 = require("./cloud/cloud");
@@ -14,11 +14,11 @@ Object.defineProperty(exports, "accountBalance", { enumerable: true, get: functi
 Object.defineProperty(exports, "accountBalanceMina", { enumerable: true, get: function () { return mina_1.accountBalanceMina; } });
 Object.defineProperty(exports, "formatTime", { enumerable: true, get: function () { return mina_1.formatTime; } });
 Object.defineProperty(exports, "currentNetwork", { enumerable: true, get: function () { return mina_1.currentNetwork; } });
+Object.defineProperty(exports, "getNetworkIdHash", { enumerable: true, get: function () { return mina_1.getNetworkIdHash; } });
 var fee_1 = require("./fee");
 Object.defineProperty(exports, "fee", { enumerable: true, get: function () { return fee_1.fee; } });
 var networks_1 = require("./networks");
 Object.defineProperty(exports, "networks", { enumerable: true, get: function () { return networks_1.networks; } });
-Object.defineProperty(exports, "getNetworkIdHash", { enumerable: true, get: function () { return networks_1.getNetworkIdHash; } });
 Object.defineProperty(exports, "Mainnet", { enumerable: true, get: function () { return networks_1.Mainnet; } });
 Object.defineProperty(exports, "Berkeley", { enumerable: true, get: function () { return networks_1.Berkeley; } });
 Object.defineProperty(exports, "Zeko", { enumerable: true, get: function () { return networks_1.Zeko; } });
