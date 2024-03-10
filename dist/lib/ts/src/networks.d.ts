@@ -10,7 +10,7 @@ interface MinaNetwork {
     explorerAccountUrl?: string;
     explorerTransactionUrl?: string;
 }
-declare function getNetworkIdHash(chainId: blockchain | undefined): Field;
+declare function getNetworkIdHash(chainId?: blockchain | undefined): Field;
 declare const Mainnet: MinaNetwork;
 declare const Local: MinaNetwork;
 declare const Berkeley: MinaNetwork;
