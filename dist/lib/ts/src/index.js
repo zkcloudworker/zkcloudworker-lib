@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.zkCloudWorkerAPI = exports.TestWorld2 = exports.Lightnet = exports.Berkeley = exports.fee = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = exports.Cloud = exports.zkCloudWorker = void 0;
+exports.zkCloudWorkerAPI = exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.getNetworkIdHash = exports.networks = exports.fee = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = exports.Cloud = exports.zkCloudWorker = void 0;
 var api_1 = require("./api/api");
 Object.defineProperty(exports, "zkCloudWorker", { enumerable: true, get: function () { return api_1.zkCloudWorker; } });
 var cloud_1 = require("./cloud/cloud");
@@ -13,11 +13,17 @@ Object.defineProperty(exports, "sleep", { enumerable: true, get: function () { r
 Object.defineProperty(exports, "accountBalance", { enumerable: true, get: function () { return mina_1.accountBalance; } });
 Object.defineProperty(exports, "accountBalanceMina", { enumerable: true, get: function () { return mina_1.accountBalanceMina; } });
 Object.defineProperty(exports, "formatTime", { enumerable: true, get: function () { return mina_1.formatTime; } });
+Object.defineProperty(exports, "currentNetwork", { enumerable: true, get: function () { return mina_1.currentNetwork; } });
 var fee_1 = require("./fee");
 Object.defineProperty(exports, "fee", { enumerable: true, get: function () { return fee_1.fee; } });
 var networks_1 = require("./networks");
+Object.defineProperty(exports, "networks", { enumerable: true, get: function () { return networks_1.networks; } });
+Object.defineProperty(exports, "getNetworkIdHash", { enumerable: true, get: function () { return networks_1.getNetworkIdHash; } });
+Object.defineProperty(exports, "Mainnet", { enumerable: true, get: function () { return networks_1.Mainnet; } });
 Object.defineProperty(exports, "Berkeley", { enumerable: true, get: function () { return networks_1.Berkeley; } });
-Object.defineProperty(exports, "Lightnet", { enumerable: true, get: function () { return networks_1.Lightnet; } });
+Object.defineProperty(exports, "Zeko", { enumerable: true, get: function () { return networks_1.Zeko; } });
 Object.defineProperty(exports, "TestWorld2", { enumerable: true, get: function () { return networks_1.TestWorld2; } });
+Object.defineProperty(exports, "Lightnet", { enumerable: true, get: function () { return networks_1.Lightnet; } });
+Object.defineProperty(exports, "Local", { enumerable: true, get: function () { return networks_1.Local; } });
 var client_api_1 = require("./api/client-api");
 Object.defineProperty(exports, "zkCloudWorkerAPI", { enumerable: true, get: function () { return client_api_1.zkCloudWorkerAPI; } });

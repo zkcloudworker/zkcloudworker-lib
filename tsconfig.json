@@ -19,7 +19,7 @@
     "out": "docs",
     "plugin": [],
     "excludeExternals": true,
-    "sourceLinkTemplate": "https://github.com/dfstio/zkcloudworker/blob/master/{path}#L{line}"
+    "sourceLinkTemplate": "https://github.com/zkcloudworker/zkcloudworker-lib/blob/master/{path}#L{line}"
   },
   "include": ["src/**/*"],
   "exclude": [

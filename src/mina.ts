@@ -1,5 +1,4 @@
 export {
-  blockchain,
   initBlockchain,
   Memory,
   makeString,
@@ -7,57 +6,75 @@ export {
   accountBalance,
   accountBalanceMina,
   formatTime,
-  MinaNetwork,
+  MinaNetworkInstance,
+  currentNetwork,
 };
 
-import { Mina, PublicKey, PrivateKey, UInt64, fetchAccount } from "o1js";
+import { Mina, PublicKey, PrivateKey, UInt64, fetchAccount, Field } from "o1js";
 import {
-  MinaNetworkURL,
-  Berkeley,
-  TestWorld2,
-  Lightnet as Lightnet,
+  networks,
+  blockchain,
+  getNetworkIdHash,
+  MinaNetwork,
+  Local,
 } from "./networks";
 
-type blockchain = "local" | "berkeley" | "lighnet" | "mainnet" | "testworld2";
-
-interface MinaNetwork {
+interface MinaNetworkInstance {
   keys: {
     publicKey: PublicKey;
     privateKey: PrivateKey;
   }[];
-  url?: MinaNetworkURL;
+  network: MinaNetwork;
+  networkIdHash: Field;
 }
 
-function initBlockchain(instance: blockchain): MinaNetwork {
-  if (instance === "local") {
-    const Local = Mina.LocalBlockchain({ proofsEnabled: true });
-    Mina.setActiveInstance(Local);
-    return { keys: Local.testAccounts };
-  } else if (instance === "berkeley") {
-    const network = Mina.Network({
-      mina: Berkeley.mina,
-      archive: Berkeley.archive,
-    });
-    Mina.setActiveInstance(network);
-    return { keys: [], url: Berkeley };
-  } else if (instance === "testworld2") {
-    const network = Mina.Network({
-      mina: TestWorld2.mina,
-      archive: TestWorld2.archive,
-    });
-    Mina.setActiveInstance(network);
-    return { keys: [], url: TestWorld2 };
-  } else if (instance === "lighnet") {
-    const network = Mina.Network({
-      mina: Lightnet.mina,
-      archive: Lightnet.archive,
-      lightnetAccountManager: Lightnet.accountManager,
-    });
-    Mina.setActiveInstance(network);
-    return { keys: [], url: Lightnet };
-  } else {
+let currentNetwork: MinaNetworkInstance | undefined = undefined;
+
+function initBlockchain(
+  instance: blockchain,
+  deployersNumber: number = 0
+): MinaNetworkInstance {
+  if (instance === "mainnet") {
     throw new Error("Mainnet is not supported yet by zkApps");
   }
+
+  if (instance === "local") {
+    const local = Mina.LocalBlockchain({ proofsEnabled: true });
+    Mina.setActiveInstance(local);
+    currentNetwork = {
+      keys: local.testAccounts,
+      network: Local,
+      networkIdHash: getNetworkIdHash("local"),
+    };
+    return currentNetwork;
+  }
+
+  const network = networks.find((n) => n.chainId === instance);
+  if (network === undefined) {
+    throw new Error("Unknown network");
+  }
+
+  const keys: {
+    publicKey: PublicKey;
+    privateKey: PrivateKey;
+  }[] = [];
+
+  if (deployersNumber > 0) {
+    const deployers = process.env.DEPLOYERS;
+    if (
+      deployers === undefined ||
+      Array.isArray(deployers) === false ||
+      deployers.length < deployersNumber
+    )
+      throw new Error("Deployers are not set");
+    for (let i = 0; i < deployersNumber; i++) {
+      const privateKey = PrivateKey.fromBase58(deployers[i]);
+      const publicKey = privateKey.toPublicKey();
+      keys.push({ publicKey, privateKey });
+    }
+  }
+  currentNetwork = { keys, network, networkIdHash: getNetworkIdHash(instance) };
+  return currentNetwork;
 }
 
 async function accountBalance(address: PublicKey): Promise<UInt64> {
