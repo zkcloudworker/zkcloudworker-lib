@@ -4,4 +4,5 @@ export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalan
 export { fee } from "./fee";
 export { networks, Mainnet, Berkeley, Zeko, TestWorld2, Lightnet, Local, } from "./networks";
 export { zkCloudWorkerAPI, } from "./api/client-api";
+export { BackendPlugin } from "./custom/backend";
 //# sourceMappingURL=index.js.map

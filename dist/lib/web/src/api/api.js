@@ -134,8 +134,8 @@ export class zkCloudWorker {
      * where result is the result of the job
      */
     waitForJobResult(data) {
-        var _a, _b, _c, _d;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c, _d;
             const maxAttempts = (_a = data === null || data === void 0 ? void 0 : data.maxAttempts) !== null && _a !== void 0 ? _a : 360; // 2 hours
             const interval = (_b = data === null || data === void 0 ? void 0 : data.interval) !== null && _b !== void 0 ? _b : 20000;
             const maxErrors = (_c = data === null || data === void 0 ? void 0 : data.maxErrors) !== null && _c !== void 0 ? _c : 10;
