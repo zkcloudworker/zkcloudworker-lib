@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.zkCloudWorkerAPI = exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.networks = exports.fee = exports.getNetworkIdHash = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = exports.Cloud = exports.zkCloudWorker = void 0;
+exports.BackendPlugin = exports.zkCloudWorkerAPI = exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.networks = exports.fee = exports.getNetworkIdHash = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = exports.Cloud = exports.zkCloudWorker = void 0;
 var api_1 = require("./api/api");
 Object.defineProperty(exports, "zkCloudWorker", { enumerable: true, get: function () { return api_1.zkCloudWorker; } });
 var cloud_1 = require("./cloud/cloud");
@@ -27,3 +27,5 @@ Object.defineProperty(exports, "Lightnet", { enumerable: true, get: function () 
 Object.defineProperty(exports, "Local", { enumerable: true, get: function () { return networks_1.Local; } });
 var client_api_1 = require("./api/client-api");
 Object.defineProperty(exports, "zkCloudWorkerAPI", { enumerable: true, get: function () { return client_api_1.zkCloudWorkerAPI; } });
+var backend_1 = require("./custom/backend");
+Object.defineProperty(exports, "BackendPlugin", { enumerable: true, get: function () { return backend_1.BackendPlugin; } });

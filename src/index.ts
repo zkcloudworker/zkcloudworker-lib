@@ -34,3 +34,4 @@ export {
   JobResult,
   zkCloudWorkerAPI,
 } from "./api/client-api";
+export { BackendPlugin } from "./custom/backend";
