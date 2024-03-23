@@ -191,6 +191,7 @@ export class zkCloudWorker {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             const apiData = {
                 auth: ZKCLOUDWORKER_AUTH,
                 command: command,
@@ -202,7 +203,7 @@ export class zkCloudWorker {
                 return { success: true, data: response.data };
             }
             catch (error) {
-                console.error("catch api", error);
+                console.error("apiHub error:", (_a = error.message) !== null && _a !== void 0 ? _a : error);
                 return { success: false, error: error };
             }
         });

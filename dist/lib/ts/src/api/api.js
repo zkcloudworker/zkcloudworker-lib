@@ -195,7 +195,7 @@ class zkCloudWorker {
             return { success: true, data: response.data };
         }
         catch (error) {
-            console.error("catch api", error);
+            console.error("apiHub error:", error.message ?? error);
             return { success: false, error: error };
         }
     }
