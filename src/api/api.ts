@@ -232,8 +232,8 @@ export class zkCloudWorker {
     try {
       const response = await axios.post(this.endpoint, apiData);
       return { success: true, data: response.data };
-    } catch (error) {
-      console.error("catch api", error);
+    } catch (error: any) {
+      console.error("apiHub error:", error.message ?? error);
       return { success: false, error: error };
     }
   }
