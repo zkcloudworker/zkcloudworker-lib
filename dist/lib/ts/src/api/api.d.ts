@@ -30,6 +30,7 @@ export declare class zkCloudWorker {
         name: string;
         task: string;
         args: string[];
+        metadata?: string;
     }): Promise<{
         success: boolean;
         error?: string;
