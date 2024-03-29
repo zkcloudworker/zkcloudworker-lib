@@ -1,10 +1,23 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocalCloud = void 0;
-class LocalCloud {
-    constructor(cache) {
+const o1js_1 = require("o1js");
+const cloud_1 = require("./cloud");
+class LocalCloud extends cloud_1.Cloud {
+    constructor(params = {}) {
+        const { jobId, stepId, cache, developer, repo, task, userId, args, metadata, } = params;
+        super({
+            jobId: jobId || "jobId",
+            stepId: stepId || "stepId",
+            cache: cache || o1js_1.Cache.FileSystem("./cache"),
+            developer: developer || "developer",
+            repo: repo || "repo",
+            task: task || "task",
+            userId: userId || "userId",
+            args: args || "args",
+            metadata: metadata || "metadata",
+        });
         this.data = new Map();
-        this.cache = cache;
     }
     async getDeployer() {
         throw new Error("Method not implemented.");

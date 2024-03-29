@@ -1,12 +1,44 @@
 import { Cache, PrivateKey } from "o1js";
 import { Cloud } from "./cloud";
 
-export class LocalCloud {
-  cache: Cache;
+export class LocalCloud extends Cloud {
   data: Map<string, string> = new Map<string, string>();
 
-  constructor(cache: Cache) {
-    this.cache = cache;
+  constructor(
+    params: {
+      jobId?: string;
+      stepId?: string;
+      cache?: Cache;
+      developer?: string;
+      repo?: string;
+      task?: string;
+      userId?: string;
+      args?: string;
+      metadata?: string;
+    } = {}
+  ) {
+    const {
+      jobId,
+      stepId,
+      cache,
+      developer,
+      repo,
+      task,
+      userId,
+      args,
+      metadata,
+    } = params;
+    super({
+      jobId: jobId || "jobId",
+      stepId: stepId || "stepId",
+      cache: cache || Cache.FileSystem("./cache"),
+      developer: developer || "developer",
+      repo: repo || "repo",
+      task: task || "task",
+      userId: userId || "userId",
+      args: args || "args",
+      metadata: metadata || "metadata",
+    });
   }
   public async getDeployer(): Promise<PrivateKey> {
     throw new Error("Method not implemented.");

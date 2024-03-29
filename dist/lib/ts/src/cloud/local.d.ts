@@ -1,9 +1,19 @@
 /// <reference types="node" />
 import { Cache, PrivateKey } from "o1js";
-export declare class LocalCloud {
-    cache: Cache;
+import { Cloud } from "./cloud";
+export declare class LocalCloud extends Cloud {
     data: Map<string, string>;
-    constructor(cache: Cache);
+    constructor(params?: {
+        jobId?: string;
+        stepId?: string;
+        cache?: Cache;
+        developer?: string;
+        repo?: string;
+        task?: string;
+        userId?: string;
+        args?: string;
+        metadata?: string;
+    });
     getDeployer(): Promise<PrivateKey>;
     log(msg: string): Promise<void>;
     getDataByKey(key: string): Promise<string | undefined>;

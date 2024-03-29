@@ -1,8 +1,21 @@
 import { __awaiter } from "tslib";
-export class LocalCloud {
-    constructor(cache) {
+import { Cache } from "o1js";
+import { Cloud } from "./cloud";
+export class LocalCloud extends Cloud {
+    constructor(params = {}) {
+        const { jobId, stepId, cache, developer, repo, task, userId, args, metadata, } = params;
+        super({
+            jobId: jobId || "jobId",
+            stepId: stepId || "stepId",
+            cache: cache || Cache.FileSystem("./cache"),
+            developer: developer || "developer",
+            repo: repo || "repo",
+            task: task || "task",
+            userId: userId || "userId",
+            args: args || "args",
+            metadata: metadata || "metadata",
+        });
         this.data = new Map();
-        this.cache = cache;
     }
     getDeployer() {
         return __awaiter(this, void 0, void 0, function* () {
