@@ -125,9 +125,16 @@ function formatTime(ms) {
         return ms.toString() + " ms";
     if (ms < 60 * 1000)
         return parseInt((ms / 1000).toString()).toString() + " sec";
-    if (ms < 60 * 60 * 1000)
-        return parseInt((ms / 1000 / 60).toString()).toString() + " min";
-    return parseInt((ms / 1000 / 60 / 60).toString()).toString() + " h";
+    if (ms < 60 * 60 * 1000) {
+        const minutes = parseInt((ms / 1000 / 60).toString());
+        const seconds = parseInt(((ms - minutes * 60 * 1000) / 1000).toString());
+        return minutes.toString() + " min " + seconds.toString() + " sec";
+    }
+    else {
+        const hours = parseInt((ms / 1000 / 60 / 60).toString());
+        const minutes = parseInt(((ms - hours * 60 * 60 * 1000) / 1000 / 60).toString());
+        return hours.toString() + " h " + minutes.toString() + " min";
+    }
 }
 class Memory {
     constructor() {
