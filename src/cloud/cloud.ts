@@ -51,6 +51,7 @@ export abstract class Cloud {
   abstract saveDataByKey(key: string, value: string): Promise<void>;
   abstract saveFile(filename: string, value: Buffer): Promise<void>;
   abstract loadFile(filename: string): Promise<Buffer | undefined>;
+  abstract loadEnvironment(password: string): Promise<void>;
 }
 
 export abstract class zkCloudWorker {
@@ -61,7 +62,7 @@ export abstract class zkCloudWorker {
   }
 
   // Those methods should be implemented for recursive proofs calculations
-  abstract compile(cache: Cache): Promise<void>;
+  abstract compile(): Promise<void>;
   abstract create(transaction: string): Promise<string | undefined>;
   abstract merge(proof1: string, proof2: string): Promise<string | undefined>;
 

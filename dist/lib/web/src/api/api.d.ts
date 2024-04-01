@@ -27,7 +27,7 @@ export declare class zkCloudWorkerClient {
      * The developers repo should provide a BackupPlugin with the name task
      * that can be called with the given parameters
      */
-    createRecursiveProofJob(data: {
+    recursiveProof(data: {
         developer: string;
         repo: string;
         transactions: string[];
@@ -52,7 +52,7 @@ export declare class zkCloudWorkerClient {
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      */
-    createFunctionCallJob(data: {
+    execute(data: {
         developer: string;
         repo: string;
         task?: string;

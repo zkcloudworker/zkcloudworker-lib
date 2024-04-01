@@ -48,5 +48,10 @@ export class LocalCloud extends Cloud {
             throw new Error("Method not implemented.");
         });
     }
+    loadEnvironment(password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error("Method not implemented.");
+        });
+    }
 }
 //# sourceMappingURL=local.js.map

@@ -20,4 +20,5 @@ export declare class LocalCloud extends Cloud {
     saveDataByKey(key: string, value: string): Promise<void>;
     saveFile(filename: string, value: Buffer): Promise<void>;
     loadFile(filename: string): Promise<Buffer | undefined>;
+    loadEnvironment(password: string): Promise<void>;
 }

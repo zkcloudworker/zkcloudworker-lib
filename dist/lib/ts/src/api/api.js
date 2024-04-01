@@ -38,8 +38,8 @@ class zkCloudWorkerClient {
      * The developers repo should provide a BackupPlugin with the name task
      * that can be called with the given parameters
      */
-    async createRecursiveProofJob(data) {
-        const result = await this.apiHub("createRecursiveProofJob", data);
+    async recursiveProof(data) {
+        const result = await this.apiHub("recursiveProof", data);
         if (result.data === "error")
             return {
                 success: false,
@@ -64,8 +64,8 @@ class zkCloudWorkerClient {
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      */
-    async createFunctionCallJob(data) {
-        const result = await this.apiHub("createFunctionCallJob", data);
+    async execute(data) {
+        const result = await this.apiHub("execute", data);
         if (result.data === "error")
             return {
                 success: false,
@@ -116,6 +116,7 @@ class zkCloudWorkerClient {
      * if the job is not found, the result will be undefined and error will be set
      */
     async deploy(data) {
+        // TODO: encrypt env.json
         const result = await this.apiHub("deploy", data);
         if (result.data === "error")
             return {

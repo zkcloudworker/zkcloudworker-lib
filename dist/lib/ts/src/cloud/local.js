@@ -38,5 +38,8 @@ class LocalCloud extends cloud_1.Cloud {
     async loadFile(filename) {
         throw new Error("Method not implemented.");
     }
+    async loadEnvironment(password) {
+        throw new Error("Method not implemented.");
+    }
 }
 exports.LocalCloud = LocalCloud;

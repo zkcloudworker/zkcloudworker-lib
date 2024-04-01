@@ -62,4 +62,7 @@ export class LocalCloud extends Cloud {
   public async loadFile(filename: string): Promise<Buffer | undefined> {
     throw new Error("Method not implemented.");
   }
+  public async loadEnvironment(password: string): Promise<void> {
+    throw new Error("Method not implemented.");
+  }
 }
