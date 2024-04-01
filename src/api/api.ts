@@ -8,7 +8,7 @@ const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
  * @property jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
  * @property endpoint The endpoint of the serverless api
  */
-export class zkCloudWorker {
+export class zkCloudWorkerClient {
   jwt: string;
   endpoint: string;
 
@@ -28,25 +28,67 @@ export class zkCloudWorker {
    * @param data the data for the proof call
    * @param data.transactions the transactions
    * @param data.developer the developer
-   * @param data.name the name of the job
+   * @param data.repo the repo to use
    * @param data.task the task of the job
    * @param data.args the arguments of the job
    * @returns { success: boolean, error?: string, jobId?: string }
    * where jonId is the jobId of the job
+   *
+   * The developers repo should provide a BackupPlugin with the name task
+   * that can be called with the given parameters
    */
-  public async createJob(data: {
-    transactions: string[];
+  public async recursiveProof(data: {
     developer: string;
-    name: string;
-    task: string;
-    args: string[];
+    repo: string;
+    transactions: string[];
+    task?: string;
+    userId?: string;
+    args?: string;
     metadata?: string;
   }): Promise<{
     success: boolean;
     error?: string;
     jobId?: string;
   }> {
-    const result = await this.apiHub("createJob", data);
+    const result = await this.apiHub("recursiveProof", data);
+    if (result.data === "error")
+      return {
+        success: false,
+        error: result.error,
+      };
+    else
+      return {
+        success: result.success,
+        jobId: result.data,
+        error: result.error,
+      };
+  }
+
+  /**
+   * Starts a new job for the function call using serverless api call
+   * The developer and name should correspond to the BackupPlugin of the API
+   * All other parameters should correspond to the parameters of the BackupPlugin
+   * @param data the data for the proof call
+   * @param data.developer the developer
+   * @param data.repo the repo to use
+   * @param data.task the task of the job
+   * @param data.args the arguments of the job
+   * @returns { success: boolean, error?: string, jobId?: string }
+   * where jonId is the jobId of the job
+   */
+  public async execute(data: {
+    developer: string;
+    repo: string;
+    task?: string;
+    userId?: string;
+    args?: string;
+    metadata?: string;
+  }): Promise<{
+    success: boolean;
+    error?: string;
+    jobId?: string;
+  }> {
+    const result = await this.apiHub("execute", data);
     if (result.data === "error")
       return {
         success: false,
@@ -108,6 +150,7 @@ export class zkCloudWorker {
     error?: string;
     jobId?: string;
   }> {
+    // TODO: encrypt env.json
     const result = await this.apiHub("deploy", data);
     if (result.data === "error")
       return {

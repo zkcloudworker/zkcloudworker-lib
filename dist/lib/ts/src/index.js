@@ -1,10 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BackendPlugin = exports.zkCloudWorkerAPI = exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.networks = exports.fee = exports.getNetworkIdHash = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = exports.Cloud = exports.zkCloudWorker = void 0;
+exports.zkCloudWorkerAPI = exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.networks = exports.fee = exports.getNetworkIdHash = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = exports.LocalCloud = exports.zkCloudWorker = exports.Cloud = exports.zkCloudWorkerClient = void 0;
 var api_1 = require("./api/api");
-Object.defineProperty(exports, "zkCloudWorker", { enumerable: true, get: function () { return api_1.zkCloudWorker; } });
+Object.defineProperty(exports, "zkCloudWorkerClient", { enumerable: true, get: function () { return api_1.zkCloudWorkerClient; } });
 var cloud_1 = require("./cloud/cloud");
 Object.defineProperty(exports, "Cloud", { enumerable: true, get: function () { return cloud_1.Cloud; } });
+Object.defineProperty(exports, "zkCloudWorker", { enumerable: true, get: function () { return cloud_1.zkCloudWorker; } });
+var local_1 = require("./cloud/local");
+Object.defineProperty(exports, "LocalCloud", { enumerable: true, get: function () { return local_1.LocalCloud; } });
 var mina_1 = require("./mina");
 Object.defineProperty(exports, "initBlockchain", { enumerable: true, get: function () { return mina_1.initBlockchain; } });
 Object.defineProperty(exports, "Memory", { enumerable: true, get: function () { return mina_1.Memory; } });
@@ -27,5 +30,3 @@ Object.defineProperty(exports, "Lightnet", { enumerable: true, get: function () 
 Object.defineProperty(exports, "Local", { enumerable: true, get: function () { return networks_1.Local; } });
 var client_api_1 = require("./api/client-api");
 Object.defineProperty(exports, "zkCloudWorkerAPI", { enumerable: true, get: function () { return client_api_1.zkCloudWorkerAPI; } });
-var backend_1 = require("./custom/backend");
-Object.defineProperty(exports, "BackendPlugin", { enumerable: true, get: function () { return backend_1.BackendPlugin; } });

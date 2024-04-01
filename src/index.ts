@@ -1,5 +1,6 @@
-export { zkCloudWorker } from "./api/api";
-export { Cloud } from "./cloud/cloud";
+export { zkCloudWorkerClient } from "./api/api";
+export { Cloud, zkCloudWorker } from "./cloud/cloud";
+export { LocalCloud } from "./cloud/local";
 export {
   initBlockchain,
   Memory,
@@ -34,4 +35,3 @@ export {
   JobResult,
   zkCloudWorkerAPI,
 } from "./api/client-api";
-export { BackendPlugin } from "./custom/backend";

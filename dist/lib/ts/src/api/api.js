@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.zkCloudWorker = void 0;
+exports.zkCloudWorkerClient = void 0;
 const axios_1 = __importDefault(require("axios"));
 const mina_1 = require("../mina");
 const config_1 = __importDefault(require("../config"));
@@ -13,7 +13,7 @@ const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config_1.default;
  * @property jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
  * @property endpoint The endpoint of the serverless api
  */
-class zkCloudWorker {
+class zkCloudWorkerClient {
     /**
      * Constructor for the API class
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
@@ -29,14 +29,43 @@ class zkCloudWorker {
      * @param data the data for the proof call
      * @param data.transactions the transactions
      * @param data.developer the developer
-     * @param data.name the name of the job
+     * @param data.repo the repo to use
+     * @param data.task the task of the job
+     * @param data.args the arguments of the job
+     * @returns { success: boolean, error?: string, jobId?: string }
+     * where jonId is the jobId of the job
+     *
+     * The developers repo should provide a BackupPlugin with the name task
+     * that can be called with the given parameters
+     */
+    async recursiveProof(data) {
+        const result = await this.apiHub("recursiveProof", data);
+        if (result.data === "error")
+            return {
+                success: false,
+                error: result.error,
+            };
+        else
+            return {
+                success: result.success,
+                jobId: result.data,
+                error: result.error,
+            };
+    }
+    /**
+     * Starts a new job for the function call using serverless api call
+     * The developer and name should correspond to the BackupPlugin of the API
+     * All other parameters should correspond to the parameters of the BackupPlugin
+     * @param data the data for the proof call
+     * @param data.developer the developer
+     * @param data.repo the repo to use
      * @param data.task the task of the job
      * @param data.args the arguments of the job
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      */
-    async createJob(data) {
-        const result = await this.apiHub("createJob", data);
+    async execute(data) {
+        const result = await this.apiHub("execute", data);
         if (result.data === "error")
             return {
                 success: false,
@@ -87,6 +116,7 @@ class zkCloudWorker {
      * if the job is not found, the result will be undefined and error will be set
      */
     async deploy(data) {
+        // TODO: encrypt env.json
         const result = await this.apiHub("deploy", data);
         if (result.data === "error")
             return {
@@ -210,4 +240,4 @@ class zkCloudWorker {
         return false;
     }
 }
-exports.zkCloudWorker = zkCloudWorker;
+exports.zkCloudWorkerClient = zkCloudWorkerClient;
