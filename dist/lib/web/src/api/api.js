@@ -1,6 +1,7 @@
 import { __awaiter } from "tslib";
 import axios from "axios";
-import { sleep } from "../mina";
+import { sleep, makeString } from "../mina";
+import { LocalCloud } from "../cloud/local";
 import config from "../config";
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 /**
@@ -13,9 +14,15 @@ export class zkCloudWorkerClient {
      * Constructor for the API class
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
      */
-    constructor(jwt) {
+    constructor(jwt, zkcloudworker = undefined) {
+        this.localJobs = new Map();
         this.jwt = jwt;
         this.endpoint = ZKCLOUDWORKER_API;
+        if (jwt === "local") {
+            if (zkcloudworker === undefined)
+                throw new Error("worker is required for local mode");
+            this.localWorker = zkcloudworker;
+        }
     }
     /**
      * Starts a new job for the proof calculation using serverless api call
@@ -224,19 +231,127 @@ export class zkCloudWorkerClient {
     ) {
         return __awaiter(this, void 0, void 0, function* () {
             var _a;
-            const apiData = {
-                auth: ZKCLOUDWORKER_AUTH,
-                command: command,
-                jwtToken: this.jwt,
-                data: data,
-            };
-            try {
-                const response = yield axios.post(this.endpoint, apiData);
-                return { success: true, data: response.data };
+            if (this.jwt === "local") {
+                switch (command) {
+                    case "recursiveProof": {
+                        const timeCreated = Date.now();
+                        const jobId = this.generateJobId();
+                        const job = {
+                            id: "local",
+                            jobId: jobId,
+                            developer: data.developer,
+                            repo: data.repo,
+                            task: data.task,
+                            userId: data.userId,
+                            args: data.args,
+                            metadata: data.metadata,
+                            filename: "recursiveProof.json",
+                            txNumber: data.transactions.length,
+                            timeCreated,
+                            timeCreatedString: new Date(timeCreated).toISOString(),
+                            timeStarted: timeCreated,
+                            jobStatus: "started",
+                            maxAttempts: 0,
+                        };
+                        const cloud = new LocalCloud({ job });
+                        const worker = yield this.localWorker(cloud);
+                        if (worker === undefined)
+                            throw new Error("worker is undefined");
+                        const proof = yield LocalCloud.sequencer({
+                            worker,
+                            data,
+                        });
+                        job.timeFinished = Date.now();
+                        job.jobStatus = "finished";
+                        job.result = proof;
+                        job.maxAttempts = 1;
+                        this.localJobs.set(jobId, job);
+                        return {
+                            success: true,
+                            data: jobId,
+                        };
+                    }
+                    case "execute": {
+                        const timeCreated = Date.now();
+                        const jobId = this.generateJobId();
+                        const job = {
+                            id: "local",
+                            jobId: jobId,
+                            developer: data.developer,
+                            repo: data.repo,
+                            task: data.task,
+                            userId: data.userId,
+                            args: data.args,
+                            metadata: data.metadata,
+                            txNumber: 1,
+                            timeCreated,
+                            timeCreatedString: new Date(timeCreated).toISOString(),
+                            timeStarted: timeCreated,
+                            jobStatus: "started",
+                            maxAttempts: 0,
+                        };
+                        const cloud = new LocalCloud({ job });
+                        const worker = yield this.localWorker(cloud);
+                        if (worker === undefined)
+                            throw new Error("worker is undefined");
+                        const result = yield worker.execute();
+                        job.timeFinished = Date.now();
+                        job.jobStatus = "finished";
+                        job.result = result;
+                        job.maxAttempts = 1;
+                        this.localJobs.set(jobId, job);
+                        return {
+                            success: true,
+                            data: jobId,
+                        };
+                    }
+                    case "jobResult": {
+                        const job = this.localJobs.get(data.jobId);
+                        if (job === undefined) {
+                            return {
+                                success: false,
+                                error: "local job not found",
+                            };
+                        }
+                        else {
+                            return {
+                                success: true,
+                                data: job,
+                            };
+                        }
+                    }
+                    case "deploy":
+                        return {
+                            success: true,
+                            data: "local_deploy",
+                        };
+                    case "queryBilling":
+                        return {
+                            success: true,
+                            data: "local_queryBilling",
+                        };
+                    default:
+                        return {
+                            success: false,
+                            error: "local_error",
+                        };
+                }
             }
-            catch (error) {
-                console.error("apiHub error:", (_a = error.message) !== null && _a !== void 0 ? _a : error);
-                return { success: false, error: error };
+            else {
+                const apiData = {
+                    auth: ZKCLOUDWORKER_AUTH,
+                    command: command,
+                    jwtToken: this.jwt,
+                    data: data,
+                };
+                try {
+                    const response = yield axios.post(this.endpoint, apiData);
+                    return { success: true, data: response.data };
+                }
+                catch (error) {
+                    console.error("apiHub error:", (_a = error.message) !== null && _a !== void 0 ? _a : error);
+                    return { success: false, error: error };
+                }
             }
         });
     }
@@ -249,6 +364,9 @@ export class zkCloudWorkerClient {
         if (typeof data === "string" && data.toLowerCase().startsWith("error"))
             return true;
         return false;
+    }
+    generateJobId() {
+        return "local." + Date.now().toString() + "." + makeString(32);
     }
 }
 //# sourceMappingURL=api.js.map

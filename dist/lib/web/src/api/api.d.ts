@@ -1,16 +1,20 @@
+import { zkCloudWorker, Cloud } from "../cloud/cloud";
+import { JobData } from "../cloud/job";
 /**
  * API class for interacting with the zkCloudWorker
  * @property jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
  * @property endpoint The endpoint of the serverless api
  */
 export declare class zkCloudWorkerClient {
-    jwt: string;
-    endpoint: string;
+    readonly jwt: string;
+    readonly endpoint: string;
+    readonly localJobs: Map<string, JobData>;
+    readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker> | undefined;
     /**
      * Constructor for the API class
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
      */
-    constructor(jwt: string);
+    constructor(jwt: string, zkcloudworker?: ((cloud: Cloud) => Promise<zkCloudWorker>) | undefined);
     /**
      * Starts a new job for the proof calculation using serverless api call
      * The developer and name should correspond to the BackupPlugin of the API
@@ -137,4 +141,5 @@ export declare class zkCloudWorkerClient {
      * */
     private apiHub;
     private isError;
+    private generateJobId;
 }

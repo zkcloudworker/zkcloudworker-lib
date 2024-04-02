@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.zkCloudWorker = exports.Cloud = void 0;
 class Cloud {
     constructor(params) {
-        const { jobId, stepId, cache, developer, repo, task, userId, args, metadata, } = params;
+        const { jobId, stepId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, } = params;
         this.jobId = jobId;
         this.stepId = stepId;
         this.cache = cache;
@@ -13,6 +13,7 @@ class Cloud {
         this.userId = userId;
         this.args = args;
         this.metadata = metadata;
+        this.isLocalCloud = isLocalCloud ?? false;
     }
 }
 exports.Cloud = Cloud;

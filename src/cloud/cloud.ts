@@ -1,5 +1,11 @@
-import { Cache, PrivateKey } from "o1js";
+import { Cache, PrivateKey, PublicKey, SmartContract } from "o1js";
+import { blockchain } from "../networks";
 
+export interface DeployedSmartContract {
+  address: PublicKey;
+  contract: SmartContract;
+  chain: blockchain;
+}
 export abstract class Cloud {
   readonly jobId: string;
   readonly stepId: string;
@@ -10,6 +16,7 @@ export abstract class Cloud {
   readonly userId?: string;
   readonly args?: string;
   readonly metadata?: string;
+  readonly isLocalCloud: boolean;
 
   constructor(params: {
     jobId: string;
@@ -21,6 +28,7 @@ export abstract class Cloud {
     userId?: string;
     args?: string;
     metadata?: string;
+    isLocalCloud?: boolean;
   }) {
     const {
       jobId,
@@ -32,6 +40,7 @@ export abstract class Cloud {
       userId,
       args,
       metadata,
+      isLocalCloud,
     } = params;
     this.jobId = jobId;
     this.stepId = stepId;
@@ -42,6 +51,7 @@ export abstract class Cloud {
     this.userId = userId;
     this.args = args;
     this.metadata = metadata;
+    this.isLocalCloud = isLocalCloud ?? false;
   }
 
   // TODO: change it to the sign method to protect the private key
@@ -61,10 +71,13 @@ export abstract class zkCloudWorker {
     this.cloud = cloud;
   }
 
+  // To verify the SmartContract code
+  abstract deployedContracts(): Promise<DeployedSmartContract[]>;
+
   // Those methods should be implemented for recursive proofs calculations
-  abstract compile(): Promise<void>;
   abstract create(transaction: string): Promise<string | undefined>;
   abstract merge(proof1: string, proof2: string): Promise<string | undefined>;
 
+  // Those methods should be implemented for anything except for recursive proofs
   abstract execute(): Promise<string | undefined>;
 }

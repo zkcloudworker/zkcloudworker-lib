@@ -1,5 +1,11 @@
 /// <reference types="node" />
-import { Cache, PrivateKey } from "o1js";
+import { Cache, PrivateKey, PublicKey, SmartContract } from "o1js";
+import { blockchain } from "../networks";
+export interface DeployedSmartContract {
+    address: PublicKey;
+    contract: SmartContract;
+    chain: blockchain;
+}
 export declare abstract class Cloud {
     readonly jobId: string;
     readonly stepId: string;
@@ -10,6 +16,7 @@ export declare abstract class Cloud {
     readonly userId?: string;
     readonly args?: string;
     readonly metadata?: string;
+    readonly isLocalCloud: boolean;
     constructor(params: {
         jobId: string;
         stepId: string;
@@ -20,6 +27,7 @@ export declare abstract class Cloud {
         userId?: string;
         args?: string;
         metadata?: string;
+        isLocalCloud?: boolean;
     });
     abstract getDeployer(): Promise<PrivateKey>;
     abstract log(msg: string): void;
@@ -32,7 +40,7 @@ export declare abstract class Cloud {
 export declare abstract class zkCloudWorker {
     readonly cloud: Cloud;
     constructor(cloud: Cloud);
-    abstract compile(): Promise<void>;
+    abstract deployedContracts(): Promise<DeployedSmartContract[]>;
     abstract create(transaction: string): Promise<string | undefined>;
     abstract merge(proof1: string, proof2: string): Promise<string | undefined>;
     abstract execute(): Promise<string | undefined>;
