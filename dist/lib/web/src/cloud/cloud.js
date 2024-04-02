@@ -1,6 +1,6 @@
 export class Cloud {
     constructor(params) {
-        const { jobId, stepId, cache, developer, repo, task, userId, args, metadata, } = params;
+        const { jobId, stepId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, } = params;
         this.jobId = jobId;
         this.stepId = stepId;
         this.cache = cache;
@@ -10,6 +10,7 @@ export class Cloud {
         this.userId = userId;
         this.args = args;
         this.metadata = metadata;
+        this.isLocalCloud = isLocalCloud !== null && isLocalCloud !== void 0 ? isLocalCloud : false;
     }
 }
 export class zkCloudWorker {

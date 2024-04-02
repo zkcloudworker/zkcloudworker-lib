@@ -1,6 +1,9 @@
 import axios from "axios";
-import { sleep } from "../mina";
+import { sleep, makeString } from "../mina";
+import { LocalCloud } from "../cloud/local";
 import config from "../config";
+import { zkCloudWorker, Cloud } from "../cloud/cloud";
+import { JobData, JobStatus } from "../cloud/job";
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 
 /**
@@ -9,16 +12,28 @@ const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
  * @property endpoint The endpoint of the serverless api
  */
 export class zkCloudWorkerClient {
-  jwt: string;
-  endpoint: string;
+  readonly jwt: string;
+  readonly endpoint: string;
+  readonly localJobs: Map<string, JobData> = new Map<string, JobData>();
+  readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker> | undefined;
 
   /**
    * Constructor for the API class
    * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
    */
-  constructor(jwt: string) {
+  constructor(
+    jwt: string,
+    zkcloudworker:
+      | ((cloud: Cloud) => Promise<zkCloudWorker>)
+      | undefined = undefined
+  ) {
     this.jwt = jwt;
     this.endpoint = ZKCLOUDWORKER_API;
+    if (jwt === "local") {
+      if (zkcloudworker === undefined)
+        throw new Error("worker is required for local mode");
+      this.localWorker = zkcloudworker;
+    }
   }
 
   /**
@@ -266,19 +281,126 @@ export class zkCloudWorkerClient {
     data: any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<{ success: boolean; data?: any; error?: any }> {
-    const apiData = {
-      auth: ZKCLOUDWORKER_AUTH,
-      command: command,
-      jwtToken: this.jwt,
-      data: data,
-    };
+    if (this.jwt === "local") {
+      switch (command) {
+        case "recursiveProof": {
+          console.log("calculating recursive proof locally...");
+          const timeCreated = Date.now();
+          const jobId = this.generateJobId();
+          const job: JobData = {
+            id: "local",
+            jobId: jobId,
+            developer: data.developer,
+            repo: data.repo,
+            task: data.task,
+            userId: data.userId,
+            args: data.args,
+            metadata: data.metadata,
+            filename: "recursiveProof.json",
+            txNumber: data.transactions.length,
+            timeCreated,
+            timeCreatedString: new Date(timeCreated).toISOString(),
+            timeStarted: timeCreated,
+            jobStatus: "started",
+            maxAttempts: 0,
+          } as JobData;
+          const cloud = new LocalCloud({ job });
 
-    try {
-      const response = await axios.post(this.endpoint, apiData);
-      return { success: true, data: response.data };
-    } catch (error: any) {
-      console.error("apiHub error:", error.message ?? error);
-      return { success: false, error: error };
+          const worker = await this.localWorker(cloud);
+          if (worker === undefined) throw new Error("worker is undefined");
+          const proof = await LocalCloud.sequencer({
+            worker,
+            data,
+          });
+          job.timeFinished = Date.now();
+          job.jobStatus = "finished";
+          job.result = proof;
+          job.maxAttempts = 1;
+          this.localJobs.set(jobId, job);
+          return {
+            success: true,
+            data: jobId,
+          };
+        }
+        case "execute": {
+          console.log("executing locally...");
+          const timeCreated = Date.now();
+          const jobId = this.generateJobId();
+          const job: JobData = {
+            id: "local",
+            jobId: jobId,
+            developer: data.developer,
+            repo: data.repo,
+            task: data.task,
+            userId: data.userId,
+            args: data.args,
+            metadata: data.metadata,
+            txNumber: 1,
+            timeCreated,
+            timeCreatedString: new Date(timeCreated).toISOString(),
+            timeStarted: timeCreated,
+            jobStatus: "started",
+            maxAttempts: 0,
+          } as JobData;
+          const cloud = new LocalCloud({ job });
+          const worker = await this.localWorker(cloud);
+          if (worker === undefined) throw new Error("worker is undefined");
+          const result = await worker.execute();
+          job.timeFinished = Date.now();
+          job.jobStatus = "finished";
+          job.result = result;
+          job.maxAttempts = 1;
+          this.localJobs.set(jobId, job);
+          return {
+            success: true,
+            data: jobId,
+          };
+        }
+        case "jobResult": {
+          const job = this.localJobs.get(data.jobId);
+          if (job === undefined) {
+            return {
+              success: false,
+              error: "local job not found",
+            };
+          } else {
+            return {
+              success: true,
+              data: job,
+            };
+          }
+        }
+        case "deploy":
+          return {
+            success: true,
+            data: "local_deploy",
+          };
+        case "queryBilling":
+          return {
+            success: true,
+            data: "local_queryBilling",
+          };
+        default:
+          return {
+            success: false,
+            error: "local_error",
+          };
+      }
+    } else {
+      const apiData = {
+        auth: ZKCLOUDWORKER_AUTH,
+        command: command,
+        jwtToken: this.jwt,
+        data: data,
+      };
+
+      try {
+        const response = await axios.post(this.endpoint, apiData);
+        return { success: true, data: response.data };
+      } catch (error: any) {
+        console.error("apiHub error:", error.message ?? error);
+        return { success: false, error: error };
+      }
     }
   }
 
@@ -289,5 +411,9 @@ export class zkCloudWorkerClient {
     if (typeof data === "string" && data.toLowerCase().startsWith("error"))
       return true;
     return false;
+  }
+
+  private generateJobId(): string {
+    return "local." + Date.now().toString() + "." + makeString(32);
   }
 }
