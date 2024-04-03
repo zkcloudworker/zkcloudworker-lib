@@ -19,10 +19,11 @@ class zkCloudWorkerClient {
      * Constructor for the API class
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
      */
-    constructor(jwt, zkcloudworker = undefined) {
-        this.localJobs = new Map();
+    constructor(params) {
+        const { jwt, zkcloudworker, chain } = params;
         this.jwt = jwt;
         this.endpoint = ZKCLOUDWORKER_API;
+        this.chain = chain ?? "berkeley";
         if (jwt === "local") {
             if (zkcloudworker === undefined)
                 throw new Error("worker is required for local mode");
@@ -224,6 +225,7 @@ class zkCloudWorkerClient {
         if (this.jwt === "local") {
             switch (command) {
                 case "recursiveProof": {
+                    console.log("calculating recursive proof locally...");
                     const timeCreated = Date.now();
                     const jobId = this.generateJobId();
                     const job = {
@@ -243,7 +245,7 @@ class zkCloudWorkerClient {
                         jobStatus: "started",
                         maxAttempts: 0,
                     };
-                    const cloud = new local_1.LocalCloud({ job });
+                    const cloud = new local_1.LocalCloud({ job, chain: this.chain });
                     const worker = await this.localWorker(cloud);
                     if (worker === undefined)
                         throw new Error("worker is undefined");
@@ -255,13 +257,14 @@ class zkCloudWorkerClient {
                     job.jobStatus = "finished";
                     job.result = proof;
                     job.maxAttempts = 1;
-                    this.localJobs.set(jobId, job);
+                    local_1.LocalStorage.jobs[jobId] = job;
                     return {
                         success: true,
                         data: jobId,
                     };
                 }
                 case "execute": {
+                    console.log("executing locally...");
                     const timeCreated = Date.now();
                     const jobId = this.generateJobId();
                     const job = {
@@ -280,7 +283,7 @@ class zkCloudWorkerClient {
                         jobStatus: "started",
                         maxAttempts: 0,
                     };
-                    const cloud = new local_1.LocalCloud({ job });
+                    const cloud = new local_1.LocalCloud({ job, chain: this.chain });
                     const worker = await this.localWorker(cloud);
                     if (worker === undefined)
                         throw new Error("worker is undefined");
@@ -289,14 +292,14 @@ class zkCloudWorkerClient {
                     job.jobStatus = "finished";
                     job.result = result;
                     job.maxAttempts = 1;
-                    this.localJobs.set(jobId, job);
+                    local_1.LocalStorage.jobs[jobId] = job;
                     return {
                         success: true,
                         data: jobId,
                     };
                 }
                 case "jobResult": {
-                    const job = this.localJobs.get(data.jobId);
+                    const job = local_1.LocalStorage.jobs[data.jobId];
                     if (job === undefined) {
                         return {
                             success: false,
@@ -333,6 +336,7 @@ class zkCloudWorkerClient {
                 command: command,
                 jwtToken: this.jwt,
                 data: data,
+                chain: this.chain,
             };
             try {
                 const response = await axios_1.default.post(this.endpoint, apiData);

@@ -16,6 +16,7 @@ export abstract class Cloud {
   readonly userId?: string;
   readonly args?: string;
   readonly metadata?: string;
+  readonly chain: blockchain;
   readonly isLocalCloud: boolean;
 
   constructor(params: {
@@ -29,6 +30,7 @@ export abstract class Cloud {
     args?: string;
     metadata?: string;
     isLocalCloud?: boolean;
+    chain: blockchain;
   }) {
     const {
       jobId,
@@ -41,6 +43,7 @@ export abstract class Cloud {
       args,
       metadata,
       isLocalCloud,
+      chain,
     } = params;
     this.jobId = jobId;
     this.stepId = stepId;
@@ -52,6 +55,7 @@ export abstract class Cloud {
     this.args = args;
     this.metadata = metadata;
     this.isLocalCloud = isLocalCloud ?? false;
+    this.chain = chain;
   }
 
   // TODO: change it to the sign method to protect the private key
@@ -64,6 +68,12 @@ export abstract class Cloud {
   abstract loadEnvironment(password: string): Promise<void>;
 }
 
+export interface CloudTransaction {
+  txId: string;
+  transaction: string;
+  timeReceived: number;
+}
+
 export abstract class zkCloudWorker {
   readonly cloud: Cloud;
 
@@ -72,12 +82,27 @@ export abstract class zkCloudWorker {
   }
 
   // To verify the SmartContract code
-  abstract deployedContracts(): Promise<DeployedSmartContract[]>;
+  async deployedContracts(): Promise<DeployedSmartContract[]> {
+    return [];
+  }
 
   // Those methods should be implemented for recursive proofs calculations
-  abstract create(transaction: string): Promise<string | undefined>;
-  abstract merge(proof1: string, proof2: string): Promise<string | undefined>;
+  async create(transaction: string): Promise<string | undefined> {
+    return undefined;
+  }
+
+  async merge(proof1: string, proof2: string): Promise<string | undefined> {
+    return undefined;
+  }
 
   // Those methods should be implemented for anything except for recursive proofs
-  abstract execute(): Promise<string | undefined>;
+  async execute(): Promise<string | undefined> {
+    return undefined;
+  }
+
+  // process the transactions received by the cloud
+  async processTransactions(transactions: CloudTransaction[]): Promise<void> {}
+
+  // process the task defined by the developer
+  async task(data: string): Promise<void> {}
 }
