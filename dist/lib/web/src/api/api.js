@@ -1,7 +1,7 @@
 import { __awaiter } from "tslib";
 import axios from "axios";
 import { sleep, makeString } from "../mina";
-import { LocalCloud } from "../cloud/local";
+import { LocalCloud, LocalStorage } from "../cloud/local";
 import config from "../config";
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 /**
@@ -14,10 +14,11 @@ export class zkCloudWorkerClient {
      * Constructor for the API class
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
      */
-    constructor(jwt, zkcloudworker = undefined) {
-        this.localJobs = new Map();
+    constructor(params) {
+        const { jwt, zkcloudworker, chain } = params;
         this.jwt = jwt;
         this.endpoint = ZKCLOUDWORKER_API;
+        this.chain = chain !== null && chain !== void 0 ? chain : "berkeley";
         if (jwt === "local") {
             if (zkcloudworker === undefined)
                 throw new Error("worker is required for local mode");
@@ -234,6 +235,7 @@ export class zkCloudWorkerClient {
             if (this.jwt === "local") {
                 switch (command) {
                     case "recursiveProof": {
+                        console.log("calculating recursive proof locally...");
                         const timeCreated = Date.now();
                         const jobId = this.generateJobId();
                         const job = {
@@ -253,7 +255,7 @@ export class zkCloudWorkerClient {
                             jobStatus: "started",
                             maxAttempts: 0,
                         };
-                        const cloud = new LocalCloud({ job });
+                        const cloud = new LocalCloud({ job, chain: this.chain });
                         const worker = yield this.localWorker(cloud);
                         if (worker === undefined)
                             throw new Error("worker is undefined");
@@ -265,13 +267,14 @@ export class zkCloudWorkerClient {
                         job.jobStatus = "finished";
                         job.result = proof;
                         job.maxAttempts = 1;
-                        this.localJobs.set(jobId, job);
+                        LocalStorage.jobs[jobId] = job;
                         return {
                             success: true,
                             data: jobId,
                         };
                     }
                     case "execute": {
+                        console.log("executing locally...");
                         const timeCreated = Date.now();
                         const jobId = this.generateJobId();
                         const job = {
@@ -290,7 +293,7 @@ export class zkCloudWorkerClient {
                             jobStatus: "started",
                             maxAttempts: 0,
                         };
-                        const cloud = new LocalCloud({ job });
+                        const cloud = new LocalCloud({ job, chain: this.chain });
                         const worker = yield this.localWorker(cloud);
                         if (worker === undefined)
                             throw new Error("worker is undefined");
@@ -299,14 +302,14 @@ export class zkCloudWorkerClient {
                         job.jobStatus = "finished";
                         job.result = result;
                         job.maxAttempts = 1;
-                        this.localJobs.set(jobId, job);
+                        LocalStorage.jobs[jobId] = job;
                         return {
                             success: true,
                             data: jobId,
                         };
                     }
                     case "jobResult": {
-                        const job = this.localJobs.get(data.jobId);
+                        const job = LocalStorage.jobs[data.jobId];
                         if (job === undefined) {
                             return {
                                 success: false,
@@ -343,6 +346,7 @@ export class zkCloudWorkerClient {
                     command: command,
                     jwtToken: this.jwt,
                     data: data,
+                    chain: this.chain,
                 };
                 try {
                     const response = yield axios.post(this.endpoint, apiData);

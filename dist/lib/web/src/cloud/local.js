@@ -1,9 +1,10 @@
 import { __awaiter } from "tslib";
 import { Cache } from "o1js";
 import { Cloud } from "./cloud";
+import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 export class LocalCloud extends Cloud {
     constructor(params) {
-        const { job, cache, stepId } = params;
+        const { job, chain, cache, stepId } = params;
         const { jobId, developer, repo, task, userId, args, metadata } = job;
         super({
             jobId: jobId,
@@ -16,8 +17,8 @@ export class LocalCloud extends Cloud {
             args: args,
             metadata: metadata,
             isLocalCloud: true,
+            chain,
         });
-        this.data = new Map();
     }
     getDeployer() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -31,23 +32,24 @@ export class LocalCloud extends Cloud {
     }
     getDataByKey(key) {
         return __awaiter(this, void 0, void 0, function* () {
-            const value = this.data.get(key);
+            const value = LocalStorage.data[key];
             return value;
         });
     }
     saveDataByKey(key, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.data.set(key, value);
+            LocalStorage.data[key] = value;
         });
     }
     saveFile(filename, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            throw new Error("Method not implemented.");
+            yield saveBinaryFile({ data: value, filename });
         });
     }
     loadFile(filename) {
         return __awaiter(this, void 0, void 0, function* () {
-            throw new Error("Method not implemented.");
+            const data = yield loadBinaryFile(filename);
+            return data;
         });
     }
     loadEnvironment(password) {
@@ -79,4 +81,34 @@ export class LocalCloud extends Cloud {
         });
     }
 }
+export class LocalStorage {
+    static saveData(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const data = {
+                jobs: LocalStorage.jobs,
+                data: LocalStorage.data,
+                transactions: LocalStorage.transactions,
+                tasks: LocalStorage.tasks,
+            };
+            const filename = name + ".cloud";
+            yield saveFile({ data, filename });
+        });
+    }
+    static loadData(name) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const filename = name + ".cloud";
+            const data = yield loadFile(filename);
+            if (data === undefined)
+                return;
+            LocalStorage.jobs = data.jobs;
+            LocalStorage.data = data.data;
+            LocalStorage.transactions = data.transactions;
+            LocalStorage.tasks = data.tasks;
+        });
+    }
+}
+LocalStorage.jobs = {};
+LocalStorage.data = {};
+LocalStorage.transactions = {};
+LocalStorage.tasks = {};
 //# sourceMappingURL=local.js.map

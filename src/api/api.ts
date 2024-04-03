@@ -1,9 +1,10 @@
 import axios from "axios";
 import { sleep, makeString } from "../mina";
-import { LocalCloud } from "../cloud/local";
+import { LocalCloud, LocalStorage } from "../cloud/local";
 import config from "../config";
 import { zkCloudWorker, Cloud } from "../cloud/cloud";
 import { JobData, JobStatus } from "../cloud/job";
+import { blockchain } from "../networks";
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 
 /**
@@ -14,21 +15,22 @@ const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 export class zkCloudWorkerClient {
   readonly jwt: string;
   readonly endpoint: string;
-  readonly localJobs: Map<string, JobData> = new Map<string, JobData>();
+  readonly chain: blockchain;
   readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker> | undefined;
 
   /**
    * Constructor for the API class
    * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
    */
-  constructor(
-    jwt: string,
-    zkcloudworker:
-      | ((cloud: Cloud) => Promise<zkCloudWorker>)
-      | undefined = undefined
-  ) {
+  constructor(params: {
+    jwt: string;
+    zkcloudworker?: (cloud: Cloud) => Promise<zkCloudWorker>;
+    chain?: blockchain;
+  }) {
+    const { jwt, zkcloudworker, chain } = params;
     this.jwt = jwt;
     this.endpoint = ZKCLOUDWORKER_API;
+    this.chain = chain ?? "berkeley";
     if (jwt === "local") {
       if (zkcloudworker === undefined)
         throw new Error("worker is required for local mode");
@@ -304,7 +306,7 @@ export class zkCloudWorkerClient {
             jobStatus: "started",
             maxAttempts: 0,
           } as JobData;
-          const cloud = new LocalCloud({ job });
+          const cloud = new LocalCloud({ job, chain: this.chain });
 
           const worker = await this.localWorker(cloud);
           if (worker === undefined) throw new Error("worker is undefined");
@@ -316,7 +318,7 @@ export class zkCloudWorkerClient {
           job.jobStatus = "finished";
           job.result = proof;
           job.maxAttempts = 1;
-          this.localJobs.set(jobId, job);
+          LocalStorage.jobs[jobId] = job;
           return {
             success: true,
             data: jobId,
@@ -342,7 +344,7 @@ export class zkCloudWorkerClient {
             jobStatus: "started",
             maxAttempts: 0,
           } as JobData;
-          const cloud = new LocalCloud({ job });
+          const cloud = new LocalCloud({ job, chain: this.chain });
           const worker = await this.localWorker(cloud);
           if (worker === undefined) throw new Error("worker is undefined");
           const result = await worker.execute();
@@ -350,14 +352,14 @@ export class zkCloudWorkerClient {
           job.jobStatus = "finished";
           job.result = result;
           job.maxAttempts = 1;
-          this.localJobs.set(jobId, job);
+          LocalStorage.jobs[jobId] = job;
           return {
             success: true,
             data: jobId,
           };
         }
         case "jobResult": {
-          const job = this.localJobs.get(data.jobId);
+          const job = LocalStorage.jobs[data.jobId];
           if (job === undefined) {
             return {
               success: false,
@@ -392,6 +394,7 @@ export class zkCloudWorkerClient {
         command: command,
         jwtToken: this.jwt,
         data: data,
+        chain: this.chain,
       };
 
       try {

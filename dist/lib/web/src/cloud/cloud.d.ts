@@ -16,6 +16,7 @@ export declare abstract class Cloud {
     readonly userId?: string;
     readonly args?: string;
     readonly metadata?: string;
+    readonly chain: blockchain;
     readonly isLocalCloud: boolean;
     constructor(params: {
         jobId: string;
@@ -28,6 +29,7 @@ export declare abstract class Cloud {
         args?: string;
         metadata?: string;
         isLocalCloud?: boolean;
+        chain: blockchain;
     });
     abstract getDeployer(): Promise<PrivateKey>;
     abstract log(msg: string): void;
@@ -37,11 +39,18 @@ export declare abstract class Cloud {
     abstract loadFile(filename: string): Promise<Buffer | undefined>;
     abstract loadEnvironment(password: string): Promise<void>;
 }
+export interface CloudTransaction {
+    txId: string;
+    transaction: string;
+    timeReceived: number;
+}
 export declare abstract class zkCloudWorker {
     readonly cloud: Cloud;
     constructor(cloud: Cloud);
-    abstract deployedContracts(): Promise<DeployedSmartContract[]>;
-    abstract create(transaction: string): Promise<string | undefined>;
-    abstract merge(proof1: string, proof2: string): Promise<string | undefined>;
-    abstract execute(): Promise<string | undefined>;
+    deployedContracts(): Promise<DeployedSmartContract[]>;
+    create(transaction: string): Promise<string | undefined>;
+    merge(proof1: string, proof2: string): Promise<string | undefined>;
+    execute(): Promise<string | undefined>;
+    processTransactions(transactions: CloudTransaction[]): Promise<void>;
+    task(data: string): Promise<void>;
 }

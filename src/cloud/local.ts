@@ -1,12 +1,17 @@
 import { Cache, PrivateKey } from "o1js";
 import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
+import { blockchain } from "../networks";
+import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 
 export class LocalCloud extends Cloud {
-  data: Map<string, string> = new Map<string, string>();
-
-  constructor(params: { job: JobData; cache?: Cache; stepId?: string }) {
-    const { job, cache, stepId } = params;
+  constructor(params: {
+    job: JobData;
+    chain: blockchain;
+    cache?: Cache;
+    stepId?: string;
+  }) {
+    const { job, chain, cache, stepId } = params;
     const { jobId, developer, repo, task, userId, args, metadata } = job;
     super({
       jobId: jobId,
@@ -19,6 +24,7 @@ export class LocalCloud extends Cloud {
       args: args,
       metadata: metadata,
       isLocalCloud: true,
+      chain,
     });
   }
   public async getDeployer(): Promise<PrivateKey> {
@@ -29,19 +35,20 @@ export class LocalCloud extends Cloud {
   }
 
   public async getDataByKey(key: string): Promise<string | undefined> {
-    const value = this.data.get(key);
+    const value = LocalStorage.data[key];
     return value;
   }
 
   public async saveDataByKey(key: string, value: string): Promise<void> {
-    this.data.set(key, value);
+    LocalStorage.data[key] = value;
   }
 
   public async saveFile(filename: string, value: Buffer): Promise<void> {
-    throw new Error("Method not implemented.");
+    await saveBinaryFile({ data: value, filename });
   }
   public async loadFile(filename: string): Promise<Buffer | undefined> {
-    throw new Error("Method not implemented.");
+    const data = await loadBinaryFile(filename);
+    return data;
   }
   public async loadEnvironment(password: string): Promise<void> {
     throw new Error("Method not implemented.");
@@ -76,5 +83,35 @@ export class LocalCloud extends Cloud {
       proof = result;
     }
     return proof;
+  }
+}
+
+export class LocalStorage {
+  static jobs: { [key: string]: JobData } = {};
+  static data: { [key: string]: string } = {};
+  static transactions: {
+    [key: string]: { transaction: string; timeReceived: number };
+  } = {};
+  static tasks: { [key: string]: string } = {};
+
+  static async saveData(name: string): Promise<void> {
+    const data = {
+      jobs: LocalStorage.jobs,
+      data: LocalStorage.data,
+      transactions: LocalStorage.transactions,
+      tasks: LocalStorage.tasks,
+    };
+    const filename = name + ".cloud";
+    await saveFile({ data, filename });
+  }
+
+  static async loadData(name: string): Promise<void> {
+    const filename = name + ".cloud";
+    const data = await loadFile(filename);
+    if (data === undefined) return;
+    LocalStorage.jobs = data.jobs;
+    LocalStorage.data = data.data;
+    LocalStorage.transactions = data.transactions;
+    LocalStorage.tasks = data.tasks;
   }
 }

@@ -2,10 +2,11 @@
 import { Cache, PrivateKey } from "o1js";
 import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
+import { blockchain } from "../networks";
 export declare class LocalCloud extends Cloud {
-    data: Map<string, string>;
     constructor(params: {
         job: JobData;
+        chain: blockchain;
         cache?: Cache;
         stepId?: string;
     });
@@ -28,4 +29,23 @@ export declare class LocalCloud extends Cloud {
             metadata?: string;
         };
     }): Promise<string>;
+}
+export declare class LocalStorage {
+    static jobs: {
+        [key: string]: JobData;
+    };
+    static data: {
+        [key: string]: string;
+    };
+    static transactions: {
+        [key: string]: {
+            transaction: string;
+            timeReceived: number;
+        };
+    };
+    static tasks: {
+        [key: string]: string;
+    };
+    static saveData(name: string): Promise<void>;
+    static loadData(name: string): Promise<void>;
 }

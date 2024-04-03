@@ -1,5 +1,5 @@
 import { zkCloudWorker, Cloud } from "../cloud/cloud";
-import { JobData } from "../cloud/job";
+import { blockchain } from "../networks";
 /**
  * API class for interacting with the zkCloudWorker
  * @property jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
@@ -8,13 +8,17 @@ import { JobData } from "../cloud/job";
 export declare class zkCloudWorkerClient {
     readonly jwt: string;
     readonly endpoint: string;
-    readonly localJobs: Map<string, JobData>;
+    readonly chain: blockchain;
     readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker> | undefined;
     /**
      * Constructor for the API class
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
      */
-    constructor(jwt: string, zkcloudworker?: ((cloud: Cloud) => Promise<zkCloudWorker>) | undefined);
+    constructor(params: {
+        jwt: string;
+        zkcloudworker?: (cloud: Cloud) => Promise<zkCloudWorker>;
+        chain?: blockchain;
+    });
     /**
      * Starts a new job for the proof calculation using serverless api call
      * The developer and name should correspond to the BackupPlugin of the API
