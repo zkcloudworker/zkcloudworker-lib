@@ -223,6 +223,8 @@ class zkCloudWorkerClient {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) {
         if (this.jwt === "local") {
+            if (this.localWorker === undefined)
+                throw new Error("localWorker is undefined");
             switch (command) {
                 case "recursiveProof": {
                     console.log("calculating recursive proof locally...");
@@ -245,7 +247,11 @@ class zkCloudWorkerClient {
                         jobStatus: "started",
                         maxAttempts: 0,
                     };
-                    const cloud = new local_1.LocalCloud({ job, chain: this.chain });
+                    const cloud = new local_1.LocalCloud({
+                        job,
+                        chain: this.chain,
+                        localWorker: this.localWorker,
+                    });
                     const worker = await this.localWorker(cloud);
                     if (worker === undefined)
                         throw new Error("worker is undefined");
@@ -254,9 +260,14 @@ class zkCloudWorkerClient {
                         data,
                     });
                     job.timeFinished = Date.now();
-                    job.jobStatus = "finished";
-                    job.result = proof;
                     job.maxAttempts = 1;
+                    if (proof !== undefined) {
+                        job.jobStatus = "finished";
+                        job.result = proof;
+                    }
+                    else {
+                        job.jobStatus = "failed";
+                    }
                     local_1.LocalStorage.jobs[jobId] = job;
                     return {
                         success: true,
@@ -283,15 +294,24 @@ class zkCloudWorkerClient {
                         jobStatus: "started",
                         maxAttempts: 0,
                     };
-                    const cloud = new local_1.LocalCloud({ job, chain: this.chain });
+                    const cloud = new local_1.LocalCloud({
+                        job,
+                        chain: this.chain,
+                        localWorker: this.localWorker,
+                    });
                     const worker = await this.localWorker(cloud);
                     if (worker === undefined)
                         throw new Error("worker is undefined");
                     const result = await worker.execute();
                     job.timeFinished = Date.now();
-                    job.jobStatus = "finished";
-                    job.result = result;
                     job.maxAttempts = 1;
+                    if (result !== undefined) {
+                        job.jobStatus = "finished";
+                        job.result = result;
+                    }
+                    else {
+                        job.jobStatus = "failed";
+                    }
                     local_1.LocalStorage.jobs[jobId] = job;
                     return {
                         success: true,

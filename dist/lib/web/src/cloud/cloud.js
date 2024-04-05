@@ -47,8 +47,10 @@ export class zkCloudWorker {
         return __awaiter(this, void 0, void 0, function* () { });
     }
     // process the task defined by the developer
-    task(data) {
-        return __awaiter(this, void 0, void 0, function* () { });
+    task() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return undefined;
+        });
     }
 }
 //# sourceMappingURL=cloud.js.map

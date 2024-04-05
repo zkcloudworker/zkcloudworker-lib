@@ -9,7 +9,7 @@ export declare class zkCloudWorkerClient {
     readonly jwt: string;
     readonly endpoint: string;
     readonly chain: blockchain;
-    readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker> | undefined;
+    readonly localWorker?: (cloud: Cloud) => Promise<zkCloudWorker>;
     /**
      * Constructor for the API class
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
@@ -63,7 +63,7 @@ export declare class zkCloudWorkerClient {
     execute(data: {
         developer: string;
         repo: string;
-        task?: string;
+        task: string;
         userId?: string;
         args?: string;
         metadata?: string;

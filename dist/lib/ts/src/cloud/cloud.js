@@ -40,6 +40,8 @@ class zkCloudWorker {
     // process the transactions received by the cloud
     async processTransactions(transactions) { }
     // process the task defined by the developer
-    async task(data) { }
+    async task() {
+        return undefined;
+    }
 }
 exports.zkCloudWorker = zkCloudWorker;

@@ -16,7 +16,7 @@ export class zkCloudWorkerClient {
   readonly jwt: string;
   readonly endpoint: string;
   readonly chain: blockchain;
-  readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker> | undefined;
+  readonly localWorker?: (cloud: Cloud) => Promise<zkCloudWorker>;
 
   /**
    * Constructor for the API class
@@ -96,7 +96,7 @@ export class zkCloudWorkerClient {
   public async execute(data: {
     developer: string;
     repo: string;
-    task?: string;
+    task: string;
     userId?: string;
     args?: string;
     metadata?: string;
@@ -284,9 +284,13 @@ export class zkCloudWorkerClient {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ): Promise<{ success: boolean; data?: any; error?: any }> {
     if (this.jwt === "local") {
+      if (this.localWorker === undefined)
+        throw new Error("localWorker is undefined");
+
       switch (command) {
         case "recursiveProof": {
           console.log("calculating recursive proof locally...");
+
           const timeCreated = Date.now();
           const jobId = this.generateJobId();
           const job: JobData = {
@@ -306,7 +310,12 @@ export class zkCloudWorkerClient {
             jobStatus: "started",
             maxAttempts: 0,
           } as JobData;
-          const cloud = new LocalCloud({ job, chain: this.chain });
+
+          const cloud = new LocalCloud({
+            job,
+            chain: this.chain,
+            localWorker: this.localWorker,
+          });
 
           const worker = await this.localWorker(cloud);
           if (worker === undefined) throw new Error("worker is undefined");
@@ -315,9 +324,13 @@ export class zkCloudWorkerClient {
             data,
           });
           job.timeFinished = Date.now();
-          job.jobStatus = "finished";
-          job.result = proof;
           job.maxAttempts = 1;
+          if (proof !== undefined) {
+            job.jobStatus = "finished";
+            job.result = proof;
+          } else {
+            job.jobStatus = "failed";
+          }
           LocalStorage.jobs[jobId] = job;
           return {
             success: true,
@@ -344,14 +357,22 @@ export class zkCloudWorkerClient {
             jobStatus: "started",
             maxAttempts: 0,
           } as JobData;
-          const cloud = new LocalCloud({ job, chain: this.chain });
+          const cloud = new LocalCloud({
+            job,
+            chain: this.chain,
+            localWorker: this.localWorker,
+          });
           const worker = await this.localWorker(cloud);
           if (worker === undefined) throw new Error("worker is undefined");
           const result = await worker.execute();
           job.timeFinished = Date.now();
-          job.jobStatus = "finished";
-          job.result = result;
           job.maxAttempts = 1;
+          if (result !== undefined) {
+            job.jobStatus = "finished";
+            job.result = result;
+          } else {
+            job.jobStatus = "failed";
+          }
           LocalStorage.jobs[jobId] = job;
           return {
             success: true,
