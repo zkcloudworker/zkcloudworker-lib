@@ -38,6 +38,27 @@ export declare abstract class Cloud {
     abstract saveFile(filename: string, value: Buffer): Promise<void>;
     abstract loadFile(filename: string): Promise<Buffer | undefined>;
     abstract loadEnvironment(password: string): Promise<void>;
+    abstract recursiveProof(data: {
+        transactions: string[];
+        task?: string;
+        userId?: string;
+        args?: string;
+        metadata?: string;
+    }): Promise<string>;
+    abstract execute(data: {
+        task: string;
+        userId?: string;
+        args?: string;
+        metadata?: string;
+    }): Promise<string>;
+    abstract addTask(data: {
+        task: string;
+        userId?: string;
+        args?: string;
+        metadata?: string;
+    }): Promise<string>;
+    abstract deleteTask(taskId: string): Promise<void>;
+    abstract processTasks(): Promise<void>;
 }
 export interface CloudTransaction {
     txId: string;
@@ -52,5 +73,5 @@ export declare abstract class zkCloudWorker {
     merge(proof1: string, proof2: string): Promise<string | undefined>;
     execute(): Promise<string | undefined>;
     processTransactions(transactions: CloudTransaction[]): Promise<void>;
-    task(data: string): Promise<void>;
+    task(): Promise<string | undefined>;
 }

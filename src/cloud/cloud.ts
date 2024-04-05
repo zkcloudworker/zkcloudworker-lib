@@ -66,6 +66,27 @@ export abstract class Cloud {
   abstract saveFile(filename: string, value: Buffer): Promise<void>;
   abstract loadFile(filename: string): Promise<Buffer | undefined>;
   abstract loadEnvironment(password: string): Promise<void>;
+  abstract recursiveProof(data: {
+    transactions: string[];
+    task?: string;
+    userId?: string;
+    args?: string;
+    metadata?: string;
+  }): Promise<string>;
+  abstract execute(data: {
+    task: string;
+    userId?: string;
+    args?: string;
+    metadata?: string;
+  }): Promise<string>;
+  abstract addTask(data: {
+    task: string;
+    userId?: string;
+    args?: string;
+    metadata?: string;
+  }): Promise<string>;
+  abstract deleteTask(taskId: string): Promise<void>;
+  abstract processTasks(): Promise<void>;
 }
 
 export interface CloudTransaction {
@@ -104,5 +125,7 @@ export abstract class zkCloudWorker {
   async processTransactions(transactions: CloudTransaction[]): Promise<void> {}
 
   // process the task defined by the developer
-  async task(data: string): Promise<void> {}
+  async task(): Promise<string | undefined> {
+    return undefined;
+  }
 }

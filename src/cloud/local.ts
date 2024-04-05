@@ -1,17 +1,22 @@
 import { Cache, PrivateKey } from "o1js";
 import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
+import { TaskData } from "./task";
+import { makeString } from "../mina";
 import { blockchain } from "../networks";
 import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 
 export class LocalCloud extends Cloud {
+  readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
   constructor(params: {
     job: JobData;
     chain: blockchain;
     cache?: Cache;
     stepId?: string;
+    localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
   }) {
-    const { job, chain, cache, stepId } = params;
+    const { job, chain, cache, stepId, localWorker } = params;
+
     const { jobId, developer, repo, task, userId, args, metadata } = job;
     super({
       jobId: jobId,
@@ -26,6 +31,7 @@ export class LocalCloud extends Cloud {
       isLocalCloud: true,
       chain,
     });
+    this.localWorker = localWorker;
   }
   public async getDeployer(): Promise<PrivateKey> {
     throw new Error("Method not implemented.");
@@ -52,6 +58,163 @@ export class LocalCloud extends Cloud {
   }
   public async loadEnvironment(password: string): Promise<void> {
     throw new Error("Method not implemented.");
+  }
+
+  private generateId(): string {
+    return "local." + Date.now().toString() + "." + makeString(32);
+  }
+
+  public async recursiveProof(data: {
+    transactions: string[];
+    task?: string;
+    userId?: string;
+    args?: string;
+    metadata?: string;
+  }): Promise<string> {
+    console.log("calculating recursive proof locally...");
+
+    const timeCreated = Date.now();
+    const jobId = this.generateId();
+    const job: JobData = {
+      id: "local",
+      jobId: jobId,
+      developer: this.developer,
+      repo: this.repo,
+      task: data.task,
+      userId: data.userId,
+      args: data.args,
+      metadata: data.metadata,
+      filename: "recursiveProof.json",
+      txNumber: data.transactions.length,
+      timeCreated,
+      timeCreatedString: new Date(timeCreated).toISOString(),
+      timeStarted: timeCreated,
+      jobStatus: "started",
+      maxAttempts: 0,
+    } as JobData;
+
+    const cloud = new LocalCloud({
+      job,
+      chain: this.chain,
+      localWorker: this.localWorker,
+    });
+
+    const worker = await this.localWorker(cloud);
+    if (worker === undefined) throw new Error("worker is undefined");
+    const proof = await LocalCloud.sequencer({
+      worker,
+      data: { ...data, developer: this.developer, repo: this.repo },
+    });
+    job.timeFinished = Date.now();
+    job.jobStatus = "finished";
+    job.result = proof;
+    job.maxAttempts = 1;
+    LocalStorage.jobs[jobId] = job;
+    return jobId;
+  }
+
+  public async execute(data: {
+    task: string;
+    userId?: string;
+    args?: string;
+    metadata?: string;
+  }): Promise<string> {
+    console.log("executing locally...");
+    const timeCreated = Date.now();
+    const jobId = this.generateId();
+    const job: JobData = {
+      id: "local",
+      jobId: jobId,
+      developer: this.developer,
+      repo: this.repo,
+      task: data.task,
+      userId: data.userId,
+      args: data.args,
+      metadata: data.metadata,
+      txNumber: 1,
+      timeCreated,
+      timeCreatedString: new Date(timeCreated).toISOString(),
+      timeStarted: timeCreated,
+      jobStatus: "started",
+      maxAttempts: 0,
+    } as JobData;
+    const cloud = new LocalCloud({
+      job,
+      chain: this.chain,
+      localWorker: this.localWorker,
+    });
+    const worker = await this.localWorker(cloud);
+    if (worker === undefined) throw new Error("worker is undefined");
+    const result = await worker.execute();
+    job.timeFinished = Date.now();
+    job.jobStatus = "finished";
+    job.result = result;
+    job.maxAttempts = 1;
+    LocalStorage.jobs[jobId] = job;
+    return jobId;
+  }
+
+  public async addTask(data: {
+    task: string;
+    userId?: string;
+    args?: string;
+    metadata?: string;
+  }): Promise<string> {
+    const taskId = this.generateId();
+    LocalStorage.tasks[taskId] = {
+      ...data,
+      id: "local",
+      taskId,
+      developer: this.developer,
+      repo: this.repo,
+    } as TaskData;
+    return taskId;
+  }
+
+  public async deleteTask(taskId: string): Promise<void> {
+    delete LocalStorage.tasks[taskId];
+  }
+
+  public async processTasks(): Promise<void> {
+    for (const taskId in LocalStorage.tasks) {
+      const data = LocalStorage.tasks[taskId];
+      const jobId = this.generateId();
+      const timeCreated = Date.now();
+      const job = {
+        id: "local",
+        jobId: jobId,
+        developer: this.developer,
+        repo: this.repo,
+        task: data.task,
+        userId: data.userId,
+        args: data.args,
+        metadata: data.metadata,
+        txNumber: 1,
+        timeCreated: timeCreated,
+        timeCreatedString: new Date(timeCreated).toISOString(),
+        timeStarted: Date.now(),
+        jobStatus: "started",
+        maxAttempts: 0,
+      } as JobData;
+      const cloud = new LocalCloud({
+        job,
+        chain: this.chain,
+        localWorker: this.localWorker,
+      });
+      const worker = await this.localWorker(cloud);
+      console.log("Executing task", { taskId, data });
+      const result = await worker.task();
+      job.timeFinished = Date.now();
+      job.maxAttempts = 1;
+      job.billedDuration = job.timeFinished - timeCreated;
+      if (result !== undefined) {
+        job.jobStatus = "finished";
+        job.result = result;
+      } else {
+        job.jobStatus = "failed";
+      }
+      LocalStorage.jobs[jobId] = job;
+    }
   }
 
   static async sequencer(params: {
@@ -92,7 +255,7 @@ export class LocalStorage {
   static transactions: {
     [key: string]: { transaction: string; timeReceived: number };
   } = {};
-  static tasks: { [key: string]: string } = {};
+  static tasks: { [key: string]: TaskData } = {};
 
   static async saveData(name: string): Promise<void> {
     const data = {
