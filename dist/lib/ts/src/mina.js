@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNetworkIdHash = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = void 0;
+exports.getDeployer = exports.getNetworkIdHash = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = void 0;
 const o1js_1 = require("o1js");
 const networks_1 = require("./networks");
 let currentNetwork = undefined;
@@ -12,6 +12,13 @@ function getNetworkIdHash() {
     return currentNetwork.networkIdHash;
 }
 exports.getNetworkIdHash = getNetworkIdHash;
+function getDeployer() {
+    if (currentNetwork === undefined) {
+        throw new Error("Network is not initialized");
+    }
+    return currentNetwork.keys[0].privateKey;
+}
+exports.getDeployer = getDeployer;
 /*function getNetworkIdHash(params: {
   chainId?: blockchain;
   verbose?: boolean;

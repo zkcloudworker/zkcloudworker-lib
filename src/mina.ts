@@ -9,6 +9,7 @@ export {
   MinaNetworkInstance,
   currentNetwork,
   getNetworkIdHash,
+  getDeployer,
 };
 
 import {
@@ -38,6 +39,13 @@ function getNetworkIdHash(): Field {
     throw new Error("Network is not initialized");
   }
   return currentNetwork.networkIdHash;
+}
+
+function getDeployer(): PrivateKey {
+  if (currentNetwork === undefined) {
+    throw new Error("Network is not initialized");
+  }
+  return currentNetwork.keys[0].privateKey;
 }
 
 /*function getNetworkIdHash(params: {

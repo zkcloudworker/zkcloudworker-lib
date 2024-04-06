@@ -3,6 +3,7 @@ export type JobStatus = "created" | "started" | "finished" | "failed" | "used";
 export interface JobData {
   id: string;
   jobId: string;
+  taskId?: string;
 
   developer: string;
   repo: string;

@@ -1,6 +1,7 @@
 /// <reference types="node" />
 import { Cache, PrivateKey, PublicKey, SmartContract } from "o1js";
 import { blockchain } from "../networks";
+import { JobData } from "./job";
 export interface DeployedSmartContract {
     address: PublicKey;
     contract: SmartContract;
@@ -9,6 +10,7 @@ export interface DeployedSmartContract {
 export declare abstract class Cloud {
     readonly jobId: string;
     readonly stepId: string;
+    readonly taskId: string;
     readonly cache: Cache;
     readonly developer: string;
     readonly repo: string;
@@ -21,6 +23,7 @@ export declare abstract class Cloud {
     constructor(params: {
         jobId: string;
         stepId: string;
+        taskId: string;
         cache: Cache;
         developer: string;
         repo: string;
@@ -31,7 +34,7 @@ export declare abstract class Cloud {
         isLocalCloud?: boolean;
         chain: blockchain;
     });
-    abstract getDeployer(): Promise<PrivateKey>;
+    abstract getDeployer(): Promise<PrivateKey | undefined>;
     abstract log(msg: string): void;
     abstract getDataByKey(key: string): Promise<string | undefined>;
     abstract saveDataByKey(key: string, value: string): Promise<void>;
@@ -46,6 +49,7 @@ export declare abstract class Cloud {
         metadata?: string;
     }): Promise<string>;
     abstract execute(data: {
+        transactions: string[];
         task: string;
         userId?: string;
         args?: string;
@@ -59,6 +63,7 @@ export declare abstract class Cloud {
     }): Promise<string>;
     abstract deleteTask(taskId: string): Promise<void>;
     abstract processTasks(): Promise<void>;
+    abstract jobResult(jobId: string): Promise<JobData | undefined>;
 }
 export interface CloudTransaction {
     txId: string;
@@ -71,7 +76,7 @@ export declare abstract class zkCloudWorker {
     deployedContracts(): Promise<DeployedSmartContract[]>;
     create(transaction: string): Promise<string | undefined>;
     merge(proof1: string, proof2: string): Promise<string | undefined>;
-    execute(): Promise<string | undefined>;
+    execute(transactions: string[]): Promise<string | undefined>;
     processTransactions(transactions: CloudTransaction[]): Promise<void>;
     task(): Promise<string | undefined>;
 }

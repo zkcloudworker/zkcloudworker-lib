@@ -237,92 +237,24 @@ export class zkCloudWorkerClient {
                     throw new Error("localWorker is undefined");
                 switch (command) {
                     case "recursiveProof": {
-                        console.log("calculating recursive proof locally...");
-                        const timeCreated = Date.now();
-                        const jobId = this.generateJobId();
-                        const job = {
-                            id: "local",
-                            jobId: jobId,
-                            developer: data.developer,
-                            repo: data.repo,
-                            task: data.task,
-                            userId: data.userId,
-                            args: data.args,
-                            metadata: data.metadata,
-                            filename: "recursiveProof.json",
-                            txNumber: data.transactions.length,
-                            timeCreated,
-                            timeCreatedString: new Date(timeCreated).toISOString(),
-                            timeStarted: timeCreated,
-                            jobStatus: "started",
-                            maxAttempts: 0,
-                        };
-                        const cloud = new LocalCloud({
-                            job,
+                        const jobId = yield LocalCloud.run({
+                            command: "recursiveProof",
+                            data,
                             chain: this.chain,
                             localWorker: this.localWorker,
                         });
-                        const worker = yield this.localWorker(cloud);
-                        if (worker === undefined)
-                            throw new Error("worker is undefined");
-                        const proof = yield LocalCloud.sequencer({
-                            worker,
-                            data,
-                        });
-                        job.timeFinished = Date.now();
-                        job.maxAttempts = 1;
-                        if (proof !== undefined) {
-                            job.jobStatus = "finished";
-                            job.result = proof;
-                        }
-                        else {
-                            job.jobStatus = "failed";
-                        }
-                        LocalStorage.jobs[jobId] = job;
                         return {
                             success: true,
                             data: jobId,
                         };
                     }
                     case "execute": {
-                        console.log("executing locally...");
-                        const timeCreated = Date.now();
-                        const jobId = this.generateJobId();
-                        const job = {
-                            id: "local",
-                            jobId: jobId,
-                            developer: data.developer,
-                            repo: data.repo,
-                            task: data.task,
-                            userId: data.userId,
-                            args: data.args,
-                            metadata: data.metadata,
-                            txNumber: 1,
-                            timeCreated,
-                            timeCreatedString: new Date(timeCreated).toISOString(),
-                            timeStarted: timeCreated,
-                            jobStatus: "started",
-                            maxAttempts: 0,
-                        };
-                        const cloud = new LocalCloud({
-                            job,
+                        const jobId = yield LocalCloud.run({
+                            command: "execute",
+                            data,
                             chain: this.chain,
                             localWorker: this.localWorker,
                         });
-                        const worker = yield this.localWorker(cloud);
-                        if (worker === undefined)
-                            throw new Error("worker is undefined");
-                        const result = yield worker.execute();
-                        job.timeFinished = Date.now();
-                        job.maxAttempts = 1;
-                        if (result !== undefined) {
-                            job.jobStatus = "finished";
-                            job.result = result;
-                        }
-                        else {
-                            job.jobStatus = "failed";
-                        }
-                        LocalStorage.jobs[jobId] = job;
                         return {
                             success: true,
                             data: jobId,

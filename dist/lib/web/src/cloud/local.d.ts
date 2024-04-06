@@ -4,6 +4,7 @@ import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
 import { TaskData } from "./task";
 import { blockchain } from "../networks";
+import { ApiCommand } from "../api/api";
 export declare class LocalCloud extends Cloud {
     readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
     constructor(params: {
@@ -13,14 +14,28 @@ export declare class LocalCloud extends Cloud {
         stepId?: string;
         localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
     });
-    getDeployer(): Promise<PrivateKey>;
+    getDeployer(): Promise<PrivateKey | undefined>;
     log(msg: string): Promise<void>;
     getDataByKey(key: string): Promise<string | undefined>;
     saveDataByKey(key: string, value: string): Promise<void>;
     saveFile(filename: string, value: Buffer): Promise<void>;
     loadFile(filename: string): Promise<Buffer | undefined>;
     loadEnvironment(password: string): Promise<void>;
-    private generateId;
+    private static generateId;
+    static run(params: {
+        command: ApiCommand;
+        data: {
+            developer: string;
+            repo: string;
+            transactions: string[];
+            task: string;
+            userId?: string;
+            args?: string;
+            metadata?: string;
+        };
+        chain: blockchain;
+        localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
+    }): Promise<string>;
     recursiveProof(data: {
         transactions: string[];
         task?: string;
@@ -29,11 +44,13 @@ export declare class LocalCloud extends Cloud {
         metadata?: string;
     }): Promise<string>;
     execute(data: {
+        transactions: string[];
         task: string;
         userId?: string;
         args?: string;
         metadata?: string;
     }): Promise<string>;
+    jobResult(jobId: string): Promise<JobData | undefined>;
     addTask(data: {
         task: string;
         userId?: string;
@@ -42,6 +59,12 @@ export declare class LocalCloud extends Cloud {
     }): Promise<string>;
     deleteTask(taskId: string): Promise<void>;
     processTasks(): Promise<void>;
+    static processLocalTasks(params: {
+        developer: string;
+        repo: string;
+        localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
+        chain: blockchain;
+    }): Promise<void>;
     static sequencer(params: {
         worker: zkCloudWorker;
         data: {
