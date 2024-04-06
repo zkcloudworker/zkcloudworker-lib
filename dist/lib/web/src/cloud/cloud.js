@@ -1,9 +1,10 @@
 import { __awaiter } from "tslib";
 export class Cloud {
     constructor(params) {
-        const { jobId, stepId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, chain, } = params;
+        const { jobId, stepId, taskId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, chain, } = params;
         this.jobId = jobId;
         this.stepId = stepId;
+        this.taskId = taskId;
         this.cache = cache;
         this.developer = developer;
         this.repo = repo;
@@ -37,7 +38,7 @@ export class zkCloudWorker {
         });
     }
     // Those methods should be implemented for anything except for recursive proofs
-    execute() {
+    execute(transactions) {
         return __awaiter(this, void 0, void 0, function* () {
             return undefined;
         });

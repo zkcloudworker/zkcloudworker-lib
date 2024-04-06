@@ -1,5 +1,5 @@
 import { __awaiter } from "tslib";
-export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, currentNetwork, getNetworkIdHash, };
+export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, currentNetwork, getNetworkIdHash, getDeployer, };
 import { Mina, PrivateKey, UInt64, fetchAccount, CircuitString, } from "o1js";
 import { networks, Local } from "./networks";
 let currentNetwork = undefined;
@@ -8,6 +8,12 @@ function getNetworkIdHash() {
         throw new Error("Network is not initialized");
     }
     return currentNetwork.networkIdHash;
+}
+function getDeployer() {
+    if (currentNetwork === undefined) {
+        throw new Error("Network is not initialized");
+    }
+    return currentNetwork.keys[0].privateKey;
 }
 /*function getNetworkIdHash(params: {
   chainId?: blockchain;

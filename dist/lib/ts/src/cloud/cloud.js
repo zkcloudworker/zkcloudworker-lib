@@ -3,9 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.zkCloudWorker = exports.Cloud = void 0;
 class Cloud {
     constructor(params) {
-        const { jobId, stepId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, chain, } = params;
+        const { jobId, stepId, taskId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, chain, } = params;
         this.jobId = jobId;
         this.stepId = stepId;
+        this.taskId = taskId;
         this.cache = cache;
         this.developer = developer;
         this.repo = repo;
@@ -34,7 +35,7 @@ class zkCloudWorker {
         return undefined;
     }
     // Those methods should be implemented for anything except for recursive proofs
-    async execute() {
+    async execute(transactions) {
         return undefined;
     }
     // process the transactions received by the cloud

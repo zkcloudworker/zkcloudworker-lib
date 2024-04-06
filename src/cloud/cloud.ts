@@ -1,5 +1,6 @@
 import { Cache, PrivateKey, PublicKey, SmartContract } from "o1js";
 import { blockchain } from "../networks";
+import { JobData } from "./job";
 
 export interface DeployedSmartContract {
   address: PublicKey;
@@ -9,6 +10,7 @@ export interface DeployedSmartContract {
 export abstract class Cloud {
   readonly jobId: string;
   readonly stepId: string;
+  readonly taskId: string;
   readonly cache: Cache;
   readonly developer: string;
   readonly repo: string;
@@ -22,6 +24,7 @@ export abstract class Cloud {
   constructor(params: {
     jobId: string;
     stepId: string;
+    taskId: string;
     cache: Cache;
     developer: string;
     repo: string;
@@ -35,6 +38,7 @@ export abstract class Cloud {
     const {
       jobId,
       stepId,
+      taskId,
       cache,
       developer,
       repo,
@@ -47,6 +51,7 @@ export abstract class Cloud {
     } = params;
     this.jobId = jobId;
     this.stepId = stepId;
+    this.taskId = taskId;
     this.cache = cache;
     this.developer = developer;
     this.repo = repo;
@@ -59,7 +64,7 @@ export abstract class Cloud {
   }
 
   // TODO: change it to the sign method to protect the private key
-  abstract getDeployer(): Promise<PrivateKey>;
+  abstract getDeployer(): Promise<PrivateKey | undefined>;
   abstract log(msg: string): void;
   abstract getDataByKey(key: string): Promise<string | undefined>;
   abstract saveDataByKey(key: string, value: string): Promise<void>;
@@ -74,6 +79,7 @@ export abstract class Cloud {
     metadata?: string;
   }): Promise<string>;
   abstract execute(data: {
+    transactions: string[];
     task: string;
     userId?: string;
     args?: string;
@@ -87,6 +93,7 @@ export abstract class Cloud {
   }): Promise<string>;
   abstract deleteTask(taskId: string): Promise<void>;
   abstract processTasks(): Promise<void>;
+  abstract jobResult(jobId: string): Promise<JobData | undefined>;
 }
 
 export interface CloudTransaction {
@@ -117,7 +124,7 @@ export abstract class zkCloudWorker {
   }
 
   // Those methods should be implemented for anything except for recursive proofs
-  async execute(): Promise<string | undefined> {
+  async execute(transactions: string[]): Promise<string | undefined> {
     return undefined;
   }
 

@@ -1,15 +1,16 @@
 import { __awaiter } from "tslib";
 import { Cache } from "o1js";
 import { Cloud } from "./cloud";
-import { makeString } from "../mina";
+import { makeString, getDeployer } from "../mina";
 import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 export class LocalCloud extends Cloud {
     constructor(params) {
         const { job, chain, cache, stepId, localWorker } = params;
-        const { jobId, developer, repo, task, userId, args, metadata } = job;
+        const { jobId, developer, repo, task, userId, args, metadata, taskId } = job;
         super({
             jobId: jobId,
             stepId: stepId !== null && stepId !== void 0 ? stepId : "stepId",
+            taskId: taskId !== null && taskId !== void 0 ? taskId : "taskId",
             cache: cache !== null && cache !== void 0 ? cache : Cache.FileSystem("./cache"),
             developer: developer,
             repo: repo,
@@ -24,7 +25,7 @@ export class LocalCloud extends Cloud {
     }
     getDeployer() {
         return __awaiter(this, void 0, void 0, function* () {
-            throw new Error("Method not implemented.");
+            return getDeployer();
         });
     }
     log(msg) {
@@ -59,25 +60,26 @@ export class LocalCloud extends Cloud {
             throw new Error("Method not implemented.");
         });
     }
-    generateId() {
+    static generateId() {
         return "local." + Date.now().toString() + "." + makeString(32);
     }
-    recursiveProof(data) {
+    static run(params) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("calculating recursive proof locally...");
+            const { command, data, chain, localWorker } = params;
+            console.log("executing locally command", command);
+            const { developer, repo, transactions, task, userId, args, metadata } = data;
             const timeCreated = Date.now();
-            const jobId = this.generateId();
+            const jobId = LocalCloud.generateId();
             const job = {
                 id: "local",
-                jobId: jobId,
-                developer: this.developer,
-                repo: this.repo,
-                task: data.task,
-                userId: data.userId,
-                args: data.args,
-                metadata: data.metadata,
-                filename: "recursiveProof.json",
-                txNumber: data.transactions.length,
+                jobId,
+                developer,
+                repo,
+                task,
+                userId,
+                args,
+                metadata,
+                txNumber: command === "recursiveProof" ? transactions.length : 1,
                 timeCreated,
                 timeCreatedString: new Date(timeCreated).toISOString(),
                 timeStarted: timeCreated,
@@ -86,65 +88,81 @@ export class LocalCloud extends Cloud {
             };
             const cloud = new LocalCloud({
                 job,
+                chain,
+                localWorker,
+            });
+            const worker = yield localWorker(cloud);
+            if (worker === undefined)
+                throw new Error("worker is undefined");
+            const result = command === "recursiveProof"
+                ? yield LocalCloud.sequencer({
+                    worker,
+                    data,
+                })
+                : command === "execute"
+                    ? yield worker.execute(transactions)
+                    : undefined;
+            const timeFinished = Date.now();
+            if (result !== undefined) {
+                job.jobStatus = "finished";
+                job.timeFinished = timeFinished;
+                job.result = result;
+            }
+            else {
+                job.jobStatus = "failed";
+                job.timeFailed = timeFinished;
+            }
+            job.maxAttempts = 1;
+            job.billedDuration = timeFinished - timeCreated;
+            LocalStorage.jobs[jobId] = job;
+            return jobId;
+        });
+    }
+    recursiveProof(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var _a;
+            return yield LocalCloud.run({
+                command: "recursiveProof",
+                data: {
+                    developer: this.developer,
+                    repo: this.repo,
+                    transactions: data.transactions,
+                    task: (_a = data.task) !== null && _a !== void 0 ? _a : "recursiveProof",
+                    userId: data.userId,
+                    args: data.args,
+                    metadata: data.metadata,
+                },
                 chain: this.chain,
                 localWorker: this.localWorker,
             });
-            const worker = yield this.localWorker(cloud);
-            if (worker === undefined)
-                throw new Error("worker is undefined");
-            const proof = yield LocalCloud.sequencer({
-                worker,
-                data: Object.assign(Object.assign({}, data), { developer: this.developer, repo: this.repo }),
-            });
-            job.timeFinished = Date.now();
-            job.jobStatus = "finished";
-            job.result = proof;
-            job.maxAttempts = 1;
-            LocalStorage.jobs[jobId] = job;
-            return jobId;
         });
     }
     execute(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log("executing locally...");
-            const timeCreated = Date.now();
-            const jobId = this.generateId();
-            const job = {
-                id: "local",
-                jobId: jobId,
-                developer: this.developer,
-                repo: this.repo,
-                task: data.task,
-                userId: data.userId,
-                args: data.args,
-                metadata: data.metadata,
-                txNumber: 1,
-                timeCreated,
-                timeCreatedString: new Date(timeCreated).toISOString(),
-                timeStarted: timeCreated,
-                jobStatus: "started",
-                maxAttempts: 0,
-            };
-            const cloud = new LocalCloud({
-                job,
+            return yield LocalCloud.run({
+                command: "execute",
+                data: {
+                    developer: this.developer,
+                    repo: this.repo,
+                    transactions: data.transactions,
+                    task: data.task,
+                    userId: data.userId,
+                    args: data.args,
+                    metadata: data.metadata,
+                },
                 chain: this.chain,
                 localWorker: this.localWorker,
             });
-            const worker = yield this.localWorker(cloud);
-            if (worker === undefined)
-                throw new Error("worker is undefined");
-            const result = yield worker.execute();
-            job.timeFinished = Date.now();
-            job.jobStatus = "finished";
-            job.result = result;
-            job.maxAttempts = 1;
-            LocalStorage.jobs[jobId] = job;
-            return jobId;
+        });
+    }
+    jobResult(jobId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return LocalStorage.jobs[jobId];
         });
     }
     addTask(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const taskId = this.generateId();
+            const taskId = LocalCloud.generateId();
             LocalStorage.tasks[taskId] = Object.assign(Object.assign({}, data), { id: "local", taskId, developer: this.developer, repo: this.repo });
             return taskId;
         });
@@ -156,15 +174,27 @@ export class LocalCloud extends Cloud {
     }
     processTasks() {
         return __awaiter(this, void 0, void 0, function* () {
+            yield LocalCloud.processLocalTasks({
+                developer: this.developer,
+                repo: this.repo,
+                localWorker: this.localWorker,
+                chain: this.chain,
+            });
+        });
+    }
+    static processLocalTasks(params) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { developer, repo, localWorker, chain } = params;
             for (const taskId in LocalStorage.tasks) {
                 const data = LocalStorage.tasks[taskId];
-                const jobId = this.generateId();
+                const jobId = LocalCloud.generateId();
                 const timeCreated = Date.now();
                 const job = {
                     id: "local",
                     jobId: jobId,
-                    developer: this.developer,
-                    repo: this.repo,
+                    taskId: taskId,
+                    developer,
+                    repo,
                     task: data.task,
                     userId: data.userId,
                     args: data.args,
@@ -178,10 +208,10 @@ export class LocalCloud extends Cloud {
                 };
                 const cloud = new LocalCloud({
                     job,
-                    chain: this.chain,
-                    localWorker: this.localWorker,
+                    chain,
+                    localWorker,
                 });
-                const worker = yield this.localWorker(cloud);
+                const worker = yield localWorker(cloud);
                 console.log("Executing task", { taskId, data });
                 const result = yield worker.task();
                 job.timeFinished = Date.now();

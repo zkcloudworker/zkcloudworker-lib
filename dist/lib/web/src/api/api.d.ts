@@ -1,5 +1,6 @@
 import { zkCloudWorker, Cloud } from "../cloud/cloud";
 import { blockchain } from "../networks";
+export type ApiCommand = "recursiveProof" | "execute" | "jobResult" | "deploy" | "queryBilling";
 /**
  * API class for interacting with the zkCloudWorker
  * @property jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
@@ -63,6 +64,7 @@ export declare class zkCloudWorkerClient {
     execute(data: {
         developer: string;
         repo: string;
+        transactions: string[];
         task: string;
         userId?: string;
         args?: string;

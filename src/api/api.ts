@@ -6,6 +6,12 @@ import { zkCloudWorker, Cloud } from "../cloud/cloud";
 import { JobData, JobStatus } from "../cloud/job";
 import { blockchain } from "../networks";
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
+export type ApiCommand =
+  | "recursiveProof"
+  | "execute"
+  | "jobResult"
+  | "deploy"
+  | "queryBilling";
 
 /**
  * API class for interacting with the zkCloudWorker
@@ -96,6 +102,7 @@ export class zkCloudWorkerClient {
   public async execute(data: {
     developer: string;
     repo: string;
+    transactions: string[];
     task: string;
     userId?: string;
     args?: string;
@@ -278,7 +285,7 @@ export class zkCloudWorkerClient {
    * @param data the data of the API
    * */
   private async apiHub(
-    command: string,
+    command: ApiCommand,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data: any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -289,91 +296,24 @@ export class zkCloudWorkerClient {
 
       switch (command) {
         case "recursiveProof": {
-          console.log("calculating recursive proof locally...");
-
-          const timeCreated = Date.now();
-          const jobId = this.generateJobId();
-          const job: JobData = {
-            id: "local",
-            jobId: jobId,
-            developer: data.developer,
-            repo: data.repo,
-            task: data.task,
-            userId: data.userId,
-            args: data.args,
-            metadata: data.metadata,
-            filename: "recursiveProof.json",
-            txNumber: data.transactions.length,
-            timeCreated,
-            timeCreatedString: new Date(timeCreated).toISOString(),
-            timeStarted: timeCreated,
-            jobStatus: "started",
-            maxAttempts: 0,
-          } as JobData;
-
-          const cloud = new LocalCloud({
-            job,
+          const jobId = await LocalCloud.run({
+            command: "recursiveProof",
+            data,
             chain: this.chain,
             localWorker: this.localWorker,
           });
-
-          const worker = await this.localWorker(cloud);
-          if (worker === undefined) throw new Error("worker is undefined");
-          const proof = await LocalCloud.sequencer({
-            worker,
-            data,
-          });
-          job.timeFinished = Date.now();
-          job.maxAttempts = 1;
-          if (proof !== undefined) {
-            job.jobStatus = "finished";
-            job.result = proof;
-          } else {
-            job.jobStatus = "failed";
-          }
-          LocalStorage.jobs[jobId] = job;
           return {
             success: true,
             data: jobId,
           };
         }
         case "execute": {
-          console.log("executing locally...");
-          const timeCreated = Date.now();
-          const jobId = this.generateJobId();
-          const job: JobData = {
-            id: "local",
-            jobId: jobId,
-            developer: data.developer,
-            repo: data.repo,
-            task: data.task,
-            userId: data.userId,
-            args: data.args,
-            metadata: data.metadata,
-            txNumber: 1,
-            timeCreated,
-            timeCreatedString: new Date(timeCreated).toISOString(),
-            timeStarted: timeCreated,
-            jobStatus: "started",
-            maxAttempts: 0,
-          } as JobData;
-          const cloud = new LocalCloud({
-            job,
+          const jobId = await LocalCloud.run({
+            command: "execute",
+            data,
             chain: this.chain,
             localWorker: this.localWorker,
           });
-          const worker = await this.localWorker(cloud);
-          if (worker === undefined) throw new Error("worker is undefined");
-          const result = await worker.execute();
-          job.timeFinished = Date.now();
-          job.maxAttempts = 1;
-          if (result !== undefined) {
-            job.jobStatus = "finished";
-            job.result = result;
-          } else {
-            job.jobStatus = "failed";
-          }
-          LocalStorage.jobs[jobId] = job;
           return {
             success: true,
             data: jobId,
