@@ -1,6 +1,6 @@
 import { zkCloudWorker, Cloud } from "../cloud/cloud";
 import { blockchain } from "../networks";
-export type ApiCommand = "recursiveProof" | "execute" | "jobResult" | "deploy" | "queryBilling";
+export type ApiCommand = "recursiveProof" | "execute" | "sendTransaction" | "jobResult" | "deploy" | "queryBilling";
 /**
  * API class for interacting with the zkCloudWorker
  * @property jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
@@ -69,6 +69,27 @@ export declare class zkCloudWorkerClient {
         userId?: string;
         args?: string;
         metadata?: string;
+    }): Promise<{
+        success: boolean;
+        error?: string;
+        jobId?: string;
+    }>;
+    /**
+     * Starts a new job for the function call using serverless api call
+     * The developer and name should correspond to the BackupPlugin of the API
+     * All other parameters should correspond to the parameters of the BackupPlugin
+     * @param data the data for the proof call
+     * @param data.developer the developer
+     * @param data.repo the repo to use
+     * @param data.task the task of the job
+     * @param data.args the arguments of the job
+     * @returns { success: boolean, error?: string, jobId?: string }
+     * where jonId is the jobId of the job
+     */
+    sendTransaction(data: {
+        developer: string;
+        repo: string;
+        transaction: string;
     }): Promise<{
         success: boolean;
         error?: string;
@@ -147,5 +168,4 @@ export declare class zkCloudWorkerClient {
      * */
     private apiHub;
     private isError;
-    private generateJobId;
 }

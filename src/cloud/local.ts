@@ -5,6 +5,7 @@ import { TaskData } from "./task";
 import { makeString, getDeployer } from "../mina";
 import { blockchain } from "../networks";
 import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
+import { CloudTransaction } from "./cloud";
 import { ApiCommand } from "../api/api";
 
 export class LocalCloud extends Cloud {
@@ -65,6 +66,31 @@ export class LocalCloud extends Cloud {
 
   private static generateId(): string {
     return "local." + Date.now().toString() + "." + makeString(32);
+  }
+
+  public async addTransaction(transaction: string): Promise<string> {
+    const timeReceived = Date.now();
+    const id = LocalCloud.generateId();
+    LocalStorage.transactions[id] = { transaction, timeReceived };
+    return id;
+  }
+
+  public async deleteTransaction(txId: string): Promise<void> {
+    if (LocalStorage.transactions[txId] === undefined)
+      throw new Error(`deleteTransaction: Transaction ${txId} not found`);
+    delete LocalStorage.transactions[txId];
+  }
+
+  public async getTransactions(): Promise<CloudTransaction[]> {
+    const txs = Object.keys(LocalStorage.transactions).map((txId) => {
+      const { transaction, timeReceived } = LocalStorage.transactions[txId];
+      return {
+        txId,
+        transaction,
+        timeReceived,
+      };
+    });
+    return txs;
   }
 
   public static async run(params: {
@@ -223,7 +249,7 @@ export class LocalCloud extends Cloud {
     repo: string;
     localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
     chain: blockchain;
-  }): Promise<void> {
+  }): Promise<number> {
     const { developer, repo, localWorker, chain } = params;
     for (const taskId in LocalStorage.tasks) {
       const data = LocalStorage.tasks[taskId];
@@ -265,6 +291,9 @@ export class LocalCloud extends Cloud {
       }
       LocalStorage.jobs[jobId] = job;
     }
+    let count = 0;
+    for (const task in LocalStorage.tasks) count++;
+    return count;
   }
 
   static async sequencer(params: {

@@ -51,6 +51,28 @@ class LocalCloud extends cloud_1.Cloud {
     static generateId() {
         return "local." + Date.now().toString() + "." + (0, mina_1.makeString)(32);
     }
+    async addTransaction(transaction) {
+        const timeReceived = Date.now();
+        const id = LocalCloud.generateId();
+        LocalStorage.transactions[id] = { transaction, timeReceived };
+        return id;
+    }
+    async deleteTransaction(txId) {
+        if (LocalStorage.transactions[txId] === undefined)
+            throw new Error(`deleteTransaction: Transaction ${txId} not found`);
+        delete LocalStorage.transactions[txId];
+    }
+    async getTransactions() {
+        const txs = Object.keys(LocalStorage.transactions).map((txId) => {
+            const { transaction, timeReceived } = LocalStorage.transactions[txId];
+            return {
+                txId,
+                transaction,
+                timeReceived,
+            };
+        });
+        return txs;
+    }
     static async run(params) {
         const { command, data, chain, localWorker } = params;
         console.log("executing locally command", command);
@@ -151,6 +173,8 @@ class LocalCloud extends cloud_1.Cloud {
         return taskId;
     }
     async deleteTask(taskId) {
+        if (LocalStorage.tasks[taskId] === undefined)
+            throw new Error(`deleteTask: Task ${taskId} not found`);
         delete LocalStorage.tasks[taskId];
     }
     async processTasks() {
@@ -204,6 +228,10 @@ class LocalCloud extends cloud_1.Cloud {
             }
             LocalStorage.jobs[jobId] = job;
         }
+        let count = 0;
+        for (const task in LocalStorage.tasks)
+            count++;
+        return count;
     }
     static async sequencer(params) {
         const { worker, data } = params;

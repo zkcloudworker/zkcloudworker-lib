@@ -9,6 +9,7 @@ const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 export type ApiCommand =
   | "recursiveProof"
   | "execute"
+  | "sendTransaction"
   | "jobResult"
   | "deploy"
   | "queryBilling";
@@ -113,6 +114,41 @@ export class zkCloudWorkerClient {
     jobId?: string;
   }> {
     const result = await this.apiHub("execute", data);
+    if (result.data === "error")
+      return {
+        success: false,
+        error: result.error,
+      };
+    else
+      return {
+        success: result.success,
+        jobId: result.data,
+        error: result.error,
+      };
+  }
+
+  /**
+   * Starts a new job for the function call using serverless api call
+   * The developer and name should correspond to the BackupPlugin of the API
+   * All other parameters should correspond to the parameters of the BackupPlugin
+   * @param data the data for the proof call
+   * @param data.developer the developer
+   * @param data.repo the repo to use
+   * @param data.task the task of the job
+   * @param data.args the arguments of the job
+   * @returns { success: boolean, error?: string, jobId?: string }
+   * where jonId is the jobId of the job
+   */
+  public async sendTransaction(data: {
+    developer: string;
+    repo: string;
+    transaction: string;
+  }): Promise<{
+    success: boolean;
+    error?: string;
+    jobId?: string;
+  }> {
+    const result = await this.apiHub("sendTransaction", data);
     if (result.data === "error")
       return {
         success: false,
@@ -375,9 +411,5 @@ export class zkCloudWorkerClient {
     if (typeof data === "string" && data.toLowerCase().startsWith("error"))
       return true;
     return false;
-  }
-
-  private generateJobId(): string {
-    return "local." + Date.now().toString() + "." + makeString(32);
   }
 }

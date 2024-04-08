@@ -7,6 +7,12 @@ export interface DeployedSmartContract {
   contract: SmartContract;
   chain: blockchain;
 }
+
+export interface CloudTransaction {
+  txId: string;
+  transaction: string;
+  timeReceived: number;
+}
 export abstract class Cloud {
   readonly jobId: string;
   readonly stepId: string;
@@ -91,6 +97,9 @@ export abstract class Cloud {
     args?: string;
     metadata?: string;
   }): Promise<string>;
+  abstract addTransaction(transaction: string): Promise<string>;
+  abstract deleteTransaction(txId: string): Promise<void>;
+  abstract getTransactions(): Promise<CloudTransaction[]>;
   abstract deleteTask(taskId: string): Promise<void>;
   abstract processTasks(): Promise<void>;
   abstract jobResult(jobId: string): Promise<JobData | undefined>;

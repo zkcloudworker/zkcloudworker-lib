@@ -1,6 +1,6 @@
 import { __awaiter } from "tslib";
 import axios from "axios";
-import { sleep, makeString } from "../mina";
+import { sleep } from "../mina";
 import { LocalCloud, LocalStorage } from "../cloud/local";
 import config from "../config";
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
@@ -72,6 +72,34 @@ export class zkCloudWorkerClient {
     execute(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.apiHub("execute", data);
+            if (result.data === "error")
+                return {
+                    success: false,
+                    error: result.error,
+                };
+            else
+                return {
+                    success: result.success,
+                    jobId: result.data,
+                    error: result.error,
+                };
+        });
+    }
+    /**
+     * Starts a new job for the function call using serverless api call
+     * The developer and name should correspond to the BackupPlugin of the API
+     * All other parameters should correspond to the parameters of the BackupPlugin
+     * @param data the data for the proof call
+     * @param data.developer the developer
+     * @param data.repo the repo to use
+     * @param data.task the task of the job
+     * @param data.args the arguments of the job
+     * @returns { success: boolean, error?: string, jobId?: string }
+     * where jonId is the jobId of the job
+     */
+    sendTransaction(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.apiHub("sendTransaction", data);
             if (result.data === "error")
                 return {
                     success: false,
@@ -320,9 +348,6 @@ export class zkCloudWorkerClient {
         if (typeof data === "string" && data.toLowerCase().startsWith("error"))
             return true;
         return false;
-    }
-    generateJobId() {
-        return "local." + Date.now().toString() + "." + makeString(32);
     }
 }
 //# sourceMappingURL=api.js.map
