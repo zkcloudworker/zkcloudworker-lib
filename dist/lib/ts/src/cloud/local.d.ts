@@ -4,6 +4,7 @@ import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
 import { TaskData } from "./task";
 import { blockchain } from "../networks";
+import { CloudTransaction } from "./cloud";
 import { ApiCommand } from "../api/api";
 export declare class LocalCloud extends Cloud {
     readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
@@ -22,6 +23,9 @@ export declare class LocalCloud extends Cloud {
     loadFile(filename: string): Promise<Buffer | undefined>;
     loadEnvironment(password: string): Promise<void>;
     private static generateId;
+    addTransaction(transaction: string): Promise<string>;
+    deleteTransaction(txId: string): Promise<void>;
+    getTransactions(): Promise<CloudTransaction[]>;
     static run(params: {
         command: ApiCommand;
         data: {
@@ -64,7 +68,7 @@ export declare class LocalCloud extends Cloud {
         repo: string;
         localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
         chain: blockchain;
-    }): Promise<void>;
+    }): Promise<number>;
     static sequencer(params: {
         worker: zkCloudWorker;
         data: {

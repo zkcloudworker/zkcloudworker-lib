@@ -63,6 +63,34 @@ export class LocalCloud extends Cloud {
     static generateId() {
         return "local." + Date.now().toString() + "." + makeString(32);
     }
+    addTransaction(transaction) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const timeReceived = Date.now();
+            const id = LocalCloud.generateId();
+            LocalStorage.transactions[id] = { transaction, timeReceived };
+            return id;
+        });
+    }
+    deleteTransaction(txId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (LocalStorage.transactions[txId] === undefined)
+                throw new Error(`deleteTransaction: Transaction ${txId} not found`);
+            delete LocalStorage.transactions[txId];
+        });
+    }
+    getTransactions() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const txs = Object.keys(LocalStorage.transactions).map((txId) => {
+                const { transaction, timeReceived } = LocalStorage.transactions[txId];
+                return {
+                    txId,
+                    transaction,
+                    timeReceived,
+                };
+            });
+            return txs;
+        });
+    }
     static run(params) {
         return __awaiter(this, void 0, void 0, function* () {
             const { command, data, chain, localWorker } = params;
@@ -169,6 +197,8 @@ export class LocalCloud extends Cloud {
     }
     deleteTask(taskId) {
         return __awaiter(this, void 0, void 0, function* () {
+            if (LocalStorage.tasks[taskId] === undefined)
+                throw new Error(`deleteTask: Task ${taskId} not found`);
             delete LocalStorage.tasks[taskId];
         });
     }
@@ -226,6 +256,10 @@ export class LocalCloud extends Cloud {
                 }
                 LocalStorage.jobs[jobId] = job;
             }
+            let count = 0;
+            for (const task in LocalStorage.tasks)
+                count++;
+            return count;
         });
     }
     static sequencer(params) {
