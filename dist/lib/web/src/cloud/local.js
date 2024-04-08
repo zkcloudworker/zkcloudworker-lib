@@ -94,7 +94,6 @@ export class LocalCloud extends Cloud {
     static run(params) {
         return __awaiter(this, void 0, void 0, function* () {
             const { command, data, chain, localWorker } = params;
-            console.log("executing locally command", command);
             const { developer, repo, transactions, task, userId, args, metadata } = data;
             const timeCreated = Date.now();
             const jobId = LocalCloud.generateId();
@@ -242,7 +241,6 @@ export class LocalCloud extends Cloud {
                     localWorker,
                 });
                 const worker = yield localWorker(cloud);
-                console.log("Executing task", { taskId, data });
                 const result = yield worker.task();
                 job.timeFinished = Date.now();
                 job.maxAttempts = 1;
