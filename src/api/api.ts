@@ -369,6 +369,12 @@ export class zkCloudWorkerClient {
             };
           }
         }
+        case "sendTransaction": {
+          return {
+            success: true,
+            data: await LocalCloud.addTransaction(data.transaction),
+          };
+        }
         case "deploy":
           return {
             success: true,

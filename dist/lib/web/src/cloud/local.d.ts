@@ -23,7 +23,7 @@ export declare class LocalCloud extends Cloud {
     loadFile(filename: string): Promise<Buffer | undefined>;
     loadEnvironment(password: string): Promise<void>;
     private static generateId;
-    addTransaction(transaction: string): Promise<string>;
+    static addTransaction(transaction: string): Promise<string>;
     deleteTransaction(txId: string): Promise<void>;
     getTransactions(): Promise<CloudTransaction[]>;
     static run(params: {

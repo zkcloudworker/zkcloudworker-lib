@@ -66,7 +66,6 @@ export declare abstract class Cloud {
         args?: string;
         metadata?: string;
     }): Promise<string>;
-    abstract addTransaction(transaction: string): Promise<string>;
     abstract deleteTransaction(txId: string): Promise<void>;
     abstract getTransactions(): Promise<CloudTransaction[]>;
     abstract deleteTask(taskId: string): Promise<void>;
