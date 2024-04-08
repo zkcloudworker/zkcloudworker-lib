@@ -75,7 +75,6 @@ class LocalCloud extends cloud_1.Cloud {
     }
     static async run(params) {
         const { command, data, chain, localWorker } = params;
-        console.log("executing locally command", command);
         const { developer, repo, transactions, task, userId, args, metadata } = data;
         const timeCreated = Date.now();
         const jobId = LocalCloud.generateId();
@@ -214,7 +213,6 @@ class LocalCloud extends cloud_1.Cloud {
                 localWorker,
             });
             const worker = await localWorker(cloud);
-            console.log("Executing task", { taskId, data });
             const result = await worker.task();
             job.timeFinished = Date.now();
             job.maxAttempts = 1;

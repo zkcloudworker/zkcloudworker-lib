@@ -108,7 +108,6 @@ export class LocalCloud extends Cloud {
     localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
   }): Promise<string> {
     const { command, data, chain, localWorker } = params;
-    console.log("executing locally command", command);
     const { developer, repo, transactions, task, userId, args, metadata } =
       data;
 
@@ -278,7 +277,6 @@ export class LocalCloud extends Cloud {
         localWorker,
       });
       const worker = await localWorker(cloud);
-      console.log("Executing task", { taskId, data });
       const result = await worker.task();
       job.timeFinished = Date.now();
       job.maxAttempts = 1;
