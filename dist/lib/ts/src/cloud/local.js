@@ -51,7 +51,7 @@ class LocalCloud extends cloud_1.Cloud {
     static generateId() {
         return "local." + Date.now().toString() + "." + (0, mina_1.makeString)(32);
     }
-    async addTransaction(transaction) {
+    static async addTransaction(transaction) {
         const timeReceived = Date.now();
         const id = LocalCloud.generateId();
         LocalStorage.transactions[id] = { transaction, timeReceived };

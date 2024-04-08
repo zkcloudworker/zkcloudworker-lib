@@ -68,7 +68,7 @@ export class LocalCloud extends Cloud {
     return "local." + Date.now().toString() + "." + makeString(32);
   }
 
-  public async addTransaction(transaction: string): Promise<string> {
+  public static async addTransaction(transaction: string): Promise<string> {
     const timeReceived = Date.now();
     const id = LocalCloud.generateId();
     LocalStorage.transactions[id] = { transaction, timeReceived };

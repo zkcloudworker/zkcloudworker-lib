@@ -63,7 +63,7 @@ export class LocalCloud extends Cloud {
     static generateId() {
         return "local." + Date.now().toString() + "." + makeString(32);
     }
-    addTransaction(transaction) {
+    static addTransaction(transaction) {
         return __awaiter(this, void 0, void 0, function* () {
             const timeReceived = Date.now();
             const id = LocalCloud.generateId();
