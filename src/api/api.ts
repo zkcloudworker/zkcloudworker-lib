@@ -1,9 +1,8 @@
 import axios from "axios";
-import { sleep, makeString } from "../mina";
+import { sleep } from "../mina";
 import { LocalCloud, LocalStorage } from "../cloud/local";
 import config from "../config";
 import { zkCloudWorker, Cloud } from "../cloud/cloud";
-import { JobData, JobStatus } from "../cloud/job";
 import { blockchain } from "../networks";
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 export type ApiCommand =

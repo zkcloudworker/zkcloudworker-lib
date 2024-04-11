@@ -165,7 +165,7 @@ function makeString(length: number): string {
   // eslint-disable-next-line @typescript-eslint/no-inferrable-types
   let outString: string = ``;
   // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-  const inOptions: string = `abcdefghijklmnopqrstuvwxyz0123456789`;
+  const inOptions: string = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`;
 
   for (let i = 0; i < length; i++) {
     outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));

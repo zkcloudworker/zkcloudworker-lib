@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Berkeley = exports.Mainnet = exports.networks = void 0;
+exports.Local = exports.Lightnet = exports.TestWorld2 = exports.Zeko = exports.Devnet = exports.Berkeley = exports.Mainnet = exports.networks = void 0;
 const Mainnet = {
     mina: [],
     archive: [],
@@ -28,6 +28,21 @@ const Berkeley = {
     name: "Berkeley",
 };
 exports.Berkeley = Berkeley;
+const Devnet = {
+    mina: [
+        "https://api.minascan.io/node/devnet/v1/graphql",
+        "https://proxy.devnet.minaexplorer.com/graphql",
+    ],
+    archive: [
+        "https://api.minascan.io/archive/devnet/v1/graphql",
+        "https://archive.devnet.minaexplorer.com",
+    ],
+    explorerAccountUrl: "https://minascan.io/devnet/account/",
+    explorerTransactionUrl: "https://minascan.io/devnet/tx/",
+    chainId: "devnet",
+    name: "Devnet",
+};
+exports.Devnet = Devnet;
 const Zeko = {
     mina: ["http://sequencer-zeko-dev.dcspark.io/graphql"],
     archive: [],
@@ -55,6 +70,7 @@ const networks = [
     Mainnet,
     Local,
     Berkeley,
+    Devnet,
     Zeko,
     TestWorld2,
     Lightnet,

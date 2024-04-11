@@ -4,6 +4,7 @@ export {
   networks,
   Mainnet,
   Berkeley,
+  Devnet,
   Zeko,
   TestWorld2,
   Lightnet,
@@ -13,6 +14,7 @@ export {
 type blockchain =
   | "local"
   | "berkeley"
+  | "devnet"
   | "lighnet"
   | "mainnet"
   | "testworld2"
@@ -55,6 +57,21 @@ const Berkeley: MinaNetwork = {
   name: "Berkeley",
 };
 
+const Devnet: MinaNetwork = {
+  mina: [
+    "https://api.minascan.io/node/devnet/v1/graphql",
+    "https://proxy.devnet.minaexplorer.com/graphql",
+  ],
+  archive: [
+    "https://api.minascan.io/archive/devnet/v1/graphql",
+    "https://archive.devnet.minaexplorer.com",
+  ],
+  explorerAccountUrl: "https://minascan.io/devnet/account/",
+  explorerTransactionUrl: "https://minascan.io/devnet/tx/",
+  chainId: "devnet",
+  name: "Devnet",
+};
+
 const Zeko: MinaNetwork = {
   mina: ["http://sequencer-zeko-dev.dcspark.io/graphql"],
   archive: [],
@@ -82,6 +99,7 @@ const networks: MinaNetwork[] = [
   Mainnet,
   Local,
   Berkeley,
+  Devnet,
   Zeko,
   TestWorld2,
   Lightnet,

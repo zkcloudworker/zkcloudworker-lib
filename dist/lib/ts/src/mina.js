@@ -122,7 +122,7 @@ function makeString(length) {
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     let outString = ``;
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-    const inOptions = `abcdefghijklmnopqrstuvwxyz0123456789`;
+    const inOptions = `ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789`;
     for (let i = 0; i < length; i++) {
         outString += inOptions.charAt(Math.floor(Math.random() * inOptions.length));
     }
