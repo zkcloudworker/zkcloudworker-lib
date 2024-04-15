@@ -28,6 +28,11 @@ export class LocalCloud extends Cloud {
             return getDeployer();
         });
     }
+    releaseDeployer(txsHashes) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.log("LocalCloud: releaseDeployer", txsHashes);
+        });
+    }
     log(msg) {
         return __awaiter(this, void 0, void 0, function* () {
             console.log("LocalCloud:", msg);

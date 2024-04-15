@@ -44,6 +44,7 @@ export declare class zkCloudWorkerClient {
         userId?: string;
         args?: string;
         metadata?: string;
+        webhook?: string;
     }): Promise<{
         success: boolean;
         error?: string;
@@ -69,6 +70,7 @@ export declare class zkCloudWorkerClient {
         userId?: string;
         args?: string;
         metadata?: string;
+        webhook?: string;
     }): Promise<{
         success: boolean;
         error?: string;

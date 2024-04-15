@@ -40,6 +40,11 @@ export class LocalCloud extends Cloud {
   public async getDeployer(): Promise<PrivateKey | undefined> {
     return getDeployer();
   }
+
+  public async releaseDeployer(txsHashes: string[]): Promise<void> {
+    console.log("LocalCloud: releaseDeployer", txsHashes);
+  }
+
   public async log(msg: string): Promise<void> {
     console.log("LocalCloud:", msg);
   }

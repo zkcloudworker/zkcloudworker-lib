@@ -28,6 +28,9 @@ class LocalCloud extends cloud_1.Cloud {
     async getDeployer() {
         return (0, mina_1.getDeployer)();
     }
+    async releaseDeployer(txsHashes) {
+        console.log("LocalCloud: releaseDeployer", txsHashes);
+    }
     async log(msg) {
         console.log("LocalCloud:", msg);
     }

@@ -41,11 +41,11 @@ function getNetworkIdHash(): Field {
   return currentNetwork.networkIdHash;
 }
 
-function getDeployer(): PrivateKey {
+function getDeployer(): PrivateKey | undefined {
   if (currentNetwork === undefined) {
     throw new Error("Network is not initialized");
   }
-  return currentNetwork.keys[0].privateKey;
+  return currentNetwork.keys[0]?.privateKey;
 }
 
 /*function getNetworkIdHash(params: {

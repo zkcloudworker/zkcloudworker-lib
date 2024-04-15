@@ -11,7 +11,7 @@ interface MinaNetworkInstance {
 }
 declare let currentNetwork: MinaNetworkInstance | undefined;
 declare function getNetworkIdHash(): Field;
-declare function getDeployer(): PrivateKey;
+declare function getDeployer(): PrivateKey | undefined;
 declare function initBlockchain(instance: blockchain, deployersNumber?: number): MinaNetworkInstance;
 declare function accountBalance(address: PublicKey): Promise<UInt64>;
 declare function accountBalanceMina(address: PublicKey): Promise<number>;

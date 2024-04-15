@@ -10,10 +10,11 @@ function getNetworkIdHash() {
     return currentNetwork.networkIdHash;
 }
 function getDeployer() {
+    var _a;
     if (currentNetwork === undefined) {
         throw new Error("Network is not initialized");
     }
-    return currentNetwork.keys[0].privateKey;
+    return (_a = currentNetwork.keys[0]) === null || _a === void 0 ? void 0 : _a.privateKey;
 }
 /*function getNetworkIdHash(params: {
   chainId?: blockchain;
