@@ -40,6 +40,7 @@ export declare abstract class Cloud {
         chain: blockchain;
     });
     abstract getDeployer(): Promise<PrivateKey | undefined>;
+    abstract releaseDeployer(txsHashes: string[]): Promise<void>;
     abstract log(msg: string): void;
     abstract getDataByKey(key: string): Promise<string | undefined>;
     abstract saveDataByKey(key: string, value: string): Promise<void>;

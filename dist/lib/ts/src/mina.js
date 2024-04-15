@@ -16,7 +16,7 @@ function getDeployer() {
     if (currentNetwork === undefined) {
         throw new Error("Network is not initialized");
     }
-    return currentNetwork.keys[0].privateKey;
+    return currentNetwork.keys[0]?.privateKey;
 }
 exports.getDeployer = getDeployer;
 /*function getNetworkIdHash(params: {

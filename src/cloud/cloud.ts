@@ -69,8 +69,13 @@ export abstract class Cloud {
     this.chain = chain;
   }
 
-  // TODO: change it to the sign method to protect the private key
+  /* TODO: change it to the sign method to protect the private key
+    abstract getDeployer(): Promise<PublicKey | undefined>;
+    abstract signTransaction(tx: Transaction): Promise<void>;
+    see https://github.com/o1-labs/o1js/pull/1548#issuecomment-2056923658
+  */
   abstract getDeployer(): Promise<PrivateKey | undefined>;
+  abstract releaseDeployer(txsHashes: string[]): Promise<void>;
   abstract log(msg: string): void;
   abstract getDataByKey(key: string): Promise<string | undefined>;
   abstract saveDataByKey(key: string, value: string): Promise<void>;

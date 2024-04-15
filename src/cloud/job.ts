@@ -11,6 +11,7 @@ export interface JobData {
   userId?: string;
   args?: string;
   metadata?: string;
+  webhook?: string;
 
   filename?: string;
   txNumber: number;

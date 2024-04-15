@@ -16,6 +16,7 @@ export declare class LocalCloud extends Cloud {
         localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
     });
     getDeployer(): Promise<PrivateKey | undefined>;
+    releaseDeployer(txsHashes: string[]): Promise<void>;
     log(msg: string): Promise<void>;
     getDataByKey(key: string): Promise<string | undefined>;
     saveDataByKey(key: string, value: string): Promise<void>;
