@@ -13,6 +13,7 @@ export interface CloudTransaction {
     timeReceived: number;
 }
 export declare abstract class Cloud {
+    readonly id: string;
     readonly jobId: string;
     readonly stepId: string;
     readonly taskId: string;
@@ -26,6 +27,7 @@ export declare abstract class Cloud {
     readonly chain: blockchain;
     readonly isLocalCloud: boolean;
     constructor(params: {
+        id: string;
         jobId: string;
         stepId: string;
         taskId: string;
@@ -63,6 +65,7 @@ export declare abstract class Cloud {
     }): Promise<string>;
     abstract addTask(data: {
         task: string;
+        startTime?: number;
         userId?: string;
         args?: string;
         metadata?: string;

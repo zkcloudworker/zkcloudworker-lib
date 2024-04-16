@@ -19,9 +19,10 @@ export class LocalCloud extends Cloud {
   }) {
     const { job, chain, cache, stepId, localWorker } = params;
 
-    const { jobId, developer, repo, task, userId, args, metadata, taskId } =
+    const { id, jobId, developer, repo, task, userId, args, metadata, taskId } =
       job;
     super({
+      id: id,
       jobId: jobId,
       stepId: stepId ?? "stepId",
       taskId: taskId ?? "taskId",
@@ -218,6 +219,7 @@ export class LocalCloud extends Cloud {
 
   public async addTask(data: {
     task: string;
+    startTime?: number;
     userId?: string;
     args?: string;
     metadata?: string;
@@ -227,8 +229,10 @@ export class LocalCloud extends Cloud {
       ...data,
       id: "local",
       taskId,
+      timeCreated: Date.now(),
       developer: this.developer,
       repo: this.repo,
+      chain: this.chain,
     } as TaskData;
     return taskId;
   }
@@ -259,6 +263,8 @@ export class LocalCloud extends Cloud {
       const data = LocalStorage.tasks[taskId];
       const jobId = LocalCloud.generateId();
       const timeCreated = Date.now();
+      if (data.startTime !== undefined && data.startTime < timeCreated)
+        continue;
       const job = {
         id: "local",
         jobId: jobId,

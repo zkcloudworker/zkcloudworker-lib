@@ -11,6 +11,7 @@ export type ApiCommand =
   | "sendTransaction"
   | "jobResult"
   | "deploy"
+  | "getBalance"
   | "queryBilling";
 
 /**
@@ -22,6 +23,7 @@ export class zkCloudWorkerClient {
   readonly jwt: string;
   readonly endpoint: string;
   readonly chain: blockchain;
+  readonly webhook?: string;
   readonly localWorker?: (cloud: Cloud) => Promise<zkCloudWorker>;
 
   /**
@@ -32,11 +34,13 @@ export class zkCloudWorkerClient {
     jwt: string;
     zkcloudworker?: (cloud: Cloud) => Promise<zkCloudWorker>;
     chain?: blockchain;
+    webhook?: string;
   }) {
-    const { jwt, zkcloudworker, chain } = params;
+    const { jwt, zkcloudworker, chain, webhook } = params;
     this.jwt = jwt;
     this.endpoint = ZKCLOUDWORKER_API;
-    this.chain = chain ?? "berkeley";
+    this.chain = chain ?? "devnet";
+    this.webhook = webhook;
     if (jwt === "local") {
       if (zkcloudworker === undefined)
         throw new Error("worker is required for local mode");
@@ -108,7 +112,6 @@ export class zkCloudWorkerClient {
     userId?: string;
     args?: string;
     metadata?: string;
-    webhook?: string;
   }): Promise<{
     success: boolean;
     error?: string;
@@ -206,13 +209,22 @@ export class zkCloudWorkerClient {
    * if the job is finished, the result will be set and error will be undefined
    * if the job is not found, the result will be undefined and error will be set
    */
-  public async deploy(data: { packageName: string }): Promise<{
+  public async deploy(data: {
+    repo: string;
+    developer: string;
+    packageManager: string;
+  }): Promise<{
     success: boolean;
     error?: string;
     jobId?: string;
   }> {
     // TODO: encrypt env.json
-    const result = await this.apiHub("deploy", data);
+    const { repo, developer, packageManager } = data;
+    const result = await this.apiHub("deploy", {
+      developer,
+      repo,
+      args: packageManager,
+    });
     if (result.data === "error")
       return {
         success: false,
@@ -238,6 +250,32 @@ export class zkCloudWorkerClient {
     result?: any;
   }> {
     const result = await this.apiHub("queryBilling", {});
+    if (this.isError(result.data))
+      return {
+        success: false,
+        error: result.error,
+        result: result.data,
+      };
+    else
+      return {
+        success: result.success,
+        error: result.error,
+        result: result.data,
+      };
+  }
+
+  /**
+   * Gets the remaining balance
+   * @returns { success: boolean, error?: string, result?: any }
+   * where result is the billing report
+   */
+  public async getBalance(): Promise<{
+    success: boolean;
+    error?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    result?: any;
+  }> {
+    const result = await this.apiHub("getBalance", {});
     if (this.isError(result.data))
       return {
         success: false,
@@ -399,6 +437,7 @@ export class zkCloudWorkerClient {
         jwtToken: this.jwt,
         data: data,
         chain: this.chain,
+        webhook: this.webhook, // TODO: implement webhook code on AWS
       };
 
       try {

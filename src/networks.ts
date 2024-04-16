@@ -3,22 +3,19 @@ export {
   MinaNetwork,
   networks,
   Mainnet,
-  Berkeley,
   Devnet,
   Zeko,
-  TestWorld2,
   Lightnet,
   Local,
 };
 
 type blockchain =
   | "local"
-  | "berkeley"
   | "devnet"
   | "lighnet"
   | "mainnet"
-  | "testworld2"
-  | "zeko";
+  | "zeko"
+  | "mainnet";
 
 interface MinaNetwork {
   mina: string[];
@@ -42,21 +39,6 @@ const Local: MinaNetwork = {
   chainId: "local",
 };
 
-const Berkeley: MinaNetwork = {
-  mina: [
-    "https://api.minascan.io/node/berkeley/v1/graphql",
-    "https://proxy.berkeley.minaexplorer.com/graphql",
-  ],
-  archive: [
-    "https://api.minascan.io/archive/berkeley/v1/graphql",
-    "https://archive.berkeley.minaexplorer.com",
-  ],
-  explorerAccountUrl: "https://minascan.io/berkeley/account/",
-  explorerTransactionUrl: "https://minascan.io/berkeley/tx/",
-  chainId: "berkeley",
-  name: "Berkeley",
-};
-
 const Devnet: MinaNetwork = {
   mina: [
     "https://api.minascan.io/node/devnet/v1/graphql",
@@ -78,6 +60,35 @@ const Zeko: MinaNetwork = {
   chainId: "zeko",
 };
 
+const Lightnet: MinaNetwork = {
+  mina: ["http://localhost:8080/graphql"],
+  archive: ["http://localhost:8282"],
+  accountManager: "http://localhost:8181",
+  chainId: "lighnet",
+  name: "Lightnet",
+};
+
+const networks: MinaNetwork[] = [Mainnet, Local, Devnet, Zeko, Lightnet];
+
+/*
+
+// not supported by o1js 0.18.0
+
+const Berkeley: MinaNetwork = {
+  mina: [
+    "https://api.minascan.io/node/berkeley/v1/graphql",
+    "https://proxy.berkeley.minaexplorer.com/graphql",
+  ],
+  archive: [
+    "https://api.minascan.io/archive/berkeley/v1/graphql",
+    "https://archive.berkeley.minaexplorer.com",
+  ],
+  explorerAccountUrl: "https://minascan.io/berkeley/account/",
+  explorerTransactionUrl: "https://minascan.io/berkeley/tx/",
+  chainId: "berkeley",
+  name: "Berkeley",
+};
+
 const TestWorld2: MinaNetwork = {
   mina: ["https://api.minascan.io/node/testworld/v1/graphql"],
   archive: ["https://archive.testworld.minaexplorer.com"],
@@ -87,20 +98,4 @@ const TestWorld2: MinaNetwork = {
   name: "TestWorld2",
 };
 
-const Lightnet: MinaNetwork = {
-  mina: ["http://localhost:8080/graphql"],
-  archive: ["http://localhost:8282"],
-  accountManager: "http://localhost:8181",
-  chainId: "lighnet",
-  name: "Lightnet",
-};
-
-const networks: MinaNetwork[] = [
-  Mainnet,
-  Local,
-  Berkeley,
-  Devnet,
-  Zeko,
-  TestWorld2,
-  Lightnet,
-];
+*/

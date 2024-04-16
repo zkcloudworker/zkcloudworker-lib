@@ -58,6 +58,7 @@ export declare class LocalCloud extends Cloud {
     jobResult(jobId: string): Promise<JobData | undefined>;
     addTask(data: {
         task: string;
+        startTime?: number;
         userId?: string;
         args?: string;
         metadata?: string;

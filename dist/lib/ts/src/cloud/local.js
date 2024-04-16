@@ -8,8 +8,9 @@ const files_1 = require("./files");
 class LocalCloud extends cloud_1.Cloud {
     constructor(params) {
         const { job, chain, cache, stepId, localWorker } = params;
-        const { jobId, developer, repo, task, userId, args, metadata, taskId } = job;
+        const { id, jobId, developer, repo, task, userId, args, metadata, taskId } = job;
         super({
+            id: id,
             jobId: jobId,
             stepId: stepId ?? "stepId",
             taskId: taskId ?? "taskId",
@@ -169,8 +170,10 @@ class LocalCloud extends cloud_1.Cloud {
             ...data,
             id: "local",
             taskId,
+            timeCreated: Date.now(),
             developer: this.developer,
             repo: this.repo,
+            chain: this.chain,
         };
         return taskId;
     }
@@ -193,6 +196,8 @@ class LocalCloud extends cloud_1.Cloud {
             const data = LocalStorage.tasks[taskId];
             const jobId = LocalCloud.generateId();
             const timeCreated = Date.now();
+            if (data.startTime !== undefined && data.startTime < timeCreated)
+                continue;
             const job = {
                 id: "local",
                 jobId: jobId,

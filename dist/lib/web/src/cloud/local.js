@@ -6,8 +6,9 @@ import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 export class LocalCloud extends Cloud {
     constructor(params) {
         const { job, chain, cache, stepId, localWorker } = params;
-        const { jobId, developer, repo, task, userId, args, metadata, taskId } = job;
+        const { id, jobId, developer, repo, task, userId, args, metadata, taskId } = job;
         super({
+            id: id,
             jobId: jobId,
             stepId: stepId !== null && stepId !== void 0 ? stepId : "stepId",
             taskId: taskId !== null && taskId !== void 0 ? taskId : "taskId",
@@ -195,7 +196,7 @@ export class LocalCloud extends Cloud {
     addTask(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const taskId = LocalCloud.generateId();
-            LocalStorage.tasks[taskId] = Object.assign(Object.assign({}, data), { id: "local", taskId, developer: this.developer, repo: this.repo });
+            LocalStorage.tasks[taskId] = Object.assign(Object.assign({}, data), { id: "local", taskId, timeCreated: Date.now(), developer: this.developer, repo: this.repo, chain: this.chain });
             return taskId;
         });
     }
@@ -223,6 +224,8 @@ export class LocalCloud extends Cloud {
                 const data = LocalStorage.tasks[taskId];
                 const jobId = LocalCloud.generateId();
                 const timeCreated = Date.now();
+                if (data.startTime !== undefined && data.startTime < timeCreated)
+                    continue;
                 const job = {
                     id: "local",
                     jobId: jobId,

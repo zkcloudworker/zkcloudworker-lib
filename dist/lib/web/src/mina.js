@@ -1,6 +1,6 @@
 import { __awaiter } from "tslib";
-export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, currentNetwork, getNetworkIdHash, getDeployer, };
-import { Mina, PrivateKey, UInt64, fetchAccount, CircuitString, } from "o1js";
+export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, currentNetwork, getNetworkIdHash, getCurrentNetwork, getDeployer, };
+import { Mina, PrivateKey, UInt64, fetchAccount, Encoding, Poseidon, } from "o1js";
 import { networks, Local } from "./networks";
 let currentNetwork = undefined;
 function getNetworkIdHash() {
@@ -9,6 +9,12 @@ function getNetworkIdHash() {
     }
     return currentNetwork.networkIdHash;
 }
+function getCurrentNetwork() {
+    if (currentNetwork === undefined) {
+        throw new Error("Network is not initialized");
+    }
+    return currentNetwork;
+}
 function getDeployer() {
     var _a;
     if (currentNetwork === undefined) {
@@ -16,87 +22,60 @@ function getDeployer() {
     }
     return (_a = currentNetwork.keys[0]) === null || _a === void 0 ? void 0 : _a.privateKey;
 }
-/*function getNetworkIdHash(params: {
-  chainId?: blockchain;
-  verbose?: boolean;
-}): Field {
-  const { chainId, verbose } = params;
-  if (chainId !== undefined) {
-    if (verbose) console.log(`Chain ID: ${chainId}`);
-    return CircuitString.fromString(chainId).hash();
-  }
-  const networkId = Mina.getNetworkId();
-  if (verbose) console.log(`Network ID: ${networkId}`);
-  if (networkId === "testnet")
-    throw new Error(
-      "Network ID is not set, please call initBlockchain() first"
-    );
-
-  if (networkId === "mainnet")
-    return CircuitString.fromString("mainnet").hash();
-  else {
-    if (
-      networkId.custom === undefined ||
-      typeof networkId.custom !== "string"
-    ) {
-      throw new Error(
-        "Network ID is not set, please call initBlockchain() first"
-      );
-    }
-    return CircuitString.fromString(networkId.custom).hash();
-  }
-}
-*/
-function initBlockchain(instance, deployersNumber = 0) {
-    if (instance === "mainnet") {
-        throw new Error("Mainnet is not supported yet by zkApps");
-    }
-    if (instance === "local") {
-        const local = Mina.LocalBlockchain({
-            proofsEnabled: true,
-        });
-        Mina.setActiveInstance(local);
-        currentNetwork = {
-            keys: local.testAccounts,
-            network: Local,
-            networkIdHash: CircuitString.fromString("local").hash(),
-        };
-        return currentNetwork;
-    }
-    const network = networks.find((n) => n.chainId === instance);
-    if (network === undefined) {
-        throw new Error("Unknown network");
-    }
-    const networkInstance = Mina.Network({
-        mina: network.mina,
-        archive: network.archive,
-        lightnetAccountManager: network.accountManager,
-    });
-    Mina.setActiveInstance(networkInstance);
-    const keys = [];
-    if (deployersNumber > 0) {
-        if (instance === "lighnet") {
-            throw new Error("Use await Lightnet.acquireKeyPair() to get keys for Lightnet");
+function initBlockchain(instance_1) {
+    return __awaiter(this, arguments, void 0, function* (instance, deployersNumber = 0) {
+        if (instance === "mainnet") {
+            throw new Error("Mainnet is not supported yet by zkApps");
         }
-        else {
-            const deployers = process.env.DEPLOYERS;
-            if (deployers === undefined ||
-                Array.isArray(deployers) === false ||
-                deployers.length < deployersNumber)
-                throw new Error("Deployers are not set");
-            for (let i = 0; i < deployersNumber; i++) {
-                const privateKey = PrivateKey.fromBase58(deployers[i]);
-                const publicKey = privateKey.toPublicKey();
-                keys.push({ publicKey, privateKey });
+        const networkIdHash = Poseidon.hash(Encoding.stringToFields(instance));
+        // await used for compatibility with future versions of o1js
+        if (instance === "local") {
+            const local = yield Mina.LocalBlockchain({
+                proofsEnabled: true,
+            });
+            yield Mina.setActiveInstance(local);
+            currentNetwork = {
+                keys: local.testAccounts,
+                network: Local,
+                networkIdHash,
+            };
+            return currentNetwork;
+        }
+        const network = networks.find((n) => n.chainId === instance);
+        if (network === undefined) {
+            throw new Error("Unknown network");
+        }
+        const networkInstance = Mina.Network({
+            mina: network.mina,
+            archive: network.archive,
+            lightnetAccountManager: network.accountManager,
+        });
+        yield Mina.setActiveInstance(networkInstance);
+        const keys = [];
+        if (deployersNumber > 0) {
+            if (instance === "lighnet") {
+                throw new Error("Use await Lightnet.acquireKeyPair() to get keys for Lightnet");
+            }
+            else {
+                const deployers = process.env.DEPLOYERS;
+                if (deployers === undefined ||
+                    Array.isArray(deployers) === false ||
+                    deployers.length < deployersNumber)
+                    throw new Error("Deployers are not set");
+                for (let i = 0; i < deployersNumber; i++) {
+                    const privateKey = PrivateKey.fromBase58(deployers[i]);
+                    const publicKey = privateKey.toPublicKey();
+                    keys.push({ publicKey, privateKey });
+                }
             }
         }
-    }
-    currentNetwork = {
-        keys,
-        network,
-        networkIdHash: CircuitString.fromString(instance).hash(),
-    };
-    return currentNetwork;
+        currentNetwork = {
+            keys,
+            network,
+            networkIdHash,
+        };
+        return currentNetwork;
+    });
 }
 function accountBalance(address) {
     return __awaiter(this, void 0, void 0, function* () {

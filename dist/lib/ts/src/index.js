@@ -18,6 +18,7 @@ __exportStar(require("./api/api"), exports);
 __exportStar(require("./cloud/cloud"), exports);
 __exportStar(require("./cloud/local"), exports);
 __exportStar(require("./cloud/job"), exports);
+__exportStar(require("./cloud/task"), exports);
 __exportStar(require("./mina"), exports);
 __exportStar(require("./fee"), exports);
 __exportStar(require("./networks"), exports);
