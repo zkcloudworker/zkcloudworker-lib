@@ -9,6 +9,7 @@ export {
   MinaNetworkInstance,
   currentNetwork,
   getNetworkIdHash,
+  getCurrentNetwork,
   getDeployer,
 };
 
@@ -19,7 +20,8 @@ import {
   UInt64,
   fetchAccount,
   Field,
-  CircuitString,
+  Encoding,
+  Poseidon,
 } from "o1js";
 import { networks, blockchain, MinaNetwork, Local } from "./networks";
 
@@ -41,6 +43,13 @@ function getNetworkIdHash(): Field {
   return currentNetwork.networkIdHash;
 }
 
+function getCurrentNetwork(): MinaNetworkInstance {
+  if (currentNetwork === undefined) {
+    throw new Error("Network is not initialized");
+  }
+  return currentNetwork;
+}
+
 function getDeployer(): PrivateKey | undefined {
   if (currentNetwork === undefined) {
     throw new Error("Network is not initialized");
@@ -48,55 +57,25 @@ function getDeployer(): PrivateKey | undefined {
   return currentNetwork.keys[0]?.privateKey;
 }
 
-/*function getNetworkIdHash(params: {
-  chainId?: blockchain;
-  verbose?: boolean;
-}): Field {
-  const { chainId, verbose } = params;
-  if (chainId !== undefined) {
-    if (verbose) console.log(`Chain ID: ${chainId}`);
-    return CircuitString.fromString(chainId).hash();
-  }
-  const networkId = Mina.getNetworkId();
-  if (verbose) console.log(`Network ID: ${networkId}`);
-  if (networkId === "testnet")
-    throw new Error(
-      "Network ID is not set, please call initBlockchain() first"
-    );
-
-  if (networkId === "mainnet")
-    return CircuitString.fromString("mainnet").hash();
-  else {
-    if (
-      networkId.custom === undefined ||
-      typeof networkId.custom !== "string"
-    ) {
-      throw new Error(
-        "Network ID is not set, please call initBlockchain() first"
-      );
-    }
-    return CircuitString.fromString(networkId.custom).hash();
-  }
-}
-*/
-
-function initBlockchain(
+async function initBlockchain(
   instance: blockchain,
   deployersNumber: number = 0
-): MinaNetworkInstance {
+): Promise<MinaNetworkInstance> {
   if (instance === "mainnet") {
     throw new Error("Mainnet is not supported yet by zkApps");
   }
+  const networkIdHash = Poseidon.hash(Encoding.stringToFields(instance));
 
+  // await used for compatibility with future versions of o1js
   if (instance === "local") {
-    const local = Mina.LocalBlockchain({
+    const local = await Mina.LocalBlockchain({
       proofsEnabled: true,
     });
-    Mina.setActiveInstance(local);
+    await Mina.setActiveInstance(local);
     currentNetwork = {
       keys: local.testAccounts,
       network: Local,
-      networkIdHash: CircuitString.fromString("local").hash(),
+      networkIdHash,
     };
     return currentNetwork;
   }
@@ -111,7 +90,7 @@ function initBlockchain(
     archive: network.archive,
     lightnetAccountManager: network.accountManager,
   });
-  Mina.setActiveInstance(networkInstance);
+  await Mina.setActiveInstance(networkInstance);
 
   const keys: {
     publicKey: PublicKey;
@@ -142,7 +121,7 @@ function initBlockchain(
   currentNetwork = {
     keys,
     network,
-    networkIdHash: CircuitString.fromString(instance).hash(),
+    networkIdHash,
   };
   return currentNetwork;
 }

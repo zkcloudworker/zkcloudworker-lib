@@ -15,10 +15,11 @@ export class zkCloudWorkerClient {
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
      */
     constructor(params) {
-        const { jwt, zkcloudworker, chain } = params;
+        const { jwt, zkcloudworker, chain, webhook } = params;
         this.jwt = jwt;
         this.endpoint = ZKCLOUDWORKER_API;
-        this.chain = chain !== null && chain !== void 0 ? chain : "berkeley";
+        this.chain = chain !== null && chain !== void 0 ? chain : "devnet";
+        this.webhook = webhook;
         if (jwt === "local") {
             if (zkcloudworker === undefined)
                 throw new Error("worker is required for local mode");
@@ -155,7 +156,12 @@ export class zkCloudWorkerClient {
     deploy(data) {
         return __awaiter(this, void 0, void 0, function* () {
             // TODO: encrypt env.json
-            const result = yield this.apiHub("deploy", data);
+            const { repo, developer, packageManager } = data;
+            const result = yield this.apiHub("deploy", {
+                developer,
+                repo,
+                args: packageManager,
+            });
             if (result.data === "error")
                 return {
                     success: false,
@@ -177,6 +183,28 @@ export class zkCloudWorkerClient {
     queryBilling() {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.apiHub("queryBilling", {});
+            if (this.isError(result.data))
+                return {
+                    success: false,
+                    error: result.error,
+                    result: result.data,
+                };
+            else
+                return {
+                    success: result.success,
+                    error: result.error,
+                    result: result.data,
+                };
+        });
+    }
+    /**
+     * Gets the remaining balance
+     * @returns { success: boolean, error?: string, result?: any }
+     * where result is the billing report
+     */
+    getBalance() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.apiHub("getBalance", {});
             if (this.isError(result.data))
                 return {
                     success: false,
@@ -333,6 +361,7 @@ export class zkCloudWorkerClient {
                     jwtToken: this.jwt,
                     data: data,
                     chain: this.chain,
+                    webhook: this.webhook, // TODO: implement webhook code on AWS
                 };
                 try {
                     const response = yield axios.post(this.endpoint, apiData);

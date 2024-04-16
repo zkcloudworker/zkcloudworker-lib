@@ -1,7 +1,8 @@
 import { __awaiter } from "tslib";
 export class Cloud {
     constructor(params) {
-        const { jobId, stepId, taskId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, chain, } = params;
+        const { id, jobId, stepId, taskId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, chain, } = params;
+        this.id = id;
         this.jobId = jobId;
         this.stepId = stepId;
         this.taskId = taskId;

@@ -20,10 +20,11 @@ class zkCloudWorkerClient {
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
      */
     constructor(params) {
-        const { jwt, zkcloudworker, chain } = params;
+        const { jwt, zkcloudworker, chain, webhook } = params;
         this.jwt = jwt;
         this.endpoint = ZKCLOUDWORKER_API;
-        this.chain = chain ?? "berkeley";
+        this.chain = chain ?? "devnet";
+        this.webhook = webhook;
         if (jwt === "local") {
             if (zkcloudworker === undefined)
                 throw new Error("worker is required for local mode");
@@ -151,7 +152,12 @@ class zkCloudWorkerClient {
      */
     async deploy(data) {
         // TODO: encrypt env.json
-        const result = await this.apiHub("deploy", data);
+        const { repo, developer, packageManager } = data;
+        const result = await this.apiHub("deploy", {
+            developer,
+            repo,
+            args: packageManager,
+        });
         if (result.data === "error")
             return {
                 success: false,
@@ -171,6 +177,26 @@ class zkCloudWorkerClient {
      */
     async queryBilling() {
         const result = await this.apiHub("queryBilling", {});
+        if (this.isError(result.data))
+            return {
+                success: false,
+                error: result.error,
+                result: result.data,
+            };
+        else
+            return {
+                success: result.success,
+                error: result.error,
+                result: result.data,
+            };
+    }
+    /**
+     * Gets the remaining balance
+     * @returns { success: boolean, error?: string, result?: any }
+     * where result is the billing report
+     */
+    async getBalance() {
+        const result = await this.apiHub("getBalance", {});
         if (this.isError(result.data))
             return {
                 success: false,
@@ -321,6 +347,7 @@ class zkCloudWorkerClient {
                 jwtToken: this.jwt,
                 data: data,
                 chain: this.chain,
+                webhook: this.webhook, // TODO: implement webhook code on AWS
             };
             try {
                 const response = await axios_1.default.post(this.endpoint, apiData);

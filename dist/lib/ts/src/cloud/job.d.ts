@@ -1,3 +1,4 @@
+import { blockchain } from "../networks";
 export type JobStatus = "created" | "started" | "finished" | "failed" | "used";
 export interface JobData {
     id: string;
@@ -9,7 +10,11 @@ export interface JobData {
     userId?: string;
     args?: string;
     metadata?: string;
+    chain: blockchain;
     webhook?: string;
+    cloudhook?: string;
+    cloudIteration?: number;
+    previousJob?: JobData;
     filename?: string;
     txNumber: number;
     timeCreated: number;
@@ -19,6 +24,8 @@ export interface JobData {
     timeFailed?: number;
     timeUsed?: number;
     billedDuration?: number;
+    feeMINA?: number;
+    feeUSD?: number;
     jobStatus: JobStatus;
     maxAttempts: number;
     result?: string;

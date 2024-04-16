@@ -1,6 +1,6 @@
 import { zkCloudWorker, Cloud } from "../cloud/cloud";
 import { blockchain } from "../networks";
-export type ApiCommand = "recursiveProof" | "execute" | "sendTransaction" | "jobResult" | "deploy" | "queryBilling";
+export type ApiCommand = "recursiveProof" | "execute" | "sendTransaction" | "jobResult" | "deploy" | "getBalance" | "queryBilling";
 /**
  * API class for interacting with the zkCloudWorker
  * @property jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
@@ -10,6 +10,7 @@ export declare class zkCloudWorkerClient {
     readonly jwt: string;
     readonly endpoint: string;
     readonly chain: blockchain;
+    readonly webhook?: string;
     readonly localWorker?: (cloud: Cloud) => Promise<zkCloudWorker>;
     /**
      * Constructor for the API class
@@ -19,6 +20,7 @@ export declare class zkCloudWorkerClient {
         jwt: string;
         zkcloudworker?: (cloud: Cloud) => Promise<zkCloudWorker>;
         chain?: blockchain;
+        webhook?: string;
     });
     /**
      * Starts a new job for the proof calculation using serverless api call
@@ -70,7 +72,6 @@ export declare class zkCloudWorkerClient {
         userId?: string;
         args?: string;
         metadata?: string;
-        webhook?: string;
     }): Promise<{
         success: boolean;
         error?: string;
@@ -127,7 +128,9 @@ export declare class zkCloudWorkerClient {
      * if the job is not found, the result will be undefined and error will be set
      */
     deploy(data: {
-        packageName: string;
+        repo: string;
+        developer: string;
+        packageManager: string;
     }): Promise<{
         success: boolean;
         error?: string;
@@ -139,6 +142,16 @@ export declare class zkCloudWorkerClient {
      * where result is the billing report
      */
     queryBilling(): Promise<{
+        success: boolean;
+        error?: string;
+        result?: any;
+    }>;
+    /**
+     * Gets the remaining balance
+     * @returns { success: boolean, error?: string, result?: any }
+     * where result is the billing report
+     */
+    getBalance(): Promise<{
         success: boolean;
         error?: string;
         result?: any;
