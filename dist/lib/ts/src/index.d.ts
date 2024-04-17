@@ -5,5 +5,6 @@ export * from "./cloud/job";
 export * from "./cloud/task";
 export * from "./mina";
 export * from "./fee";
+export * from "./fetch";
 export * from "./networks";
 export * from "./api/client-api";

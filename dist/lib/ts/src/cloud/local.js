@@ -27,7 +27,8 @@ class LocalCloud extends cloud_1.Cloud {
         this.localWorker = localWorker;
     }
     async getDeployer() {
-        return (0, mina_1.getDeployer)();
+        const deployer = process.env.DEPLOYER;
+        return deployer === undefined ? undefined : o1js_1.PrivateKey.fromBase58(deployer);
     }
     async releaseDeployer(txsHashes) {
         console.log("LocalCloud: releaseDeployer", txsHashes);
