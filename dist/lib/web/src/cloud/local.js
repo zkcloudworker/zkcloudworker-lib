@@ -1,7 +1,7 @@
 import { __awaiter } from "tslib";
-import { Cache } from "o1js";
+import { Cache, PrivateKey } from "o1js";
 import { Cloud } from "./cloud";
-import { makeString, getDeployer } from "../mina";
+import { makeString } from "../mina";
 import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 export class LocalCloud extends Cloud {
     constructor(params) {
@@ -26,7 +26,8 @@ export class LocalCloud extends Cloud {
     }
     getDeployer() {
         return __awaiter(this, void 0, void 0, function* () {
-            return getDeployer();
+            const deployer = process.env.DEPLOYER;
+            return deployer === undefined ? undefined : PrivateKey.fromBase58(deployer);
         });
     }
     releaseDeployer(txsHashes) {

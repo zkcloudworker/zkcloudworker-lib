@@ -21,5 +21,6 @@ __exportStar(require("./cloud/job"), exports);
 __exportStar(require("./cloud/task"), exports);
 __exportStar(require("./mina"), exports);
 __exportStar(require("./fee"), exports);
+__exportStar(require("./fetch"), exports);
 __exportStar(require("./networks"), exports);
 __exportStar(require("./api/client-api"), exports);

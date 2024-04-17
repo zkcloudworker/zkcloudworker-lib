@@ -2,7 +2,7 @@ import { Cache, PrivateKey } from "o1js";
 import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
 import { TaskData } from "./task";
-import { makeString, getDeployer } from "../mina";
+import { makeString } from "../mina";
 import { blockchain } from "../networks";
 import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 import { CloudTransaction } from "./cloud";
@@ -39,7 +39,8 @@ export class LocalCloud extends Cloud {
     this.localWorker = localWorker;
   }
   public async getDeployer(): Promise<PrivateKey | undefined> {
-    return getDeployer();
+    const deployer = process.env.DEPLOYER;
+    return deployer === undefined ? undefined : PrivateKey.fromBase58(deployer);
   }
 
   public async releaseDeployer(txsHashes: string[]): Promise<void> {
