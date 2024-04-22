@@ -19,12 +19,12 @@ export declare class LocalCloud extends Cloud {
     releaseDeployer(txsHashes: string[]): Promise<void>;
     log(msg: string): Promise<void>;
     getDataByKey(key: string): Promise<string | undefined>;
-    saveDataByKey(key: string, value: string): Promise<void>;
+    saveDataByKey(key: string, value: string | undefined): Promise<void>;
     saveFile(filename: string, value: Buffer): Promise<void>;
     loadFile(filename: string): Promise<Buffer | undefined>;
     loadEnvironment(password: string): Promise<void>;
     private static generateId;
-    static addTransaction(transaction: string): Promise<string>;
+    static addTransactions(transactions: string[]): Promise<string[]>;
     deleteTransaction(txId: string): Promise<void>;
     getTransactions(): Promise<CloudTransaction[]>;
     static run(params: {

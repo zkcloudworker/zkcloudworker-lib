@@ -8,7 +8,7 @@ const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 export type ApiCommand =
   | "recursiveProof"
   | "execute"
-  | "sendTransaction"
+  | "sendTransactions"
   | "jobResult"
   | "deploy"
   | "getBalance"
@@ -99,8 +99,12 @@ export class zkCloudWorkerClient {
    * @param data the data for the proof call
    * @param data.developer the developer
    * @param data.repo the repo to use
+   * @param data.transactions the transactions
    * @param data.task the task of the job
+   * @param data.userId the userId of the job
    * @param data.args the arguments of the job
+   * @param data.metadata the metadata of the job
+   * @param data.mode the mode of the job execution: "sync" will not create a job, it will execute the function synchronously within 30 seconds and with the memory limit of 256 MB
    * @returns { success: boolean, error?: string, jobId?: string }
    * where jonId is the jobId of the job
    */
@@ -112,13 +116,18 @@ export class zkCloudWorkerClient {
     userId?: string;
     args?: string;
     metadata?: string;
+    mode?: string;
   }): Promise<{
     success: boolean;
     error?: string;
     jobId?: string;
+    result?: any;
   }> {
     const result = await this.apiHub("execute", data);
-    if (result.data === "error")
+    if (
+      result.data === "error" ||
+      (typeof result.data === "string" && result.data.startsWith("error"))
+    )
       return {
         success: false,
         error: result.error,
@@ -126,7 +135,8 @@ export class zkCloudWorkerClient {
     else
       return {
         success: result.success,
-        jobId: result.data,
+        jobId: data.mode === "sync" ? undefined : result.data,
+        result: data.mode === "sync" ? result.data : undefined,
         error: result.error,
       };
   }
@@ -143,17 +153,18 @@ export class zkCloudWorkerClient {
    * @returns { success: boolean, error?: string, jobId?: string }
    * where jonId is the jobId of the job
    */
-  public async sendTransaction(data: {
+  public async sendTransactions(data: {
     developer: string;
     repo: string;
-    transaction: string;
+    transactions: string[];
   }): Promise<{
     success: boolean;
     error?: string;
-    jobId?: string;
+    txId?: string[];
   }> {
-    const result = await this.apiHub("sendTransaction", data);
+    const result = await this.apiHub("sendTransactions", data);
     if (result.data === "error")
+      // TODO: check if this is correct in AWS code
       return {
         success: false,
         error: result.error,
@@ -161,7 +172,7 @@ export class zkCloudWorkerClient {
     else
       return {
         success: result.success,
-        jobId: result.data,
+        txId: result.data,
         error: result.error,
       };
   }
@@ -408,10 +419,10 @@ export class zkCloudWorkerClient {
             };
           }
         }
-        case "sendTransaction": {
+        case "sendTransactions": {
           return {
             success: true,
-            data: await LocalCloud.addTransaction(data.transaction),
+            data: await LocalCloud.addTransactions(data.transactions),
           };
         }
         case "deploy":
@@ -456,6 +467,7 @@ export class zkCloudWorkerClient {
     if (data?.jobStatus === "failed") return true;
     if (typeof data === "string" && data.toLowerCase().startsWith("error"))
       return true;
+    if (data !== undefined && data.error !== undefined) return true;
     return false;
   }
 }

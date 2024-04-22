@@ -56,8 +56,12 @@ export class LocalCloud extends Cloud {
     return value;
   }
 
-  public async saveDataByKey(key: string, value: string): Promise<void> {
-    LocalStorage.data[key] = value;
+  public async saveDataByKey(
+    key: string,
+    value: string | undefined
+  ): Promise<void> {
+    if (value !== undefined) LocalStorage.data[key] = value;
+    else delete LocalStorage.data[key];
   }
 
   public async saveFile(filename: string, value: Buffer): Promise<void> {
@@ -75,11 +79,17 @@ export class LocalCloud extends Cloud {
     return "local." + Date.now().toString() + "." + makeString(32);
   }
 
-  public static async addTransaction(transaction: string): Promise<string> {
+  public static async addTransactions(
+    transactions: string[]
+  ): Promise<string[]> {
     const timeReceived = Date.now();
-    const id = LocalCloud.generateId();
-    LocalStorage.transactions[id] = { transaction, timeReceived };
-    return id;
+    const txId: string[] = [];
+    transactions.forEach((tx) => {
+      const id = LocalCloud.generateId();
+      LocalStorage.transactions[id] = { transaction: tx, timeReceived };
+      txId.push(id);
+    });
+    return txId;
   }
 
   public async deleteTransaction(txId: string): Promise<void> {

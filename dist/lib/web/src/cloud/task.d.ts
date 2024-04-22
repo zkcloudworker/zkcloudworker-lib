@@ -4,6 +4,8 @@ export interface TaskData {
     taskId: string;
     startTime?: number;
     timeCreated: number;
+    maxAttempts?: number;
+    attempts: number;
     developer: string;
     repo: string;
     task: string;

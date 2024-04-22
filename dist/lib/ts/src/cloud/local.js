@@ -41,7 +41,10 @@ class LocalCloud extends cloud_1.Cloud {
         return value;
     }
     async saveDataByKey(key, value) {
-        LocalStorage.data[key] = value;
+        if (value !== undefined)
+            LocalStorage.data[key] = value;
+        else
+            delete LocalStorage.data[key];
     }
     async saveFile(filename, value) {
         await (0, files_1.saveBinaryFile)({ data: value, filename });
@@ -56,11 +59,15 @@ class LocalCloud extends cloud_1.Cloud {
     static generateId() {
         return "local." + Date.now().toString() + "." + (0, mina_1.makeString)(32);
     }
-    static async addTransaction(transaction) {
+    static async addTransactions(transactions) {
         const timeReceived = Date.now();
-        const id = LocalCloud.generateId();
-        LocalStorage.transactions[id] = { transaction, timeReceived };
-        return id;
+        const txId = [];
+        transactions.forEach((tx) => {
+            const id = LocalCloud.generateId();
+            LocalStorage.transactions[id] = { transaction: tx, timeReceived };
+            txId.push(id);
+        });
+        return txId;
     }
     async deleteTransaction(txId) {
         if (LocalStorage.transactions[txId] === undefined)

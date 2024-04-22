@@ -71,9 +71,12 @@ async function initBlockchain(
     const local = await Mina.LocalBlockchain({
       proofsEnabled: true,
     });
-    await Mina.setActiveInstance(local);
+    Mina.setActiveInstance(local);
     currentNetwork = {
-      keys: local.testAccounts,
+      keys: local.testAccounts.map((key) => ({
+        publicKey: key,
+        privateKey: key.key,
+      })),
       network: Local,
       networkIdHash,
     };

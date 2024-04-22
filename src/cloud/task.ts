@@ -6,6 +6,8 @@ export interface TaskData {
 
   startTime?: number;
   timeCreated: number;
+  maxAttempts?: number; // default is 5
+  attempts: number;
 
   developer: string;
   repo: string;

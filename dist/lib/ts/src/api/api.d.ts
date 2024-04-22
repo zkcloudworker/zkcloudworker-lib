@@ -1,6 +1,6 @@
 import { zkCloudWorker, Cloud } from "../cloud/cloud";
 import { blockchain } from "../networks";
-export type ApiCommand = "recursiveProof" | "execute" | "sendTransaction" | "jobResult" | "deploy" | "getBalance" | "queryBilling";
+export type ApiCommand = "recursiveProof" | "execute" | "sendTransactions" | "jobResult" | "deploy" | "getBalance" | "queryBilling";
 /**
  * API class for interacting with the zkCloudWorker
  * @property jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
@@ -59,8 +59,12 @@ export declare class zkCloudWorkerClient {
      * @param data the data for the proof call
      * @param data.developer the developer
      * @param data.repo the repo to use
+     * @param data.transactions the transactions
      * @param data.task the task of the job
+     * @param data.userId the userId of the job
      * @param data.args the arguments of the job
+     * @param data.metadata the metadata of the job
+     * @param data.mode the mode of the job execution: "sync" will not create a job, it will execute the function synchronously within 30 seconds and with the memory limit of 256 MB
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      */
@@ -72,10 +76,12 @@ export declare class zkCloudWorkerClient {
         userId?: string;
         args?: string;
         metadata?: string;
+        mode?: string;
     }): Promise<{
         success: boolean;
         error?: string;
         jobId?: string;
+        result?: any;
     }>;
     /**
      * Starts a new job for the function call using serverless api call
@@ -89,14 +95,14 @@ export declare class zkCloudWorkerClient {
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      */
-    sendTransaction(data: {
+    sendTransactions(data: {
         developer: string;
         repo: string;
-        transaction: string;
+        transactions: string[];
     }): Promise<{
         success: boolean;
         error?: string;
-        jobId?: string;
+        txId?: string[];
     }>;
     /**
      * Gets the result of the job using serverless api call
