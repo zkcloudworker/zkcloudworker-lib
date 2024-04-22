@@ -82,7 +82,7 @@ export abstract class Cloud {
   abstract releaseDeployer(txsHashes: string[]): Promise<void>;
   abstract log(msg: string): void;
   abstract getDataByKey(key: string): Promise<string | undefined>;
-  abstract saveDataByKey(key: string, value: string): Promise<void>;
+  abstract saveDataByKey(key: string, value: string | undefined): Promise<void>;
   abstract saveFile(filename: string, value: Buffer): Promise<void>;
   abstract loadFile(filename: string): Promise<Buffer | undefined>;
   abstract loadEnvironment(password: string): Promise<void>;
@@ -106,6 +106,7 @@ export abstract class Cloud {
     userId?: string;
     args?: string;
     metadata?: string;
+    maxAttempts?: number;
   }): Promise<string>;
   //TODO: abstract addTransaction(transaction: string): Promise<string>;
   abstract deleteTransaction(txId: string): Promise<void>;
@@ -114,13 +115,6 @@ export abstract class Cloud {
   abstract processTasks(): Promise<void>;
   abstract jobResult(jobId: string): Promise<JobData | undefined>;
 }
-
-export interface CloudTransaction {
-  txId: string;
-  transaction: string;
-  timeReceived: number;
-}
-
 export abstract class zkCloudWorker {
   readonly cloud: Cloud;
 

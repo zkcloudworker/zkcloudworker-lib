@@ -33,9 +33,12 @@ function initBlockchain(instance_1) {
             const local = yield Mina.LocalBlockchain({
                 proofsEnabled: true,
             });
-            yield Mina.setActiveInstance(local);
+            Mina.setActiveInstance(local);
             currentNetwork = {
-                keys: local.testAccounts,
+                keys: local.testAccounts.map((key) => ({
+                    publicKey: key,
+                    privateKey: key.key,
+                })),
                 network: Local,
                 networkIdHash,
             };

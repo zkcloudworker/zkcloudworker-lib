@@ -48,7 +48,10 @@ export class LocalCloud extends Cloud {
     }
     saveDataByKey(key, value) {
         return __awaiter(this, void 0, void 0, function* () {
-            LocalStorage.data[key] = value;
+            if (value !== undefined)
+                LocalStorage.data[key] = value;
+            else
+                delete LocalStorage.data[key];
         });
     }
     saveFile(filename, value) {
@@ -70,12 +73,16 @@ export class LocalCloud extends Cloud {
     static generateId() {
         return "local." + Date.now().toString() + "." + makeString(32);
     }
-    static addTransaction(transaction) {
+    static addTransactions(transactions) {
         return __awaiter(this, void 0, void 0, function* () {
             const timeReceived = Date.now();
-            const id = LocalCloud.generateId();
-            LocalStorage.transactions[id] = { transaction, timeReceived };
-            return id;
+            const txId = [];
+            transactions.forEach((tx) => {
+                const id = LocalCloud.generateId();
+                LocalStorage.transactions[id] = { transaction: tx, timeReceived };
+                txId.push(id);
+            });
+            return txId;
         });
     }
     deleteTransaction(txId) {

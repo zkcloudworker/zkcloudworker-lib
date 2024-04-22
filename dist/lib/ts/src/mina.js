@@ -36,9 +36,12 @@ async function initBlockchain(instance, deployersNumber = 0) {
         const local = await o1js_1.Mina.LocalBlockchain({
             proofsEnabled: true,
         });
-        await o1js_1.Mina.setActiveInstance(local);
+        o1js_1.Mina.setActiveInstance(local);
         exports.currentNetwork = currentNetwork = {
-            keys: local.testAccounts,
+            keys: local.testAccounts.map((key) => ({
+                publicKey: key,
+                privateKey: key.key,
+            })),
             network: networks_1.Local,
             networkIdHash,
         };

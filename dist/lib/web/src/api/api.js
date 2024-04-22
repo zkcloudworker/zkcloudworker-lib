@@ -65,15 +65,20 @@ export class zkCloudWorkerClient {
      * @param data the data for the proof call
      * @param data.developer the developer
      * @param data.repo the repo to use
+     * @param data.transactions the transactions
      * @param data.task the task of the job
+     * @param data.userId the userId of the job
      * @param data.args the arguments of the job
+     * @param data.metadata the metadata of the job
+     * @param data.mode the mode of the job execution: "sync" will not create a job, it will execute the function synchronously within 30 seconds and with the memory limit of 256 MB
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      */
     execute(data) {
         return __awaiter(this, void 0, void 0, function* () {
             const result = yield this.apiHub("execute", data);
-            if (result.data === "error")
+            if (result.data === "error" ||
+                (typeof result.data === "string" && result.data.startsWith("error")))
                 return {
                     success: false,
                     error: result.error,
@@ -81,7 +86,8 @@ export class zkCloudWorkerClient {
             else
                 return {
                     success: result.success,
-                    jobId: result.data,
+                    jobId: data.mode === "sync" ? undefined : result.data,
+                    result: data.mode === "sync" ? result.data : undefined,
                     error: result.error,
                 };
         });
@@ -98,10 +104,11 @@ export class zkCloudWorkerClient {
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      */
-    sendTransaction(data) {
+    sendTransactions(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.apiHub("sendTransaction", data);
+            const result = yield this.apiHub("sendTransactions", data);
             if (result.data === "error")
+                // TODO: check if this is correct in AWS code
                 return {
                     success: false,
                     error: result.error,
@@ -109,7 +116,7 @@ export class zkCloudWorkerClient {
             else
                 return {
                     success: result.success,
-                    jobId: result.data,
+                    txId: result.data,
                     error: result.error,
                 };
         });
@@ -331,10 +338,10 @@ export class zkCloudWorkerClient {
                             };
                         }
                     }
-                    case "sendTransaction": {
+                    case "sendTransactions": {
                         return {
                             success: true,
-                            data: yield LocalCloud.addTransaction(data.transaction),
+                            data: yield LocalCloud.addTransactions(data.transactions),
                         };
                     }
                     case "deploy":
@@ -381,6 +388,8 @@ export class zkCloudWorkerClient {
         if ((data === null || data === void 0 ? void 0 : data.jobStatus) === "failed")
             return true;
         if (typeof data === "string" && data.toLowerCase().startsWith("error"))
+            return true;
+        if (data !== undefined && data.error !== undefined)
             return true;
         return false;
     }
