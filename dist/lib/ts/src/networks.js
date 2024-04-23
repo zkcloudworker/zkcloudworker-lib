@@ -45,8 +45,7 @@ exports.Lightnet = Lightnet;
 const networks = [Mainnet, Local, Devnet, Zeko, Lightnet];
 exports.networks = networks;
 /*
-
-// not supported by o1js 0.18.0
+// not supported by o1js v1
 
 const Berkeley: MinaNetwork = {
   mina: [

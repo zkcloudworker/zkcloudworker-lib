@@ -71,8 +71,7 @@ const Lightnet: MinaNetwork = {
 const networks: MinaNetwork[] = [Mainnet, Local, Devnet, Zeko, Lightnet];
 
 /*
-
-// not supported by o1js 0.18.0
+// not supported by o1js v1
 
 const Berkeley: MinaNetwork = {
   mina: [
