@@ -1,6 +1,6 @@
 import { __awaiter } from "tslib";
 export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, currentNetwork, getNetworkIdHash, getCurrentNetwork, getDeployer, };
-import { Mina, PrivateKey, UInt64, fetchAccount, Encoding, Poseidon, } from "o1js";
+import { Mina, PrivateKey, UInt64, fetchAccount, Encoding, Poseidon, Lightnet, } from "o1js";
 import { networks, Local } from "./networks";
 let currentNetwork = undefined;
 function getNetworkIdHash() {
@@ -16,11 +16,12 @@ function getCurrentNetwork() {
     return currentNetwork;
 }
 function getDeployer() {
-    var _a;
     if (currentNetwork === undefined) {
         throw new Error("Network is not initialized");
     }
-    return (_a = currentNetwork.keys[0]) === null || _a === void 0 ? void 0 : _a.privateKey;
+    if (currentNetwork.keys.length < 1)
+        return undefined;
+    return currentNetwork.keys[0];
 }
 function initBlockchain(instance_1) {
     return __awaiter(this, arguments, void 0, function* (instance, deployersNumber = 0) {
@@ -34,11 +35,10 @@ function initBlockchain(instance_1) {
                 proofsEnabled: true,
             });
             Mina.setActiveInstance(local);
+            if (deployersNumber > local.testAccounts.length)
+                throw new Error("Not enough test accounts");
             currentNetwork = {
-                keys: local.testAccounts.map((key) => ({
-                    publicKey: key,
-                    privateKey: key.key,
-                })),
+                keys: local.testAccounts,
                 network: Local,
                 networkIdHash,
             };
@@ -53,11 +53,15 @@ function initBlockchain(instance_1) {
             archive: network.archive,
             lightnetAccountManager: network.accountManager,
         });
-        yield Mina.setActiveInstance(networkInstance);
+        Mina.setActiveInstance(networkInstance);
         const keys = [];
         if (deployersNumber > 0) {
             if (instance === "lighnet") {
-                throw new Error("Use await Lightnet.acquireKeyPair() to get keys for Lightnet");
+                for (let i = 0; i < deployersNumber; i++) {
+                    const keyPair = yield Lightnet.acquireKeyPair();
+                    const key = Mina.TestPublicKey(keyPair.privateKey);
+                    keys.push(key);
+                }
             }
             else {
                 const deployers = process.env.DEPLOYERS;
@@ -67,8 +71,8 @@ function initBlockchain(instance_1) {
                     throw new Error("Deployers are not set");
                 for (let i = 0; i < deployersNumber; i++) {
                     const privateKey = PrivateKey.fromBase58(deployers[i]);
-                    const publicKey = privateKey.toPublicKey();
-                    keys.push({ publicKey, privateKey });
+                    const key = Mina.TestPublicKey(privateKey);
+                    keys.push(key);
                 }
             }
         }

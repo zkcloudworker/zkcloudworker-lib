@@ -23,7 +23,9 @@ function getDeployer() {
     if (currentNetwork === undefined) {
         throw new Error("Network is not initialized");
     }
-    return currentNetwork.keys[0]?.privateKey;
+    if (currentNetwork.keys.length < 1)
+        return undefined;
+    return currentNetwork.keys[0];
 }
 exports.getDeployer = getDeployer;
 async function initBlockchain(instance, deployersNumber = 0) {
@@ -37,11 +39,10 @@ async function initBlockchain(instance, deployersNumber = 0) {
             proofsEnabled: true,
         });
         o1js_1.Mina.setActiveInstance(local);
+        if (deployersNumber > local.testAccounts.length)
+            throw new Error("Not enough test accounts");
         exports.currentNetwork = currentNetwork = {
-            keys: local.testAccounts.map((key) => ({
-                publicKey: key,
-                privateKey: key.key,
-            })),
+            keys: local.testAccounts,
             network: networks_1.Local,
             networkIdHash,
         };
@@ -56,11 +57,15 @@ async function initBlockchain(instance, deployersNumber = 0) {
         archive: network.archive,
         lightnetAccountManager: network.accountManager,
     });
-    await o1js_1.Mina.setActiveInstance(networkInstance);
+    o1js_1.Mina.setActiveInstance(networkInstance);
     const keys = [];
     if (deployersNumber > 0) {
         if (instance === "lighnet") {
-            throw new Error("Use await Lightnet.acquireKeyPair() to get keys for Lightnet");
+            for (let i = 0; i < deployersNumber; i++) {
+                const keyPair = await o1js_1.Lightnet.acquireKeyPair();
+                const key = o1js_1.Mina.TestPublicKey(keyPair.privateKey);
+                keys.push(key);
+            }
         }
         else {
             const deployers = process.env.DEPLOYERS;
@@ -70,8 +75,8 @@ async function initBlockchain(instance, deployersNumber = 0) {
                 throw new Error("Deployers are not set");
             for (let i = 0; i < deployersNumber; i++) {
                 const privateKey = o1js_1.PrivateKey.fromBase58(deployers[i]);
-                const publicKey = privateKey.toPublicKey();
-                keys.push({ publicKey, privateKey });
+                const key = o1js_1.Mina.TestPublicKey(privateKey);
+                keys.push(key);
             }
         }
     }
