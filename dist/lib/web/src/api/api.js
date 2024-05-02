@@ -162,6 +162,7 @@ export class zkCloudWorkerClient {
      */
     deploy(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b;
             // TODO: encrypt env.json
             const { repo, developer, packageManager } = data;
             const result = yield this.apiHub("deploy", {
@@ -169,15 +170,16 @@ export class zkCloudWorkerClient {
                 repo,
                 args: packageManager,
             });
-            if (result.data === "error")
+            if (result.data === "error" ||
+                (typeof result.data === "string" && result.data.startsWith("error")))
                 return {
                     success: false,
                     error: result.error,
                 };
             else
                 return {
-                    success: result.success,
-                    jobId: result.data,
+                    success: result.success && ((_a = result.data) === null || _a === void 0 ? void 0 : _a.success),
+                    jobId: (_b = result.data) === null || _b === void 0 ? void 0 : _b.jobId,
                     error: result.error,
                 };
         });
@@ -318,10 +320,13 @@ export class zkCloudWorkerClient {
                             chain: this.chain,
                             localWorker: this.localWorker,
                         });
-                        return {
-                            success: true,
-                            data: jobId,
-                        };
+                        if (data.mode === "sync")
+                            return { success: true, data: LocalStorage.jobs[jobId].result };
+                        else
+                            return {
+                                success: true,
+                                data: jobId,
+                            };
                     }
                     case "jobResult": {
                         const job = LocalStorage.jobs[data.jobId];

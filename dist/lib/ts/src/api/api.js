@@ -165,15 +165,16 @@ class zkCloudWorkerClient {
             repo,
             args: packageManager,
         });
-        if (result.data === "error")
+        if (result.data === "error" ||
+            (typeof result.data === "string" && result.data.startsWith("error")))
             return {
                 success: false,
                 error: result.error,
             };
         else
             return {
-                success: result.success,
-                jobId: result.data,
+                success: result.success && result.data?.success,
+                jobId: result.data?.jobId,
                 error: result.error,
             };
     }
@@ -304,10 +305,13 @@ class zkCloudWorkerClient {
                         chain: this.chain,
                         localWorker: this.localWorker,
                     });
-                    return {
-                        success: true,
-                        data: jobId,
-                    };
+                    if (data.mode === "sync")
+                        return { success: true, data: local_1.LocalStorage.jobs[jobId].result };
+                    else
+                        return {
+                            success: true,
+                            data: jobId,
+                        };
                 }
                 case "jobResult": {
                     const job = local_1.LocalStorage.jobs[data.jobId];
