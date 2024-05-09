@@ -1,4 +1,3 @@
-import { __awaiter } from "tslib";
 import { Field, PublicKey, PrivateKey, Encoding, Group, Encryption, initializeBindings, } from "o1js";
 export class CipherText {
     static stringify(cipherText) {
@@ -32,10 +31,8 @@ export class CipherText {
             throw Error(`Could not decrypt cipher='${cipherText}'.` + ` Error ${err}`);
         }
     }
-    static initialize() {
-        return __awaiter(this, void 0, void 0, function* () {
-            yield initializeBindings();
-        });
+    static async initialize() {
+        await initializeBindings();
     }
 }
 //# sourceMappingURL=encryption.js.map

@@ -1,4 +1,3 @@
-import { __awaiter } from "tslib";
 export class Cloud {
     constructor(params) {
         const { id, jobId, stepId, taskId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, chain, } = params;
@@ -13,7 +12,7 @@ export class Cloud {
         this.userId = userId;
         this.args = args;
         this.metadata = metadata;
-        this.isLocalCloud = isLocalCloud !== null && isLocalCloud !== void 0 ? isLocalCloud : false;
+        this.isLocalCloud = isLocalCloud ?? false;
         this.chain = chain;
     }
 }
@@ -22,37 +21,25 @@ export class zkCloudWorker {
         this.cloud = cloud;
     }
     // To verify the SmartContract code
-    deployedContracts() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return [];
-        });
+    async deployedContracts() {
+        return [];
     }
     // Those methods should be implemented for recursive proofs calculations
-    create(transaction) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return undefined;
-        });
+    async create(transaction) {
+        return undefined;
     }
-    merge(proof1, proof2) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return undefined;
-        });
+    async merge(proof1, proof2) {
+        return undefined;
     }
     // Those methods should be implemented for anything except for recursive proofs
-    execute(transactions) {
-        return __awaiter(this, void 0, void 0, function* () {
-            return undefined;
-        });
+    async execute(transactions) {
+        return undefined;
     }
     // process the transactions received by the cloud
-    processTransactions(transactions) {
-        return __awaiter(this, void 0, void 0, function* () { });
-    }
+    async processTransactions(transactions) { }
     // process the task defined by the developer
-    task() {
-        return __awaiter(this, void 0, void 0, function* () {
-            return undefined;
-        });
+    async task() {
+        return undefined;
     }
 }
 //# sourceMappingURL=cloud.js.map

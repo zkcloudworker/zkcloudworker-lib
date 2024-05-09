@@ -2,10 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkMinaZkappTransaction = exports.fetchMinaActions = exports.fetchMinaAccount = void 0;
 const o1js_1 = require("o1js");
-const mina_1 = require("./mina");
+const mina_1 = require("../mina");
 async function fetchMinaAccount(params) {
     const { publicKey, tokenId, force } = params;
-    const timeout = 1000 * 60 * 10; // 10 minutes
+    const timeout = 1000 * 60 * 2; // 2 minutes
     const startTime = Date.now();
     let result = { account: undefined };
     while (Date.now() - startTime < timeout) {
@@ -18,15 +18,33 @@ async function fetchMinaAccount(params) {
         }
         catch (error) {
             if (force === true)
-                console.log("Error in fetchAccount:", error);
+                console.log("Error in fetchMinaAccount:", {
+                    error,
+                    publicKey: typeof publicKey === "string" ? publicKey : publicKey.toBase58(),
+                    tokenId: tokenId?.toString(),
+                    force,
+                });
             else {
-                console.log("fetchMinaAccount error", typeof publicKey === "string" ? publicKey : publicKey.toBase58(), tokenId?.toString(), force, error);
+                console.log("fetchMinaAccount error", {
+                    error,
+                    publicKey: typeof publicKey === "string" ? publicKey : publicKey.toBase58(),
+                    tokenId: tokenId?.toString(),
+                    force,
+                });
                 return result;
             }
         }
-        await (0, mina_1.sleep)(1000 * 10);
+        await (0, mina_1.sleep)(1000 * 5);
     }
-    console.log("fetchMinaAccount timeout", typeof publicKey === "string" ? publicKey : publicKey.toBase58(), tokenId?.toString(), force);
+    if (force === true)
+        throw new Error(`fetchMinaAccount timeout
+      ${{
+            publicKey: typeof publicKey === "string" ? publicKey : publicKey.toBase58(),
+            tokenId: tokenId?.toString(),
+            force,
+        }}`);
+    else
+        console.log("fetchMinaAccount timeout", typeof publicKey === "string" ? publicKey : publicKey.toBase58(), tokenId?.toString(), force);
     return result;
 }
 exports.fetchMinaAccount = fetchMinaAccount;
