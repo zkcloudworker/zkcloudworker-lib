@@ -1,4 +1,3 @@
-import { __awaiter } from "tslib";
 import axios from "axios";
 import chalk from "chalk";
 import { sleep } from "../mina";
@@ -19,7 +18,7 @@ export class zkCloudWorkerClient {
         const { jwt, zkcloudworker, chain, webhook } = params;
         this.jwt = jwt;
         this.endpoint = ZKCLOUDWORKER_API;
-        this.chain = chain !== null && chain !== void 0 ? chain : "devnet";
+        this.chain = chain ?? "devnet";
         this.webhook = webhook;
         if (jwt === "local") {
             if (zkcloudworker === undefined)
@@ -43,21 +42,19 @@ export class zkCloudWorkerClient {
      * The developers repo should provide a BackupPlugin with the name task
      * that can be called with the given parameters
      */
-    recursiveProof(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.apiHub("recursiveProof", data);
-            if (result.data === "error")
-                return {
-                    success: false,
-                    error: result.error,
-                };
-            else
-                return {
-                    success: result.success,
-                    jobId: result.data,
-                    error: result.error,
-                };
-        });
+    async recursiveProof(data) {
+        const result = await this.apiHub("recursiveProof", data);
+        if (result.data === "error")
+            return {
+                success: false,
+                error: result.error,
+            };
+        else
+            return {
+                success: result.success,
+                jobId: result.data,
+                error: result.error,
+            };
     }
     /**
      * Starts a new job for the function call using serverless api call
@@ -75,34 +72,31 @@ export class zkCloudWorkerClient {
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      */
-    execute(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d, _e;
-            const result = yield this.apiHub("execute", data);
-            if (result.data === "error" ||
-                (typeof result.data === "string" && result.data.startsWith("error")))
-                return {
-                    success: false,
-                    error: result.error,
-                };
-            else if (result.success === false || ((_a = result.data) === null || _a === void 0 ? void 0 : _a.success) === false)
-                return {
-                    success: false,
-                    error: (_d = (_b = result.error) !== null && _b !== void 0 ? _b : (_c = result.data) === null || _c === void 0 ? void 0 : _c.error) !== null && _d !== void 0 ? _d : "execute call failed",
-                };
-            else if (result.success === true && ((_e = result.data) === null || _e === void 0 ? void 0 : _e.success) === true)
-                return {
-                    success: result.success,
-                    jobId: data.mode === "sync" ? undefined : result.data.jobId,
-                    result: data.mode === "sync" ? result.data : undefined,
-                    error: result.error,
-                };
-            else
-                return {
-                    success: false,
-                    error: "execute call error",
-                };
-        });
+    async execute(data) {
+        const result = await this.apiHub("execute", data);
+        if (result.data === "error" ||
+            (typeof result.data === "string" && result.data.startsWith("error")))
+            return {
+                success: false,
+                error: result.error,
+            };
+        else if (result.success === false || result.data?.success === false)
+            return {
+                success: false,
+                error: result.error ?? result.data?.error ?? "execute call failed",
+            };
+        else if (result.success === true && result.data?.success === true)
+            return {
+                success: result.success,
+                jobId: data.mode === "sync" ? undefined : result.data.jobId,
+                result: data.mode === "sync" ? result.data : undefined,
+                error: result.error,
+            };
+        else
+            return {
+                success: false,
+                error: "execute call error",
+            };
     }
     /**
      * Starts a new job for the function call using serverless api call
@@ -116,22 +110,20 @@ export class zkCloudWorkerClient {
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      */
-    sendTransactions(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.apiHub("sendTransactions", data);
-            if (result.data === "error")
-                // TODO: check if this is correct in AWS code
-                return {
-                    success: false,
-                    error: result.error,
-                };
-            else
-                return {
-                    success: result.success,
-                    txId: result.data,
-                    error: result.error,
-                };
-        });
+    async sendTransactions(data) {
+        const result = await this.apiHub("sendTransactions", data);
+        if (result.data === "error")
+            // TODO: check if this is correct in AWS code
+            return {
+                success: false,
+                error: result.error,
+            };
+        else
+            return {
+                success: result.success,
+                txId: result.data,
+                error: result.error,
+            };
     }
     /**
      * Gets the result of the job using serverless api call
@@ -145,22 +137,20 @@ export class zkCloudWorkerClient {
      * if the job is finished, the result will be set and error will be undefined
      * if the job is not found, the result will be undefined and error will be set
      */
-    jobResult(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.apiHub("jobResult", data);
-            if (this.isError(result.data))
-                return {
-                    success: false,
-                    error: result.error,
-                    result: result.data,
-                };
-            else
-                return {
-                    success: result.success,
-                    error: result.error,
-                    result: result.data,
-                };
-        });
+    async jobResult(data) {
+        const result = await this.apiHub("jobResult", data);
+        if (this.isError(result.data))
+            return {
+                success: false,
+                error: result.error,
+                result: result.data,
+            };
+        else
+            return {
+                success: result.success,
+                error: result.error,
+                result: result.data,
+            };
     }
     /**
      * Gets the result of the job using serverless api call
@@ -173,73 +163,66 @@ export class zkCloudWorkerClient {
      * if the job is finished, the result will be set and error will be undefined
      * if the job is not found, the result will be undefined and error will be set
      */
-    deploy(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b;
-            // TODO: encrypt env.json
-            const { repo, developer, packageManager } = data;
-            const result = yield this.apiHub("deploy", {
-                developer,
-                repo,
-                args: packageManager,
-            });
-            if (result.data === "error" ||
-                (typeof result.data === "string" && result.data.startsWith("error")))
-                return {
-                    success: false,
-                    error: result.error,
-                };
-            else
-                return {
-                    success: result.success && ((_a = result.data) === null || _a === void 0 ? void 0 : _a.success),
-                    jobId: (_b = result.data) === null || _b === void 0 ? void 0 : _b.jobId,
-                    error: result.error,
-                };
+    async deploy(data) {
+        // TODO: encrypt env.json
+        const { repo, developer, packageManager } = data;
+        const result = await this.apiHub("deploy", {
+            developer,
+            repo,
+            args: packageManager,
         });
+        if (result.data === "error" ||
+            (typeof result.data === "string" && result.data.startsWith("error")))
+            return {
+                success: false,
+                error: result.error,
+            };
+        else
+            return {
+                success: result.success && result.data?.success,
+                jobId: result.data?.jobId,
+                error: result.error,
+            };
     }
     /**
      * Gets the billing report for the jobs sent using JWT
      * @returns { success: boolean, error?: string, result?: any }
      * where result is the billing report
      */
-    queryBilling() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.apiHub("queryBilling", {});
-            if (this.isError(result.data))
-                return {
-                    success: false,
-                    error: result.error,
-                    result: result.data,
-                };
-            else
-                return {
-                    success: result.success,
-                    error: result.error,
-                    result: result.data,
-                };
-        });
+    async queryBilling() {
+        const result = await this.apiHub("queryBilling", {});
+        if (this.isError(result.data))
+            return {
+                success: false,
+                error: result.error,
+                result: result.data,
+            };
+        else
+            return {
+                success: result.success,
+                error: result.error,
+                result: result.data,
+            };
     }
     /**
      * Gets the remaining balance
      * @returns { success: boolean, error?: string, result?: any }
      * where result is the billing report
      */
-    getBalance() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const result = yield this.apiHub("getBalance", {});
-            if (this.isError(result.data))
-                return {
-                    success: false,
-                    error: result.error,
-                    result: result.data,
-                };
-            else
-                return {
-                    success: result.success,
-                    error: result.error,
-                    result: result.data,
-                };
-        });
+    async getBalance() {
+        const result = await this.apiHub("getBalance", {});
+        if (this.isError(result.data))
+            return {
+                success: false,
+                error: result.error,
+                result: result.data,
+            };
+        else
+            return {
+                success: result.success,
+                error: result.error,
+                result: result.data,
+            };
     }
     /**
      * Waits for the job to finish
@@ -252,194 +235,190 @@ export class zkCloudWorkerClient {
      * @returns { success: boolean, error?: string, result?: any }
      * where result is the result of the job
      */
-    waitForJobResult(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d, _e, _f, _g, _h;
-            const maxAttempts = (_a = data === null || data === void 0 ? void 0 : data.maxAttempts) !== null && _a !== void 0 ? _a : 360; // 1 hour
-            const interval = (_b = data === null || data === void 0 ? void 0 : data.interval) !== null && _b !== void 0 ? _b : 10000;
-            const maxErrors = (_c = data === null || data === void 0 ? void 0 : data.maxErrors) !== null && _c !== void 0 ? _c : 10;
-            const errorDelay = 30000; // 30 seconds
-            const printedLogs = [];
-            const printLogs = (_d = data.printLogs) !== null && _d !== void 0 ? _d : true;
-            function isAllLogsFetched() {
-                if (printLogs === false)
-                    return true;
-                // search for "Billed Duration" in the logs and return true if found
-                return printedLogs.some((log) => log.includes("Billed Duration"));
-            }
-            function print(logs) {
-                logs.forEach((log) => {
-                    if (printedLogs.includes(log) === false) {
-                        printedLogs.push(log);
-                        if (printLogs) {
-                            // replace all occurrences of "error" with red color
-                            const text = log.replace(/error/gi, (matched) => chalk.red(matched));
-                            console.log(text);
-                        }
+    async waitForJobResult(data) {
+        if (this.jwt === "local")
+            return this.jobResult({ jobId: data.jobId });
+        const maxAttempts = data?.maxAttempts ?? 360; // 1 hour
+        const interval = data?.interval ?? 10000;
+        const maxErrors = data?.maxErrors ?? 10;
+        const errorDelay = 30000; // 30 seconds
+        const printedLogs = [];
+        const printLogs = data.printLogs ?? true;
+        function isAllLogsFetched() {
+            if (printLogs === false)
+                return true;
+            // search for "Billed Duration" in the logs and return true if found
+            return printedLogs.some((log) => log.includes("Billed Duration"));
+        }
+        function print(logs) {
+            logs.forEach((log) => {
+                if (printedLogs.includes(log) === false) {
+                    printedLogs.push(log);
+                    if (printLogs) {
+                        // replace all occurrences of "error" with red color
+                        const text = log.replace(/error/gi, (matched) => chalk.red(matched));
+                        console.log(text);
                     }
-                });
-            }
-            let attempts = 0;
-            let errors = 0;
-            while (attempts < maxAttempts) {
-                const result = yield this.apiHub("jobResult", {
-                    jobId: data.jobId,
-                    includeLogs: printLogs,
-                });
-                if (printLogs === true &&
-                    ((_e = result === null || result === void 0 ? void 0 : result.data) === null || _e === void 0 ? void 0 : _e.logs) !== undefined &&
-                    ((_f = result === null || result === void 0 ? void 0 : result.data) === null || _f === void 0 ? void 0 : _f.logs) !== null &&
-                    Array.isArray(result.data.logs) === true)
-                    print(result.data.logs);
-                if (result.success === false) {
-                    errors++;
-                    if (errors > maxErrors) {
-                        return {
-                            success: false,
-                            error: "Too many network errors",
-                            result: undefined,
-                        };
-                    }
-                    yield sleep(errorDelay * errors);
                 }
-                else {
-                    if (this.isError(result.data))
-                        return {
-                            success: false,
-                            error: result.error,
-                            result: result.data,
-                        };
-                    else if (((_g = result.data) === null || _g === void 0 ? void 0 : _g.result) !== undefined && isAllLogsFetched()) {
-                        return {
-                            success: result.success,
-                            error: result.error,
-                            result: result.data,
-                        };
-                    }
-                    else if (((_h = result.data) === null || _h === void 0 ? void 0 : _h.jobStatus) === "failed" && isAllLogsFetched()) {
-                        return {
-                            success: false,
-                            error: "Job failed",
-                            result: result.data,
-                        };
-                    }
-                    yield sleep(interval);
+            });
+        }
+        let attempts = 0;
+        let errors = 0;
+        while (attempts < maxAttempts) {
+            const result = await this.apiHub("jobResult", {
+                jobId: data.jobId,
+                includeLogs: printLogs,
+            });
+            if (printLogs === true &&
+                result?.data?.logs !== undefined &&
+                result?.data?.logs !== null &&
+                Array.isArray(result.data.logs) === true)
+                print(result.data.logs);
+            if (result.success === false) {
+                errors++;
+                if (errors > maxErrors) {
+                    return {
+                        success: false,
+                        error: "Too many network errors",
+                        result: undefined,
+                    };
                 }
-                attempts++;
+                await sleep(errorDelay * errors);
             }
-            return {
-                success: false,
-                error: "Timeout",
-                result: undefined,
-            };
-        });
+            else {
+                if (this.isError(result.data))
+                    return {
+                        success: false,
+                        error: result.error,
+                        result: result.data,
+                    };
+                else if (result.data?.result !== undefined && isAllLogsFetched()) {
+                    return {
+                        success: result.success,
+                        error: result.error,
+                        result: result.data,
+                    };
+                }
+                else if (result.data?.jobStatus === "failed" && isAllLogsFetched()) {
+                    return {
+                        success: false,
+                        error: "Job failed",
+                        result: result.data,
+                    };
+                }
+                await sleep(interval);
+            }
+            attempts++;
+        }
+        return {
+            success: false,
+            error: "Timeout",
+            result: undefined,
+        };
     }
     /**
      * Calls the serverless API
      * @param command the command of the API
      * @param data the data of the API
      * */
-    apiHub(command, 
+    async apiHub(command, 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     data
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ) {
-        return __awaiter(this, void 0, void 0, function* () {
-            var _a;
-            if (this.jwt === "local") {
-                if (this.localWorker === undefined)
-                    throw new Error("localWorker is undefined");
-                switch (command) {
-                    case "recursiveProof": {
-                        const jobId = yield LocalCloud.run({
-                            command: "recursiveProof",
-                            data,
-                            chain: this.chain,
-                            localWorker: this.localWorker,
-                        });
+        if (this.jwt === "local") {
+            if (this.localWorker === undefined)
+                throw new Error("localWorker is undefined");
+            switch (command) {
+                case "recursiveProof": {
+                    const jobId = await LocalCloud.run({
+                        command: "recursiveProof",
+                        data,
+                        chain: this.chain,
+                        localWorker: this.localWorker,
+                    });
+                    return {
+                        success: true,
+                        data: jobId,
+                    };
+                }
+                case "execute": {
+                    const jobId = await LocalCloud.run({
+                        command: "execute",
+                        data,
+                        chain: this.chain,
+                        localWorker: this.localWorker,
+                    });
+                    if (data.mode === "sync")
+                        return { success: true, data: LocalStorage.jobs[jobId].result };
+                    else
                         return {
                             success: true,
-                            data: jobId,
+                            data: { success: true, jobId },
                         };
-                    }
-                    case "execute": {
-                        const jobId = yield LocalCloud.run({
-                            command: "execute",
-                            data,
-                            chain: this.chain,
-                            localWorker: this.localWorker,
-                        });
-                        if (data.mode === "sync")
-                            return { success: true, data: LocalStorage.jobs[jobId].result };
-                        else
-                            return {
-                                success: true,
-                                data: jobId,
-                            };
-                    }
-                    case "jobResult": {
-                        const job = LocalStorage.jobs[data.jobId];
-                        if (job === undefined) {
-                            return {
-                                success: false,
-                                error: "local job not found",
-                            };
-                        }
-                        else {
-                            return {
-                                success: true,
-                                data: job,
-                            };
-                        }
-                    }
-                    case "sendTransactions": {
-                        return {
-                            success: true,
-                            data: yield LocalCloud.addTransactions(data.transactions),
-                        };
-                    }
-                    case "deploy":
-                        return {
-                            success: true,
-                            data: "local_deploy",
-                        };
-                    case "queryBilling":
-                        return {
-                            success: true,
-                            data: "local_queryBilling",
-                        };
-                    default:
+                }
+                case "jobResult": {
+                    const job = LocalStorage.jobs[data.jobId];
+                    if (job === undefined) {
                         return {
                             success: false,
-                            error: "local_error",
+                            error: "local job not found",
                         };
+                    }
+                    else {
+                        return {
+                            success: true,
+                            data: job,
+                        };
+                    }
                 }
+                case "sendTransactions": {
+                    return {
+                        success: true,
+                        data: await LocalCloud.addTransactions(data.transactions),
+                    };
+                }
+                case "deploy":
+                    return {
+                        success: true,
+                        data: "local_deploy",
+                    };
+                case "queryBilling":
+                    return {
+                        success: true,
+                        data: "local_queryBilling",
+                    };
+                default:
+                    return {
+                        success: false,
+                        error: "local_error",
+                    };
             }
-            else {
-                const apiData = {
-                    auth: ZKCLOUDWORKER_AUTH,
-                    command: command,
-                    jwtToken: this.jwt,
-                    data: data,
-                    chain: this.chain,
-                    webhook: this.webhook, // TODO: implement webhook code on AWS
-                };
-                try {
-                    const response = yield axios.post(this.endpoint, apiData);
-                    return { success: true, data: response.data };
-                }
-                catch (error) {
-                    console.error("apiHub error:", (_a = error.message) !== null && _a !== void 0 ? _a : error);
-                    return { success: false, error: error };
-                }
+        }
+        else {
+            const apiData = {
+                auth: ZKCLOUDWORKER_AUTH,
+                command: command,
+                jwtToken: this.jwt,
+                data: data,
+                chain: this.chain,
+                webhook: this.webhook, // TODO: implement webhook code on AWS
+            };
+            try {
+                const response = await axios.post(this.endpoint, apiData);
+                return { success: true, data: response.data };
             }
-        });
+            catch (error) {
+                console.error("apiHub error:", error.message ?? error);
+                return { success: false, error: error };
+            }
+        }
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     isError(data) {
         if (data === "error")
             return true;
-        if ((data === null || data === void 0 ? void 0 : data.jobStatus) === "failed")
+        if (data?.jobStatus === "failed")
             return true;
         if (typeof data === "string" && data.toLowerCase().startsWith("error"))
             return true;

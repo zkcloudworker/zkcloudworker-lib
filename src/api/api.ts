@@ -342,6 +342,7 @@ export class zkCloudWorkerClient {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     result?: any;
   }> {
+    if (this.jwt === "local") return this.jobResult({ jobId: data.jobId });
     const maxAttempts = data?.maxAttempts ?? 360; // 1 hour
     const interval = data?.interval ?? 10000;
     const maxErrors = data?.maxErrors ?? 10;
@@ -464,7 +465,7 @@ export class zkCloudWorkerClient {
           else
             return {
               success: true,
-              data: jobId,
+              data: { success: true, jobId },
             };
         }
         case "jobResult": {

@@ -242,6 +242,8 @@ class zkCloudWorkerClient {
      * where result is the result of the job
      */
     async waitForJobResult(data) {
+        if (this.jwt === "local")
+            return this.jobResult({ jobId: data.jobId });
         const maxAttempts = data?.maxAttempts ?? 360; // 1 hour
         const interval = data?.interval ?? 10000;
         const maxErrors = data?.maxErrors ?? 10;
@@ -358,7 +360,7 @@ class zkCloudWorkerClient {
                     else
                         return {
                             success: true,
-                            data: jobId,
+                            data: { success: true, jobId },
                         };
                 }
                 case "jobResult": {
