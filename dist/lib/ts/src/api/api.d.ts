@@ -108,6 +108,7 @@ export declare class zkCloudWorkerClient {
      * Gets the result of the job using serverless api call
      * @param data the data for the jobResult call
      * @param data.jobId the jobId of the job
+     * @param data.includeLogs include logs in the result, default is false
      * @returns { success: boolean, error?: string, result?: any }
      * where result is the result of the job
      * if the job is not finished yet, the result will be undefined
@@ -117,6 +118,7 @@ export declare class zkCloudWorkerClient {
      */
     jobResult(data: {
         jobId: string;
+        includeLogs?: boolean;
     }): Promise<{
         success: boolean;
         error?: string;
@@ -169,6 +171,7 @@ export declare class zkCloudWorkerClient {
      * @param data.maxAttempts the maximum number of attempts, default is 360 (2 hours)
      * @param data.interval the interval between attempts, default is 20000 (20 seconds)
      * @param data.maxErrors the maximum number of network errors, default is 10
+     * @param data.printLogs print logs, default is true
      * @returns { success: boolean, error?: string, result?: any }
      * where result is the result of the job
      */
@@ -177,6 +180,7 @@ export declare class zkCloudWorkerClient {
         maxAttempts?: number;
         interval?: number;
         maxErrors?: number;
+        printLogs?: boolean;
     }): Promise<{
         success: boolean;
         error?: string;
