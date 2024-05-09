@@ -1,5 +1,6 @@
 import { __awaiter } from "tslib";
 import axios from "axios";
+import chalk from "chalk";
 import { sleep } from "../mina";
 import { LocalCloud, LocalStorage } from "../cloud/local";
 import config from "../config";
@@ -76,6 +77,7 @@ export class zkCloudWorkerClient {
      */
     execute(data) {
         return __awaiter(this, void 0, void 0, function* () {
+            var _a, _b, _c, _d, _e;
             const result = yield this.apiHub("execute", data);
             if (result.data === "error" ||
                 (typeof result.data === "string" && result.data.startsWith("error")))
@@ -83,12 +85,22 @@ export class zkCloudWorkerClient {
                     success: false,
                     error: result.error,
                 };
-            else
+            else if (result.success === false || ((_a = result.data) === null || _a === void 0 ? void 0 : _a.success) === false)
+                return {
+                    success: false,
+                    error: (_d = (_b = result.error) !== null && _b !== void 0 ? _b : (_c = result.data) === null || _c === void 0 ? void 0 : _c.error) !== null && _d !== void 0 ? _d : "execute call failed",
+                };
+            else if (result.success === true && ((_e = result.data) === null || _e === void 0 ? void 0 : _e.success) === true)
                 return {
                     success: result.success,
-                    jobId: data.mode === "sync" ? undefined : result.data,
+                    jobId: data.mode === "sync" ? undefined : result.data.jobId,
                     result: data.mode === "sync" ? result.data : undefined,
                     error: result.error,
+                };
+            else
+                return {
+                    success: false,
+                    error: "execute call error",
                 };
         });
     }
@@ -125,6 +137,7 @@ export class zkCloudWorkerClient {
      * Gets the result of the job using serverless api call
      * @param data the data for the jobResult call
      * @param data.jobId the jobId of the job
+     * @param data.includeLogs include logs in the result, default is false
      * @returns { success: boolean, error?: string, result?: any }
      * where result is the result of the job
      * if the job is not finished yet, the result will be undefined
@@ -235,20 +248,49 @@ export class zkCloudWorkerClient {
      * @param data.maxAttempts the maximum number of attempts, default is 360 (2 hours)
      * @param data.interval the interval between attempts, default is 20000 (20 seconds)
      * @param data.maxErrors the maximum number of network errors, default is 10
+     * @param data.printLogs print logs, default is true
      * @returns { success: boolean, error?: string, result?: any }
      * where result is the result of the job
      */
     waitForJobResult(data) {
         return __awaiter(this, void 0, void 0, function* () {
-            var _a, _b, _c, _d;
-            const maxAttempts = (_a = data === null || data === void 0 ? void 0 : data.maxAttempts) !== null && _a !== void 0 ? _a : 360; // 2 hours
-            const interval = (_b = data === null || data === void 0 ? void 0 : data.interval) !== null && _b !== void 0 ? _b : 20000;
+            var _a, _b, _c, _d, _e, _f, _g, _h;
+            const maxAttempts = (_a = data === null || data === void 0 ? void 0 : data.maxAttempts) !== null && _a !== void 0 ? _a : 360; // 1 hour
+            const interval = (_b = data === null || data === void 0 ? void 0 : data.interval) !== null && _b !== void 0 ? _b : 10000;
             const maxErrors = (_c = data === null || data === void 0 ? void 0 : data.maxErrors) !== null && _c !== void 0 ? _c : 10;
             const errorDelay = 30000; // 30 seconds
+            const printedLogs = [];
+            const printLogs = (_d = data.printLogs) !== null && _d !== void 0 ? _d : true;
+            function isAllLogsFetched() {
+                if (printLogs === false)
+                    return true;
+                // search for "Billed Duration" in the logs and return true if found
+                return printedLogs.some((log) => log.includes("Billed Duration"));
+            }
+            function print(logs) {
+                logs.forEach((log) => {
+                    if (printedLogs.includes(log) === false) {
+                        printedLogs.push(log);
+                        if (printLogs) {
+                            // replace all occurrences of "error" with red color
+                            const text = log.replace(/error/gi, (matched) => chalk.red(matched));
+                            console.log(text);
+                        }
+                    }
+                });
+            }
             let attempts = 0;
             let errors = 0;
             while (attempts < maxAttempts) {
-                const result = yield this.apiHub("jobResult", data);
+                const result = yield this.apiHub("jobResult", {
+                    jobId: data.jobId,
+                    includeLogs: printLogs,
+                });
+                if (printLogs === true &&
+                    ((_e = result === null || result === void 0 ? void 0 : result.data) === null || _e === void 0 ? void 0 : _e.logs) !== undefined &&
+                    ((_f = result === null || result === void 0 ? void 0 : result.data) === null || _f === void 0 ? void 0 : _f.logs) !== null &&
+                    Array.isArray(result.data.logs) === true)
+                    print(result.data.logs);
                 if (result.success === false) {
                     errors++;
                     if (errors > maxErrors) {
@@ -267,10 +309,17 @@ export class zkCloudWorkerClient {
                             error: result.error,
                             result: result.data,
                         };
-                    else if (((_d = result.data) === null || _d === void 0 ? void 0 : _d.result) !== undefined) {
+                    else if (((_g = result.data) === null || _g === void 0 ? void 0 : _g.result) !== undefined && isAllLogsFetched()) {
                         return {
                             success: result.success,
                             error: result.error,
+                            result: result.data,
+                        };
+                    }
+                    else if (((_h = result.data) === null || _h === void 0 ? void 0 : _h.jobStatus) === "failed" && isAllLogsFetched()) {
+                        return {
+                            success: false,
+                            error: "Job failed",
                             result: result.data,
                         };
                     }

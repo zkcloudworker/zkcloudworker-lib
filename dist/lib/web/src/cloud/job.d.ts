@@ -1,5 +1,10 @@
 import { blockchain } from "../networks";
 export type JobStatus = "created" | "started" | "finished" | "failed" | "used";
+export interface LogStream {
+    logGroupName: string;
+    logStreamName: string;
+    awsRequestId: string;
+}
 export interface JobData {
     id: string;
     jobId: string;
@@ -29,4 +34,6 @@ export interface JobData {
     jobStatus: JobStatus;
     maxAttempts: number;
     result?: string;
+    logStreams?: LogStream[];
+    logs?: string[];
 }

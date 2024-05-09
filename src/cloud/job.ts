@@ -1,6 +1,17 @@
 import { blockchain } from "../networks";
 export type JobStatus = "created" | "started" | "finished" | "failed" | "used";
 
+/*
+  for https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/cloudwatch-logs/command/GetLogEventsCommand/
+  logGroupName: '/aws/lambda/zkcloudworker-dev-test',
+  logStreamName: '2024/05/09/[$LATEST]52d048f64e894d2e8ba2800df93629c5'
+  awsRequestId: '581d0d45-9165-47e8-84d9-678599938811',
+*/
+export interface LogStream {
+  logGroupName: string;
+  logStreamName: string;
+  awsRequestId: string;
+}
 export interface JobData {
   id: string;
   jobId: string;
@@ -32,4 +43,6 @@ export interface JobData {
   jobStatus: JobStatus;
   maxAttempts: number;
   result?: string;
+  logStreams?: LogStream[];
+  logs?: string[];
 }

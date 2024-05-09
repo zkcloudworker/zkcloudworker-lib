@@ -1,6 +1,6 @@
 {
   "name": "zkcloudworker",
-  "version": "0.4.6",
+  "version": "0.5.2",
   "description": "zkCloudWorker library",
   "author": "DFST & Mario",
   "license": "Apache-2.0",
@@ -41,7 +41,9 @@
     "proving"
   ],
   "dependencies": {
-    "axios": "^1.6.8"
+    "axios": "^1.6.8",
+    "chalk": "^4.1.2",
+    "nats": "^2.24.0"
   },
   "peerDependencies": {
     "o1js": "^1.1.0"

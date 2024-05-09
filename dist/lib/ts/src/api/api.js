@@ -5,6 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.zkCloudWorkerClient = void 0;
 const axios_1 = __importDefault(require("axios"));
+const chalk_1 = __importDefault(require("chalk"));
 const mina_1 = require("../mina");
 const local_1 = require("../cloud/local");
 const config_1 = __importDefault(require("../config"));
@@ -85,12 +86,22 @@ class zkCloudWorkerClient {
                 success: false,
                 error: result.error,
             };
-        else
+        else if (result.success === false || result.data?.success === false)
+            return {
+                success: false,
+                error: result.error ?? result.data?.error ?? "execute call failed",
+            };
+        else if (result.success === true && result.data?.success === true)
             return {
                 success: result.success,
-                jobId: data.mode === "sync" ? undefined : result.data,
+                jobId: data.mode === "sync" ? undefined : result.data.jobId,
                 result: data.mode === "sync" ? result.data : undefined,
                 error: result.error,
+            };
+        else
+            return {
+                success: false,
+                error: "execute call error",
             };
     }
     /**
@@ -124,6 +135,7 @@ class zkCloudWorkerClient {
      * Gets the result of the job using serverless api call
      * @param data the data for the jobResult call
      * @param data.jobId the jobId of the job
+     * @param data.includeLogs include logs in the result, default is false
      * @returns { success: boolean, error?: string, result?: any }
      * where result is the result of the job
      * if the job is not finished yet, the result will be undefined
@@ -225,18 +237,47 @@ class zkCloudWorkerClient {
      * @param data.maxAttempts the maximum number of attempts, default is 360 (2 hours)
      * @param data.interval the interval between attempts, default is 20000 (20 seconds)
      * @param data.maxErrors the maximum number of network errors, default is 10
+     * @param data.printLogs print logs, default is true
      * @returns { success: boolean, error?: string, result?: any }
      * where result is the result of the job
      */
     async waitForJobResult(data) {
-        const maxAttempts = data?.maxAttempts ?? 360; // 2 hours
-        const interval = data?.interval ?? 20000;
+        const maxAttempts = data?.maxAttempts ?? 360; // 1 hour
+        const interval = data?.interval ?? 10000;
         const maxErrors = data?.maxErrors ?? 10;
         const errorDelay = 30000; // 30 seconds
+        const printedLogs = [];
+        const printLogs = data.printLogs ?? true;
+        function isAllLogsFetched() {
+            if (printLogs === false)
+                return true;
+            // search for "Billed Duration" in the logs and return true if found
+            return printedLogs.some((log) => log.includes("Billed Duration"));
+        }
+        function print(logs) {
+            logs.forEach((log) => {
+                if (printedLogs.includes(log) === false) {
+                    printedLogs.push(log);
+                    if (printLogs) {
+                        // replace all occurrences of "error" with red color
+                        const text = log.replace(/error/gi, (matched) => chalk_1.default.red(matched));
+                        console.log(text);
+                    }
+                }
+            });
+        }
         let attempts = 0;
         let errors = 0;
         while (attempts < maxAttempts) {
-            const result = await this.apiHub("jobResult", data);
+            const result = await this.apiHub("jobResult", {
+                jobId: data.jobId,
+                includeLogs: printLogs,
+            });
+            if (printLogs === true &&
+                result?.data?.logs !== undefined &&
+                result?.data?.logs !== null &&
+                Array.isArray(result.data.logs) === true)
+                print(result.data.logs);
             if (result.success === false) {
                 errors++;
                 if (errors > maxErrors) {
@@ -255,10 +296,17 @@ class zkCloudWorkerClient {
                         error: result.error,
                         result: result.data,
                     };
-                else if (result.data?.result !== undefined) {
+                else if (result.data?.result !== undefined && isAllLogsFetched()) {
                     return {
                         success: result.success,
                         error: result.error,
+                        result: result.data,
+                    };
+                }
+                else if (result.data?.jobStatus === "failed" && isAllLogsFetched()) {
+                    return {
+                        success: false,
+                        error: "Job failed",
                         result: result.data,
                     };
                 }

@@ -24,3 +24,6 @@ __exportStar(require("./fee"), exports);
 __exportStar(require("./fetch"), exports);
 __exportStar(require("./networks"), exports);
 __exportStar(require("./api/client-api"), exports);
+__exportStar(require("./encryption/encryption"), exports);
+__exportStar(require("./encryption/nats-client"), exports);
+__exportStar(require("./encryption/messages"), exports);
