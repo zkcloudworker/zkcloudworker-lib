@@ -12,7 +12,7 @@ export {
 type blockchain =
   | "local"
   | "devnet"
-  | "lighnet"
+  | "lightnet"
   | "mainnet"
   | "zeko"
   | "mainnet";
@@ -55,16 +55,19 @@ const Devnet: MinaNetwork = {
 };
 
 const Zeko: MinaNetwork = {
-  mina: ["http://sequencer-zeko-dev.dcspark.io/graphql"],
+  mina: ["https://devnet.zeko.io/graphql"],
   archive: [],
+  explorerAccountUrl: "https://zekoscan.io/devnet/account/",
+  explorerTransactionUrl: "https://zekoscan.io/devnet/tx/",
   chainId: "zeko",
+  name: "Zeko",
 };
 
 const Lightnet: MinaNetwork = {
   mina: ["http://localhost:8080/graphql"],
   archive: ["http://localhost:8282"],
   accountManager: "http://localhost:8181",
-  chainId: "lighnet",
+  chainId: "lightnet",
   name: "Lightnet",
 };
 

@@ -54,7 +54,7 @@ async function initBlockchain(instance, deployersNumber = 0) {
     Mina.setActiveInstance(networkInstance);
     const keys = [];
     if (deployersNumber > 0) {
-        if (instance === "lighnet") {
+        if (instance === "lightnet") {
             for (let i = 0; i < deployersNumber; i++) {
                 const keyPair = await Lightnet.acquireKeyPair();
                 const key = Mina.TestPublicKey(keyPair.privateKey);
