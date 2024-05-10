@@ -16,7 +16,7 @@
     "web3",
     "zero knowledge"
   ],
-  "version": "0.5.6",
+  "version": "0.5.8",
   "homepage": "https://docs.zkcloudworker.com",
   "repository": "git@zkcloudworker.github.com:zkcloudworker/zkcloudworker-lib.git",
   "main": "src/index.ts",

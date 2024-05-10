@@ -60,7 +60,7 @@ async function initBlockchain(instance, deployersNumber = 0) {
     o1js_1.Mina.setActiveInstance(networkInstance);
     const keys = [];
     if (deployersNumber > 0) {
-        if (instance === "lighnet") {
+        if (instance === "lightnet") {
             for (let i = 0; i < deployersNumber; i++) {
                 const keyPair = await o1js_1.Lightnet.acquireKeyPair();
                 const key = o1js_1.Mina.TestPublicKey(keyPair.privateKey);

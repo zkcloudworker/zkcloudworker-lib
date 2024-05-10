@@ -1,5 +1,5 @@
 export { blockchain, MinaNetwork, networks, Mainnet, Devnet, Zeko, Lightnet, Local, };
-type blockchain = "local" | "devnet" | "lighnet" | "mainnet" | "zeko" | "mainnet";
+type blockchain = "local" | "devnet" | "lightnet" | "mainnet" | "zeko" | "mainnet";
 interface MinaNetwork {
     mina: string[];
     archive: string[];

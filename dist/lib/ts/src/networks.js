@@ -29,16 +29,19 @@ const Devnet = {
 };
 exports.Devnet = Devnet;
 const Zeko = {
-    mina: ["http://sequencer-zeko-dev.dcspark.io/graphql"],
+    mina: ["https://devnet.zeko.io/graphql"],
     archive: [],
+    explorerAccountUrl: "https://zekoscan.io/devnet/account/",
+    explorerTransactionUrl: "https://zekoscan.io/devnet/tx/",
     chainId: "zeko",
+    name: "Zeko",
 };
 exports.Zeko = Zeko;
 const Lightnet = {
     mina: ["http://localhost:8080/graphql"],
     archive: ["http://localhost:8282"],
     accountManager: "http://localhost:8181",
-    chainId: "lighnet",
+    chainId: "lightnet",
     name: "Lightnet",
 };
 exports.Lightnet = Lightnet;
