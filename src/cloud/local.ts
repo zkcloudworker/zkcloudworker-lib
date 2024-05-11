@@ -2,10 +2,10 @@ import { Cache, PrivateKey } from "o1js";
 import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
 import { TaskData } from "./task";
-import { makeString } from "../mina";
+import { makeString } from "../utils/mina";
 import { blockchain } from "../networks";
 import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
-import { CloudTransaction } from "./cloud";
+import { CloudTransaction, DeployerKeyPair } from "./cloud";
 import { ApiCommand } from "../api/api";
 
 export class LocalCloud extends Cloud {
@@ -38,13 +38,29 @@ export class LocalCloud extends Cloud {
     });
     this.localWorker = localWorker;
   }
-  public async getDeployer(): Promise<PrivateKey | undefined> {
+  public async getDeployer(): Promise<DeployerKeyPair | undefined> {
     const deployer = process.env.DEPLOYER;
-    return deployer === undefined ? undefined : PrivateKey.fromBase58(deployer);
+    try {
+      return deployer === undefined
+        ? undefined
+        : ({
+            privateKey: deployer,
+            publicKey: PrivateKey.fromBase58(deployer).toPublicKey().toBase58(),
+          } as DeployerKeyPair);
+    } catch (error) {
+      console.error(
+        `getDeployer: process.env.DEPLOYER has wrong encoding, should be base58 private key ("EKE...")`,
+        error
+      );
+      return undefined;
+    }
   }
 
-  public async releaseDeployer(txsHashes: string[]): Promise<void> {
-    console.log("LocalCloud: releaseDeployer", txsHashes);
+  public async releaseDeployer(params: {
+    publicKey: string;
+    txsHashes: string[];
+  }): Promise<void> {
+    console.log("LocalCloud: releaseDeployer", params);
   }
 
   public async log(msg: string): Promise<void> {

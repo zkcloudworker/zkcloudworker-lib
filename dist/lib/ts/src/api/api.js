@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.zkCloudWorkerClient = void 0;
 const axios_1 = __importDefault(require("axios"));
 const chalk_1 = __importDefault(require("chalk"));
-const mina_1 = require("../mina");
+const mina_1 = require("../utils/mina");
 const local_1 = require("../cloud/local");
 const config_1 = __importDefault(require("../config"));
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config_1.default;
@@ -50,16 +50,27 @@ class zkCloudWorkerClient {
      */
     async recursiveProof(data) {
         const result = await this.apiHub("recursiveProof", data);
-        if (result.data === "error")
+        if (result.data === "error" ||
+            (typeof result.data === "string" && result.data.startsWith("error")))
             return {
                 success: false,
                 error: result.error,
             };
-        else
+        else if (result.success === false || result.data?.success === false)
+            return {
+                success: false,
+                error: result.error ?? result.data?.error ?? "recursiveProof call failed",
+            };
+        else if (result.success === true && result.data?.success === true)
             return {
                 success: result.success,
-                jobId: result.data,
+                jobId: result.data.jobId,
                 error: result.error,
+            };
+        else
+            return {
+                success: false,
+                error: "recursiveProof call error",
             };
     }
     /**

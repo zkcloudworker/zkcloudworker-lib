@@ -8,6 +8,7 @@ interface MinaNetwork {
     accountManager?: string;
     explorerAccountUrl?: string;
     explorerTransactionUrl?: string;
+    faucet?: string;
 }
 declare const Mainnet: MinaNetwork;
 declare const Local: MinaNetwork;

@@ -1,5 +1,5 @@
 import { UInt64 } from "o1js";
-import config from "./config";
+import config from "../config";
 
 export async function fee(): Promise<UInt64> {
   //TODO: update after mainnet launch

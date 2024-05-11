@@ -1,8 +1,8 @@
 {
   "name": "zkcloudworker",
-  "version": "0.5.8",
+  "version": "0.6.0",
   "description": "zkCloudWorker library",
-  "author": "DFST & Mario",
+  "author": "zkCloudWorker",
   "license": "Apache-2.0",
   "homepage": "https://docs.zkcloudworker.com",
   "bugs": {

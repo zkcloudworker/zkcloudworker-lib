@@ -1,6 +1,6 @@
 import axios, { all } from "axios";
 import chalk from "chalk";
-import { sleep } from "../mina";
+import { sleep } from "../utils/mina";
 import { LocalCloud, LocalStorage } from "../cloud/local";
 import config from "../config";
 import { zkCloudWorker, Cloud } from "../cloud/cloud";
@@ -80,16 +80,30 @@ export class zkCloudWorkerClient {
     jobId?: string;
   }> {
     const result = await this.apiHub("recursiveProof", data);
-    if (result.data === "error")
+    if (
+      result.data === "error" ||
+      (typeof result.data === "string" && result.data.startsWith("error"))
+    )
       return {
         success: false,
         error: result.error,
       };
-    else
+    else if (result.success === false || result.data?.success === false)
+      return {
+        success: false,
+        error:
+          result.error ?? result.data?.error ?? "recursiveProof call failed",
+      };
+    else if (result.success === true && result.data?.success === true)
       return {
         success: result.success,
-        jobId: result.data,
+        jobId: result.data.jobId,
         error: result.error,
+      };
+    else
+      return {
+        success: false,
+        error: "recursiveProof call error",
       };
   }
 

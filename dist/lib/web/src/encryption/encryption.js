@@ -1,5 +1,6 @@
 import { Field, PublicKey, PrivateKey, Encoding, Group, Encryption, initializeBindings, } from "o1js";
-export class CipherText {
+export { CipherText };
+class CipherText {
     static stringify(cipherText) {
         return JSON.stringify(cipherText);
     }
@@ -13,8 +14,8 @@ export class CipherText {
     static encrypt(message, publicId) {
         try {
             let fields = Encoding.stringToFields(message);
-            let encrypted = Encryption.encrypt(fields, PublicKey.fromBase58(publicId));
-            return CipherText.stringify(encrypted);
+            let encripted = Encryption.encrypt(fields, PublicKey.fromBase58(publicId));
+            return CipherText.stringify(encripted);
         }
         catch (err) {
             throw Error(`Could not encrypt message='${message}' using key='${publicId}'.` +

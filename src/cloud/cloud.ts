@@ -1,11 +1,16 @@
-import { Cache, PrivateKey, PublicKey, SmartContract } from "o1js";
+import type { Cache, VerificationKey } from "o1js";
 import { blockchain } from "../networks";
 import { JobData } from "./job";
 
 export interface DeployedSmartContract {
-  address: PublicKey;
-  contract: SmartContract;
+  address: string;
+  name: string;
   chain: blockchain;
+  verificationKey: { hash: string; data: string };
+}
+export interface DeployerKeyPair {
+  publicKey: string;
+  privateKey: string;
 }
 
 export interface CloudTransaction {
@@ -73,14 +78,11 @@ export abstract class Cloud {
     this.chain = chain;
   }
 
-  /* TODO: change it to the sign method to protect the private key
-    abstract getDeployer(): Promise<PublicKey | undefined>;
-    abstract signTransaction(tx: Transaction): Promise<void>;
-    see https://github.com/o1-labs/o1js/pull/1548#issuecomment-2056923658
-  */
-  abstract getDeployer(): Promise<PrivateKey | undefined>;
-  abstract releaseDeployer(txsHashes: string[]): Promise<void>;
-  abstract log(msg: string): void;
+  abstract getDeployer(): Promise<DeployerKeyPair | undefined>;
+  abstract releaseDeployer(params: {
+    publicKey: string;
+    txsHashes: string[];
+  }): Promise<void>;
   abstract getDataByKey(key: string): Promise<string | undefined>;
   abstract saveDataByKey(key: string, value: string | undefined): Promise<void>;
   abstract saveFile(filename: string, value: Buffer): Promise<void>;

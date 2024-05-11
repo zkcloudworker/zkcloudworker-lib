@@ -1,6 +1,6 @@
 export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, MinaNetworkInstance, currentNetwork, getNetworkIdHash, getCurrentNetwork, getDeployer, };
 import { Mina, PublicKey, UInt64, Field } from "o1js";
-import { blockchain, MinaNetwork } from "./networks";
+import { blockchain, MinaNetwork } from "../networks";
 interface MinaNetworkInstance {
     keys: Mina.TestPublicKey[];
     network: MinaNetwork;

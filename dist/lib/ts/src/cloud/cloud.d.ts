@@ -1,11 +1,19 @@
 /// <reference types="node" />
-import { Cache, PrivateKey, PublicKey, SmartContract } from "o1js";
+import type { Cache } from "o1js";
 import { blockchain } from "../networks";
 import { JobData } from "./job";
 export interface DeployedSmartContract {
-    address: PublicKey;
-    contract: SmartContract;
+    address: string;
+    name: string;
     chain: blockchain;
+    verificationKey: {
+        hash: string;
+        data: string;
+    };
+}
+export interface DeployerKeyPair {
+    publicKey: string;
+    privateKey: string;
 }
 export interface CloudTransaction {
     txId: string;
@@ -41,9 +49,11 @@ export declare abstract class Cloud {
         isLocalCloud?: boolean;
         chain: blockchain;
     });
-    abstract getDeployer(): Promise<PrivateKey | undefined>;
-    abstract releaseDeployer(txsHashes: string[]): Promise<void>;
-    abstract log(msg: string): void;
+    abstract getDeployer(): Promise<DeployerKeyPair | undefined>;
+    abstract releaseDeployer(params: {
+        publicKey: string;
+        txsHashes: string[];
+    }): Promise<void>;
     abstract getDataByKey(key: string): Promise<string | undefined>;
     abstract saveDataByKey(key: string, value: string | undefined): Promise<void>;
     abstract saveFile(filename: string, value: Buffer): Promise<void>;

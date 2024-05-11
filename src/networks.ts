@@ -25,6 +25,7 @@ interface MinaNetwork {
   accountManager?: string;
   explorerAccountUrl?: string;
   explorerTransactionUrl?: string;
+  faucet?: string;
 }
 
 const Mainnet: MinaNetwork = {
@@ -52,6 +53,7 @@ const Devnet: MinaNetwork = {
   explorerTransactionUrl: "https://minascan.io/devnet/tx/",
   chainId: "devnet",
   name: "Devnet",
+  faucet: "https://faucet.minaprotocol.com",
 };
 
 const Zeko: MinaNetwork = {
@@ -61,6 +63,7 @@ const Zeko: MinaNetwork = {
   explorerTransactionUrl: "https://zekoscan.io/devnet/tx/",
   chainId: "zeko",
   name: "Zeko",
+  faucet: "https://zeko.io/faucet",
 };
 
 const Lightnet: MinaNetwork = {

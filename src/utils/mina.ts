@@ -24,7 +24,7 @@ import {
   Poseidon,
   Lightnet,
 } from "o1js";
-import { networks, blockchain, MinaNetwork, Local } from "./networks";
+import { networks, blockchain, MinaNetwork, Local } from "../networks";
 
 interface MinaNetworkInstance {
   keys: Mina.TestPublicKey[];

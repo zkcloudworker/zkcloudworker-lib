@@ -1,10 +1,10 @@
 /// <reference types="node" />
-import { Cache, PrivateKey } from "o1js";
+import { Cache } from "o1js";
 import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
 import { TaskData } from "./task";
 import { blockchain } from "../networks";
-import { CloudTransaction } from "./cloud";
+import { CloudTransaction, DeployerKeyPair } from "./cloud";
 import { ApiCommand } from "../api/api";
 export declare class LocalCloud extends Cloud {
     readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
@@ -15,8 +15,11 @@ export declare class LocalCloud extends Cloud {
         stepId?: string;
         localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
     });
-    getDeployer(): Promise<PrivateKey | undefined>;
-    releaseDeployer(txsHashes: string[]): Promise<void>;
+    getDeployer(): Promise<DeployerKeyPair | undefined>;
+    releaseDeployer(params: {
+        publicKey: string;
+        txsHashes: string[];
+    }): Promise<void>;
     log(msg: string): Promise<void>;
     getDataByKey(key: string): Promise<string | undefined>;
     saveDataByKey(key: string, value: string | undefined): Promise<void>;

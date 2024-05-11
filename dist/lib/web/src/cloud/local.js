@@ -1,6 +1,6 @@
 import { Cache, PrivateKey } from "o1js";
 import { Cloud } from "./cloud";
-import { makeString } from "../mina";
+import { makeString } from "../utils/mina";
 import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 export class LocalCloud extends Cloud {
     constructor(params) {
@@ -25,10 +25,21 @@ export class LocalCloud extends Cloud {
     }
     async getDeployer() {
         const deployer = process.env.DEPLOYER;
-        return deployer === undefined ? undefined : PrivateKey.fromBase58(deployer);
+        try {
+            return deployer === undefined
+                ? undefined
+                : {
+                    privateKey: deployer,
+                    publicKey: PrivateKey.fromBase58(deployer).toPublicKey().toBase58(),
+                };
+        }
+        catch (error) {
+            console.error(`getDeployer: process.env.DEPLOYER has wrong encoding, should be base58 private key ("EKE...")`, error);
+            return undefined;
+        }
     }
-    async releaseDeployer(txsHashes) {
-        console.log("LocalCloud: releaseDeployer", txsHashes);
+    async releaseDeployer(params) {
+        console.log("LocalCloud: releaseDeployer", params);
     }
     async log(msg) {
         console.log("LocalCloud:", msg);
