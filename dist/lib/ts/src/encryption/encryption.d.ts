@@ -1,9 +1,10 @@
 import { Field, Group } from "o1js";
-export interface CipherTextObject {
+export { CipherText };
+interface CipherTextObject {
     cipherText: Field[];
     publicKey: Group;
 }
-export declare class CipherText {
+declare class CipherText {
     static stringify(cipherText: CipherTextObject): string;
     static parse(jsonStr: string): CipherTextObject;
     static encrypt(message: string, publicId: string): string;

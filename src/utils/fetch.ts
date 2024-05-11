@@ -5,7 +5,7 @@ import {
   fetchAccount,
   checkZkappTransaction,
 } from "o1js";
-import { sleep } from "../mina";
+import { sleep } from "./mina";
 
 export async function fetchMinaAccount(params: {
   publicKey: string | PublicKey;

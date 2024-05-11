@@ -16,8 +16,8 @@ class CipherText {
     static encrypt(message, publicId) {
         try {
             let fields = o1js_1.Encoding.stringToFields(message);
-            let encrypted = o1js_1.Encryption.encrypt(fields, o1js_1.PublicKey.fromBase58(publicId));
-            return CipherText.stringify(encrypted);
+            let encripted = o1js_1.Encryption.encrypt(fields, o1js_1.PublicKey.fromBase58(publicId));
+            return CipherText.stringify(encripted);
         }
         catch (err) {
             throw Error(`Could not encrypt message='${message}' using key='${publicId}'.` +

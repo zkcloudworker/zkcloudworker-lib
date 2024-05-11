@@ -26,6 +26,7 @@ const Devnet = {
     explorerTransactionUrl: "https://minascan.io/devnet/tx/",
     chainId: "devnet",
     name: "Devnet",
+    faucet: "https://faucet.minaprotocol.com",
 };
 exports.Devnet = Devnet;
 const Zeko = {
@@ -35,6 +36,7 @@ const Zeko = {
     explorerTransactionUrl: "https://zekoscan.io/devnet/tx/",
     chainId: "zeko",
     name: "Zeko",
+    faucet: "https://zeko.io/faucet",
 };
 exports.Zeko = Zeko;
 const Lightnet = {

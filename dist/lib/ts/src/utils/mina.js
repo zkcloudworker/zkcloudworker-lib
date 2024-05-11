@@ -1,19 +1,24 @@
-export { initBlockchain, Memory, makeString, sleep, accountBalance, accountBalanceMina, formatTime, currentNetwork, getNetworkIdHash, getCurrentNetwork, getDeployer, };
-import { Mina, PrivateKey, UInt64, fetchAccount, Encoding, Poseidon, Lightnet, } from "o1js";
-import { networks, Local } from "./networks";
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.getDeployer = exports.getCurrentNetwork = exports.getNetworkIdHash = exports.currentNetwork = exports.formatTime = exports.accountBalanceMina = exports.accountBalance = exports.sleep = exports.makeString = exports.Memory = exports.initBlockchain = void 0;
+const o1js_1 = require("o1js");
+const networks_1 = require("../networks");
 let currentNetwork = undefined;
+exports.currentNetwork = currentNetwork;
 function getNetworkIdHash() {
     if (currentNetwork === undefined) {
         throw new Error("Network is not initialized");
     }
     return currentNetwork.networkIdHash;
 }
+exports.getNetworkIdHash = getNetworkIdHash;
 function getCurrentNetwork() {
     if (currentNetwork === undefined) {
         throw new Error("Network is not initialized");
     }
     return currentNetwork;
 }
+exports.getCurrentNetwork = getCurrentNetwork;
 function getDeployer() {
     if (currentNetwork === undefined) {
         throw new Error("Network is not initialized");
@@ -22,42 +27,43 @@ function getDeployer() {
         return undefined;
     return currentNetwork.keys[0];
 }
+exports.getDeployer = getDeployer;
 async function initBlockchain(instance, deployersNumber = 0) {
     if (instance === "mainnet") {
         throw new Error("Mainnet is not supported yet by zkApps");
     }
-    const networkIdHash = Poseidon.hash(Encoding.stringToFields(instance));
+    const networkIdHash = o1js_1.Poseidon.hash(o1js_1.Encoding.stringToFields(instance));
     // await used for compatibility with future versions of o1js
     if (instance === "local") {
-        const local = await Mina.LocalBlockchain({
+        const local = await o1js_1.Mina.LocalBlockchain({
             proofsEnabled: true,
         });
-        Mina.setActiveInstance(local);
+        o1js_1.Mina.setActiveInstance(local);
         if (deployersNumber > local.testAccounts.length)
             throw new Error("Not enough test accounts");
-        currentNetwork = {
+        exports.currentNetwork = currentNetwork = {
             keys: local.testAccounts,
-            network: Local,
+            network: networks_1.Local,
             networkIdHash,
         };
         return currentNetwork;
     }
-    const network = networks.find((n) => n.chainId === instance);
+    const network = networks_1.networks.find((n) => n.chainId === instance);
     if (network === undefined) {
         throw new Error("Unknown network");
     }
-    const networkInstance = Mina.Network({
+    const networkInstance = o1js_1.Mina.Network({
         mina: network.mina,
         archive: network.archive,
         lightnetAccountManager: network.accountManager,
     });
-    Mina.setActiveInstance(networkInstance);
+    o1js_1.Mina.setActiveInstance(networkInstance);
     const keys = [];
     if (deployersNumber > 0) {
         if (instance === "lightnet") {
             for (let i = 0; i < deployersNumber; i++) {
-                const keyPair = await Lightnet.acquireKeyPair();
-                const key = Mina.TestPublicKey(keyPair.privateKey);
+                const keyPair = await o1js_1.Lightnet.acquireKeyPair();
+                const key = o1js_1.Mina.TestPublicKey(keyPair.privateKey);
                 keys.push(key);
             }
         }
@@ -68,32 +74,36 @@ async function initBlockchain(instance, deployersNumber = 0) {
                 deployers.length < deployersNumber)
                 throw new Error("Deployers are not set");
             for (let i = 0; i < deployersNumber; i++) {
-                const privateKey = PrivateKey.fromBase58(deployers[i]);
-                const key = Mina.TestPublicKey(privateKey);
+                const privateKey = o1js_1.PrivateKey.fromBase58(deployers[i]);
+                const key = o1js_1.Mina.TestPublicKey(privateKey);
                 keys.push(key);
             }
         }
     }
-    currentNetwork = {
+    exports.currentNetwork = currentNetwork = {
         keys,
         network,
         networkIdHash,
     };
     return currentNetwork;
 }
+exports.initBlockchain = initBlockchain;
 async function accountBalance(address) {
-    await fetchAccount({ publicKey: address });
-    if (Mina.hasAccount(address))
-        return Mina.getBalance(address);
+    await (0, o1js_1.fetchAccount)({ publicKey: address });
+    if (o1js_1.Mina.hasAccount(address))
+        return o1js_1.Mina.getBalance(address);
     else
-        return UInt64.from(0);
+        return o1js_1.UInt64.from(0);
 }
+exports.accountBalance = accountBalance;
 async function accountBalanceMina(address) {
     return Number((await accountBalance(address)).toBigInt()) / 1e9;
 }
+exports.accountBalanceMina = accountBalanceMina;
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
+exports.sleep = sleep;
 function makeString(length) {
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     let outString = ``;
@@ -104,6 +114,7 @@ function makeString(length) {
     }
     return outString;
 }
+exports.makeString = makeString;
 function formatTime(ms) {
     if (ms === undefined)
         return "";
@@ -122,6 +133,7 @@ function formatTime(ms) {
         return hours.toString() + " h " + minutes.toString() + " min";
     }
 }
+exports.formatTime = formatTime;
 class Memory {
     constructor() {
         Memory.rss = 0;
@@ -149,6 +161,6 @@ class Memory {
         console.log(memoryUsage);
     }
 }
+exports.Memory = Memory;
 // eslint-disable-next-line @typescript-eslint/no-inferrable-types
 Memory.rss = 0;
-//# sourceMappingURL=mina.js.map

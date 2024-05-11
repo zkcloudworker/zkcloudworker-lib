@@ -8,12 +8,14 @@ import {
   initializeBindings,
 } from "o1js";
 
-export interface CipherTextObject {
+export { CipherText };
+
+interface CipherTextObject {
   cipherText: Field[];
   publicKey: Group;
 }
 
-export class CipherText {
+class CipherText {
   static stringify(cipherText: CipherTextObject): string {
     return JSON.stringify(cipherText);
   }
@@ -29,11 +31,11 @@ export class CipherText {
   static encrypt(message: string, publicId: string): string {
     try {
       let fields: Field[] = Encoding.stringToFields(message);
-      let encrypted = Encryption.encrypt(
+      let encripted = Encryption.encrypt(
         fields,
         PublicKey.fromBase58(publicId)
       );
-      return CipherText.stringify(encrypted);
+      return CipherText.stringify(encripted);
     } catch (err) {
       throw Error(
         `Could not encrypt message='${message}' using key='${publicId}'.` +

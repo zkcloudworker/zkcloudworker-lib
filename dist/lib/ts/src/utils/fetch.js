@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkMinaZkappTransaction = exports.fetchMinaActions = exports.fetchMinaAccount = void 0;
 const o1js_1 = require("o1js");
-const mina_1 = require("../mina");
+const mina_1 = require("./mina");
 async function fetchMinaAccount(params) {
     const { publicKey, tokenId, force } = params;
     const timeout = 1000 * 60 * 2; // 2 minutes
