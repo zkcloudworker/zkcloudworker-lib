@@ -7,6 +7,14 @@ import {
 } from "o1js";
 import { sleep } from "./utils";
 
+/**
+ * Fetches the Mina account for a given public key with error handling
+ * @param params the parameters for fetching the account
+ * @param params.publicKey the public key of the account
+ * @param params.tokenId the token id of the account
+ * @param params.force whether to force the fetch - use it only if you are sure the account exists
+ * @returns the account object
+ */
 export async function fetchMinaAccount(params: {
   publicKey: string | PublicKey;
   tokenId?: string | Field | undefined;
@@ -65,6 +73,14 @@ export async function fetchMinaAccount(params: {
   return result;
 }
 
+/**
+ * Fetches the Mina actions for a given public key with error handling
+ * @param publicKey the public key of the contract
+ * @param fromActionState the starting action state
+ * @param endActionState the ending action state
+ * @returns the actions array
+ */
+
 export async function fetchMinaActions(
   publicKey: PublicKey,
   fromActionState: Field,
@@ -92,6 +108,11 @@ export async function fetchMinaActions(
   return undefined;
 }
 
+/**
+ * Fetches the Mina transaction for a given hash with error handling
+ * @param hash the hash of the transaction
+ * @returns the transaction object
+ */
 export async function checkMinaZkappTransaction(hash: string) {
   try {
     const result = await checkZkappTransaction(hash);

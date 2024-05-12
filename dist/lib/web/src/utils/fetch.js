@@ -1,5 +1,13 @@
 import { Mina, fetchAccount, checkZkappTransaction, } from "o1js";
 import { sleep } from "./utils";
+/**
+ * Fetches the Mina account for a given public key with error handling
+ * @param params the parameters for fetching the account
+ * @param params.publicKey the public key of the account
+ * @param params.tokenId the token id of the account
+ * @param params.force whether to force the fetch - use it only if you are sure the account exists
+ * @returns the account object
+ */
 export async function fetchMinaAccount(params) {
     const { publicKey, tokenId, force } = params;
     const timeout = 1000 * 60 * 2; // 2 minutes
@@ -44,6 +52,13 @@ export async function fetchMinaAccount(params) {
         console.log("fetchMinaAccount timeout", typeof publicKey === "string" ? publicKey : publicKey.toBase58(), tokenId?.toString(), force);
     return result;
 }
+/**
+ * Fetches the Mina actions for a given public key with error handling
+ * @param publicKey the public key of the contract
+ * @param fromActionState the starting action state
+ * @param endActionState the ending action state
+ * @returns the actions array
+ */
 export async function fetchMinaActions(publicKey, fromActionState, endActionState) {
     const timeout = 1000 * 60 * 600; // 10 hours
     const startTime = Date.now();
@@ -66,6 +81,11 @@ export async function fetchMinaActions(publicKey, fromActionState, endActionStat
     console.log("Timeout in fetchMinaActions");
     return undefined;
 }
+/**
+ * Fetches the Mina transaction for a given hash with error handling
+ * @param hash the hash of the transaction
+ * @returns the transaction object
+ */
 export async function checkMinaZkappTransaction(hash) {
     try {
         const result = await checkZkappTransaction(hash);

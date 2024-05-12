@@ -28,6 +28,14 @@ function getDeployer() {
     return currentNetwork.keys[0];
 }
 exports.getDeployer = getDeployer;
+/**
+ * Initializes the Mina blockchain network
+ * Due to the limitations of the Mina SDK, only one network can be initialized at a time
+ * This function should be called before any other Mina functions
+ * @param instance the blockchain instance to initialize
+ * @param deployersNumber the number of deployers to use for the network (only for local and lightnet networks)
+ * @returns the Mina network instance
+ */
 async function initBlockchain(instance, deployersNumber = 0) {
     if (instance === "mainnet") {
         throw new Error("Mainnet is not supported yet by zkApps");
@@ -96,6 +104,11 @@ async function initBlockchain(instance, deployersNumber = 0) {
     return currentNetwork;
 }
 exports.initBlockchain = initBlockchain;
+/**
+ * Fetches the account balance for a given public key
+ * @param address the public key
+ * @returns the account balance
+ */
 async function accountBalance(address) {
     await (0, o1js_1.fetchAccount)({ publicKey: address });
     if (o1js_1.Mina.hasAccount(address))
@@ -104,6 +117,11 @@ async function accountBalance(address) {
         return o1js_1.UInt64.from(0);
 }
 exports.accountBalance = accountBalance;
+/**
+ * Fetches the account balance for a given public key and returns it in Mina
+ * @param address the public key
+ * @returns the account balance in MINA
+ */
 async function accountBalanceMina(address) {
     return Number((await accountBalance(address)).toBigInt()) / 1e9;
 }

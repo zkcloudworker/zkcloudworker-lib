@@ -8,11 +8,17 @@ const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
  * API class for interacting with the zkCloudWorker
  * @property jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
  * @property endpoint The endpoint of the serverless api
+ * @property chain The blockchain network to use
+ * @property webhook The webhook for the serverless api to get the results
+ * @property localWorker The local worker for the serverless api to test the code locally
  */
 export class zkCloudWorkerClient {
     /**
      * Constructor for the API class
      * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
+     * @param zkcloudworker The local worker for the serverless api to test the code locally
+     * @param chain The blockchain network to use
+     * @param webhook The webhook for the serverless api to get the results
      */
     constructor(params) {
         const { jwt, zkcloudworker, chain, webhook } = params;
@@ -28,19 +34,20 @@ export class zkCloudWorkerClient {
     }
     /**
      * Starts a new job for the proof calculation using serverless api call
-     * The developer and name should correspond to the BackupPlugin of the API
-     * All other parameters should correspond to the parameters of the BackupPlugin
      * @param data the data for the proof call
-     * @param data.transactions the transactions
      * @param data.developer the developer
      * @param data.repo the repo to use
+     * @param data.transactions the transactions
      * @param data.task the task of the job
-     * @param data.args the arguments of the job
+     * @param data.userId the userId of the job
+     * @param data.args the arguments of the job, should be serialized JSON or string
+     * @param data.metadata the metadata of the job, should be serialized JSON or string
+     * @param data.webhook the webhook for the job
      * @returns { success: boolean, error?: string, jobId?: string }
      * where jonId is the jobId of the job
      *
-     * The developers repo should provide a BackupPlugin with the name task
-     * that can be called with the given parameters
+     * The developers repo should provide a zkcloudworker function
+     * that can be called with the given parameters, see the examples
      */
     async recursiveProof(data) {
         const result = await this.apiHub("recursiveProof", data);
@@ -55,7 +62,9 @@ export class zkCloudWorkerClient {
                 success: false,
                 error: result.error ?? result.data?.error ?? "recursiveProof call failed",
             };
-        else if (result.success === true && result.data?.success === true)
+        else if (result.success === true &&
+            result.data?.success === true &&
+            result.data?.jobId !== undefined)
             return {
                 success: result.success,
                 jobId: result.data.jobId,
@@ -69,8 +78,6 @@ export class zkCloudWorkerClient {
     }
     /**
      * Starts a new job for the function call using serverless api call
-     * The developer and name should correspond to the BackupPlugin of the API
-     * All other parameters should correspond to the parameters of the BackupPlugin
      * @param data the data for the proof call
      * @param data.developer the developer
      * @param data.repo the repo to use
@@ -80,8 +87,8 @@ export class zkCloudWorkerClient {
      * @param data.args the arguments of the job
      * @param data.metadata the metadata of the job
      * @param data.mode the mode of the job execution: "sync" will not create a job, it will execute the function synchronously within 30 seconds and with the memory limit of 256 MB
-     * @returns { success: boolean, error?: string, jobId?: string }
-     * where jonId is the jobId of the job
+     * @returns { success: boolean, error?: string, jobId?: string, result?: any }
+     * where jonId is the jobId of the job (for async calls), result is the result of the job (for sync calls)
      */
     async execute(data) {
         const result = await this.apiHub("execute", data);
@@ -122,16 +129,13 @@ export class zkCloudWorkerClient {
             };
     }
     /**
-     * Starts a new job for the function call using serverless api call
-     * The developer and name should correspond to the BackupPlugin of the API
-     * All other parameters should correspond to the parameters of the BackupPlugin
+     * Sends transactions to the blockchain using serverless api call
      * @param data the data for the proof call
      * @param data.developer the developer
      * @param data.repo the repo to use
-     * @param data.task the task of the job
-     * @param data.args the arguments of the job
-     * @returns { success: boolean, error?: string, jobId?: string }
-     * where jonId is the jobId of the job
+     * @param data.transactions the transactions
+     * @returns { success: boolean, error?: string, txId?: string[] }
+     * where txId is the transaction id of the transaction, in the sequence of the input transactions
      */
     async sendTransactions(data) {
         const result = await this.apiHub("sendTransactions", data);
@@ -176,15 +180,13 @@ export class zkCloudWorkerClient {
             };
     }
     /**
-     * Gets the result of the job using serverless api call
+     * Deploys the code to the cloud using serverless api call
      * @param data the data for the deploy call
-     * @param data.packageName the name of the zip file with the code to be deployed
-     * @returns { success: boolean, error?: string, result?: any }
-     * where result is the result of the job
-     * if the job is not finished yet, the result will be undefined
-     * if the job failed, the result will be undefined and error will be set
-     * if the job is finished, the result will be set and error will be undefined
-     * if the job is not found, the result will be undefined and error will be set
+     * @param data.repo the repo to use
+     * @param data.developer the developer
+     * @param data.packageManager the package manager to use
+     * @returns { success: boolean, error?: string, jobId?: string}
+     * where jobId is the jobId of the job
      */
     async deploy(data) {
         // TODO: encrypt env.json
@@ -230,7 +232,7 @@ export class zkCloudWorkerClient {
     /**
      * Gets the remaining balance
      * @returns { success: boolean, error?: string, result?: any }
-     * where result is the billing report
+     * where result is the balance
      */
     async getBalance() {
         const result = await this.apiHub("getBalance", {});
@@ -362,7 +364,7 @@ export class zkCloudWorkerClient {
                     });
                     return {
                         success: true,
-                        data: jobId,
+                        data: { success: true, jobId },
                     };
                 }
                 case "execute": {

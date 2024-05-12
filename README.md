@@ -68,12 +68,10 @@ https://zkcloudworker.com
 
 https://www.npmjs.com/package/zkcloudworker
 
-## Homomorphic Encryption Example
-
-https://github.com/dfstio/he-contract-demo
-
 ## Faucet
 
 https://faucet.minaprotocol.com
+
+https://zeko.io/faucet
 
 https://minanft.io/faucet

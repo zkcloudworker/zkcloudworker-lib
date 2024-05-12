@@ -7,8 +7,25 @@ import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 import { CloudTransaction, DeployerKeyPair } from "./cloud";
 import { ApiCommand } from "../api/api";
 
+/**
+ * LocalCloud is a cloud that runs on the local machine for testing and development
+ * It uses LocalStorage to store jobs, tasks, transactions, and data
+ * It uses a localWorker to execute the tasks
+ * It can be used to test the cloud functionality without deploying to the cloud
+ * @param localWorker the worker to execute the tasks
+ */
 export class LocalCloud extends Cloud {
   readonly localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
+
+  /**
+   * Constructor for LocalCloud
+   * @param params the parameters to create the LocalCloud
+   * @param job the job data
+   * @param chain the blockchain to execute the job on, can be any blockchain, not only local
+   * @param cache the cache folder
+   * @param stepId the step id
+   * @param localWorker the worker to execute the tasks
+   */
   constructor(params: {
     job: JobData;
     chain: blockchain;
@@ -37,6 +54,11 @@ export class LocalCloud extends Cloud {
     });
     this.localWorker = localWorker;
   }
+
+  /**
+   * Provides the deployer key pair for testing and development
+   * @returns the deployer key pair
+   */
   public async getDeployer(): Promise<DeployerKeyPair | undefined> {
     const privateKey = process.env.DEPLOYER_PRIVATE_KEY;
     const publicKey = process.env.DEPLOYER_PUBLIC_KEY;
@@ -56,6 +78,9 @@ export class LocalCloud extends Cloud {
     }
   }
 
+  /**
+   * Releases the deployer key pair
+   */
   public async releaseDeployer(params: {
     publicKey: string;
     txsHashes: string[];
@@ -63,15 +88,21 @@ export class LocalCloud extends Cloud {
     console.log("LocalCloud: releaseDeployer", params);
   }
 
-  public async log(msg: string): Promise<void> {
-    console.log("LocalCloud:", msg);
-  }
-
+  /**
+   * Gets the data by key
+   * @param key the key to get the data
+   * @returns the data
+   */
   public async getDataByKey(key: string): Promise<string | undefined> {
     const value = LocalStorage.data[key];
     return value;
   }
 
+  /**
+   * Saves the data by key
+   * @param key the key to save the data
+   * @param value the value to save
+   */
   public async saveDataByKey(
     key: string,
     value: string | undefined
@@ -80,21 +111,46 @@ export class LocalCloud extends Cloud {
     else delete LocalStorage.data[key];
   }
 
+  /**
+   * Saves the file
+   * @param filename the filename to save
+   * @param value the value to save
+   */
   public async saveFile(filename: string, value: Buffer): Promise<void> {
     await saveBinaryFile({ data: value, filename });
   }
+
+  /**
+   * Loads the file
+   * @param filename
+   * @returns the file data
+   */
   public async loadFile(filename: string): Promise<Buffer | undefined> {
     const data = await loadBinaryFile(filename);
     return data;
   }
+
+  /**
+   * Loads the environment
+   * @param password
+   */
   public async loadEnvironment(password: string): Promise<void> {
     throw new Error("Method not implemented.");
   }
 
+  /**
+   * Generates an id for local cloud
+   * @returns generated unique id
+   */
   private static generateId(): string {
     return "local." + Date.now().toString() + "." + makeString(32);
   }
 
+  /**
+   * Adds transactions to the local cloud
+   * @param transactions the transactions to add
+   * @returns the transaction ids
+   */
   public static async addTransactions(
     transactions: string[]
   ): Promise<string[]> {
@@ -108,6 +164,10 @@ export class LocalCloud extends Cloud {
     return txId;
   }
 
+  /**
+   * Deletes a transaction from the local cloud
+   * @param txId the transaction id to delete
+   */
   public async deleteTransaction(txId: string): Promise<void> {
     if (LocalStorage.transactions[txId] === undefined)
       throw new Error(`deleteTransaction: Transaction ${txId} not found`);
@@ -126,6 +186,22 @@ export class LocalCloud extends Cloud {
     return txs;
   }
 
+  /**
+   * Runs the worker in the local cloud
+   * @param params the parameters to run the worker
+   * @param params.command the command to run
+   * @param params.data the data to use
+   * @param params.data.developer the developer of the repo
+   * @param params.data.repo the repo
+   * @param params.data.transactions the transactions to process
+   * @param params.data.task the task to execute
+   * @param params.data.userId the user id
+   * @param params.data.args the arguments for the job
+   * @param params.data.metadata the metadata for the job
+   * @param params.chain the blockchain to execute the job on
+   * @param params.localWorker the worker to execute the tasks
+   * @returns the job id
+   */
   public static async run(params: {
     command: ApiCommand;
     data: {
@@ -194,6 +270,16 @@ export class LocalCloud extends Cloud {
     return jobId;
   }
 
+  /**
+   * Runs the recursive proof in the local cloud
+   * @param data the data to use
+   * @param data.transactions the transactions to process
+   * @param data.task the task to execute
+   * @param data.userId the user id
+   * @param data.args the arguments for the job
+   * @param data.metadata the metadata for the job
+   * @returns the job id
+   */
   public async recursiveProof(data: {
     transactions: string[];
     task?: string;
@@ -217,6 +303,16 @@ export class LocalCloud extends Cloud {
     });
   }
 
+  /**
+   * Executes the task in the local cloud
+   * @param data the data to use
+   * @param data.transactions the transactions to process
+   * @param data.task the task to execute
+   * @param data.userId the user id
+   * @param data.args the arguments for the job
+   * @param data.metadata the metadata for the job
+   * @returns the job id
+   */
   public async execute(data: {
     transactions: string[];
     task: string;
@@ -240,10 +336,25 @@ export class LocalCloud extends Cloud {
     });
   }
 
+  /**
+   * Gets the job result
+   * @param jobId the job id
+   * @returns the job data
+   */
   public async jobResult(jobId: string): Promise<JobData | undefined> {
     return LocalStorage.jobs[jobId];
   }
 
+  /**
+   * Adds a task to the local cloud
+   * @param data the data to use
+   * @param data.task the task to execute
+   * @param data.startTime the start time for the task
+   * @param data.userId the user id
+   * @param data.args the arguments for the job
+   * @param data.metadata the metadata for the job
+   * @returns the task id
+   */
   public async addTask(data: {
     task: string;
     startTime?: number;
@@ -264,12 +375,19 @@ export class LocalCloud extends Cloud {
     return taskId;
   }
 
+  /**
+   * Deletes a task from the local cloud
+   * @param taskId the task id to delete
+   */
   public async deleteTask(taskId: string): Promise<void> {
     if (LocalStorage.tasks[taskId] === undefined)
       throw new Error(`deleteTask: Task ${taskId} not found`);
     delete LocalStorage.tasks[taskId];
   }
 
+  /**
+   * Processes the tasks in the local cloud
+   */
   public async processTasks(): Promise<void> {
     await LocalCloud.processLocalTasks({
       developer: this.developer,
@@ -279,6 +397,14 @@ export class LocalCloud extends Cloud {
     });
   }
 
+  /**
+   * Processes the local tasks
+   * @param params the parameters to process the local tasks
+   * @param params.developer the developer of the repo
+   * @param params.repo the repo
+   * @param params.localWorker the worker to execute the tasks
+   * @param params.chain the blockchain to execute the job on
+   */
   static async processLocalTasks(params: {
     developer: string;
     repo: string;
@@ -332,6 +458,20 @@ export class LocalCloud extends Cloud {
     return count;
   }
 
+  /**
+   * Runs the sequencer in the local cloud
+   * @param params the parameters to run the sequencer
+   * @param params.worker the worker to execute the tasks
+   * @param params.data the data to use
+   * @param params.data.developer the developer of the repo
+   * @param params.data.repo the repo
+   * @param params.data.transactions the transactions to process
+   * @param params.data.task the task to execute
+   * @param params.data.userId the user id
+   * @param params.data.args the arguments for the job
+   * @param params.data.metadata the metadata for the job
+   * @returns the proof
+   */
   static async sequencer(params: {
     worker: zkCloudWorker;
     data: {
@@ -364,6 +504,15 @@ export class LocalCloud extends Cloud {
   }
 }
 
+/**
+ * LocalStorage is a local storage for the local cloud
+ * It stores jobs, tasks, transactions, and data
+ * It can be used to test the cloud functionality without deploying to the cloud
+ * @param jobs the jobs
+ * @param data the data
+ * @param transactions the transactions
+ * @param tasks the tasks
+ */
 export class LocalStorage {
   static jobs: { [key: string]: JobData } = {};
   static data: { [key: string]: string } = {};
@@ -372,6 +521,10 @@ export class LocalStorage {
   } = {};
   static tasks: { [key: string]: TaskData } = {};
 
+  /**
+   * Saves the data
+   * @param name the name to save the data
+   */
   static async saveData(name: string): Promise<void> {
     const data = {
       jobs: LocalStorage.jobs,
@@ -383,6 +536,10 @@ export class LocalStorage {
     await saveFile({ data, filename });
   }
 
+  /**
+   * Loads the data
+   * @param name the name to load the data
+   */
   static async loadData(name: string): Promise<void> {
     const filename = name + ".cloud";
     const data = await loadFile(filename);
