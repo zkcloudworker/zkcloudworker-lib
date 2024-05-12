@@ -96,11 +96,23 @@ export class zkCloudWorkerClient {
                 success: false,
                 error: result.error ?? result.data?.error ?? "execute call failed",
             };
-        else if (result.success === true && result.data?.success === true)
+        else if (result.success === true &&
+            data.mode === "sync" &&
+            result.data !== undefined)
             return {
                 success: result.success,
-                jobId: data.mode === "sync" ? undefined : result.data.jobId,
-                result: data.mode === "sync" ? result.data : undefined,
+                jobId: undefined,
+                result: result.data,
+                error: result.error,
+            };
+        else if (result.success === true &&
+            data.mode !== "sync" &&
+            result.data?.success === true &&
+            result.data?.jobId !== undefined)
+            return {
+                success: result.success,
+                jobId: result.data.jobId,
+                result: undefined,
                 error: result.error,
             };
         else
