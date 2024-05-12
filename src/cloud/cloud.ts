@@ -45,22 +45,22 @@ export interface CloudTransaction {
 }
 
 /*
- * Abstract class for the cloud
+ * Abstract class for the cloud service
  * Used to define the cloud methods and properties
  * Should be implemented by for local testing and for the zkCloudWorker in the cloud
- * @param id: the id of the user
- * @param jobId: the job id
- * @param stepId: the step id
- * @param taskId: the task id
- * @param cache: the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
- * @param developer: the developer id
- * @param repo: the repo id
- * @param task: the task id
- * @param userId: the user id
- * @param args: the arguments, should be a string or serialized JSON
- * @param metadata: the metadata, should be a string or serialized JSON
- * @param chain: the blockchain network
- * @param isLocalCloud: a boolean to check if the cloud is local or not
+ * @param id the id of the user
+ * @param jobId the job id
+ * @param stepId the step id
+ * @param taskId the task id
+ * @param cache the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
+ * @param developer the developer id
+ * @param repo the repo id
+ * @param task the task id
+ * @param userId the user id
+ * @param args the arguments, should be a string or serialized JSON
+ * @param metadata the metadata, should be a string or serialized JSON
+ * @param chain the blockchain network
+ * @param isLocalCloud a boolean to check if the cloud is local or not
  */
 export abstract class Cloud {
   readonly id: string;
@@ -79,19 +79,20 @@ export abstract class Cloud {
 
   /**
    * Constructor for the Cloud class
-   * @param id: the id of the user
-   * @param jobId: the job id
-   * @param stepId: the step id
-   * @param taskId: the task id
-   * @param cache: the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
-   * @param developer: the developer id
-   * @param repo: the repo id
-   * @param task: the task id
-   * @param userId: the user id
-   * @param args: the arguments, should be a string or serialized JSON
-   * @param metadata: the metadata, should be a string or serialized JSON
-   * @param chain: the blockchain network
-   * @param isLocalCloud: a boolean to check if the cloud is local or not
+   * @param params the parameters for the Cloud class
+   * @param params.id the id of the user
+   * @param params.jobId the job id
+   * @param params.stepId the step id
+   * @param params.taskId the task id
+   * @param params.cache the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
+   * @param params.developer the developer id
+   * @param params.repo the repo id
+   * @param params.task the task id
+   * @param params.userId the user id
+   * @param params.args the arguments, should be a string or serialized JSON
+   * @param params.metadata the metadata, should be a string or serialized JSON
+   * @param params.chain the blockchain network
+   * @param params.isLocalCloud a boolean to check if the cloud is local or not
    */
   constructor(params: {
     id: string;
@@ -148,10 +149,10 @@ export abstract class Cloud {
 
   /**
    * Abstract method to release the deployer
-   * @param params: the public key of the deployer and the transactions hashes
+   * @param params the public key of the deployer and the transactions hashes
    * Used to release the deployer after the transactions are sent to the blockchain
-   * @param publicKey: the public key of the deployer
-   * @param txsHashes: the transactions hashes
+   * @param params.publicKey the public key of the deployer
+   * @param params.txsHashes the transactions hashes
    */
   abstract releaseDeployer(params: {
     publicKey: string;
@@ -161,7 +162,7 @@ export abstract class Cloud {
   /**
    * Abstract method to get the data by key
    * Used to get the data by key from the cloud storage
-   * @param key: the key
+   * @param key the key
    * @returns the value of the key
    */
   abstract getDataByKey(key: string): Promise<string | undefined>;
@@ -169,23 +170,23 @@ export abstract class Cloud {
   /**
    * Abstract method to save the data by key
    * Used to save the data by key to the cloud storage
-   * @param key: the key
-   * @param value: the value
+   * @param key the key
+   * @param value the value
    */
   abstract saveDataByKey(key: string, value: string | undefined): Promise<void>;
 
   /**
    * Abstract method to save the file
    * Used to save the file to the cloud storage
-   * @param filename: the filename
-   * @param value: the value
+   * @param filename the filename
+   * @param value the value
    */
   abstract saveFile(filename: string, value: Buffer): Promise<void>;
 
   /**
    * Abstract method to load the file
    * Used to load the file from the cloud storage
-   * @param filename: the filename
+   * @param filename the filename
    * @returns the value of the file
    */
   abstract loadFile(filename: string): Promise<Buffer | undefined>;
@@ -193,19 +194,19 @@ export abstract class Cloud {
   /**
    * Abstract method to load the environment
    * Used to load the environment from the cloud storage
-   * @param password: the password
+   * @param password the password
    */
   abstract loadEnvironment(password: string): Promise<void>;
 
   /**
    * Abstract method to calculate the recursive proof
    * Used to calculate the recursive proof
-   * @param data: the data
-   * @param data.transactions: the transactions
-   * @param data.task: the task
-   * @param data.userId: the user id
-   * @param data.args: the arguments
-   * @param data.metadata: the metadata
+   * @param data the data
+   * @param data.transactions the transactions
+   * @param data.task the task
+   * @param data.userId the user id
+   * @param data.args the arguments
+   * @param data.metadata the metadata
    * @returns the proof
    */
   abstract recursiveProof(data: {
@@ -219,12 +220,12 @@ export abstract class Cloud {
   /**
    * Abstract method to execute the transactions
    * Used to execute the transactions
-   * @param data: the data
-   * @param data.transactions: the transactions
-   * @param data.task: the task
-   * @param data.userId: the user id
-   * @param data.args: the arguments
-   * @param data.metadata: the metadata
+   * @param data the data
+   * @param data.transactions the transactions
+   * @param data.task the task
+   * @param data.userId the user id
+   * @param data.args the arguments
+   * @param data.metadata the metadata
    * @returns the result
    */
   abstract execute(data: {
@@ -238,13 +239,13 @@ export abstract class Cloud {
   /**
    * Abstract method to add the task
    * Used to add the task
-   * @param data: the data
-   * @param data.task: the task
-   * @param data.startTime: the start time
-   * @param data.userId: the user id
-   * @param data.args: the arguments
-   * @param data.metadata: the metadata
-   * @param data.maxAttempts: the maximum attempts
+   * @param data the data
+   * @param data.task the task
+   * @param data.startTime the start time
+   * @param data.userId the user id
+   * @param data.args the arguments
+   * @param data.metadata the metadata
+   * @param data.maxAttempts the maximum attempts
    * @returns the task id
    */
   abstract addTask(data: {
@@ -261,7 +262,7 @@ export abstract class Cloud {
   /**
    * Abstract method to delete the transaction
    * Used to delete the transaction
-   * @param txId: the transaction id
+   * @param txId the transaction id
    */
   abstract deleteTransaction(txId: string): Promise<void>;
 
@@ -275,7 +276,7 @@ export abstract class Cloud {
   /**
    * Abstract method to delete the task
    * Used to delete the task
-   * @param taskId: the task id
+   * @param taskId the task id
    */
   abstract deleteTask(taskId: string): Promise<void>;
 
@@ -287,7 +288,7 @@ export abstract class Cloud {
   /**
    * Abstract method to get the job result
    * Used to get the job result
-   * @param jobId: the job id
+   * @param jobId the job id
    * @returns the job result
    */
   abstract jobResult(jobId: string): Promise<JobData | undefined>;
@@ -304,7 +305,7 @@ export abstract class zkCloudWorker {
 
   /**
    * Constructor for the zkCloudWorker class
-   * @param cloud: the cloud instance provided by the zkCloudWorker in the local environment or in the cloud
+   * @param cloud the cloud instance provided by the zkCloudWorker in the local environment or in the cloud
    */
   constructor(cloud: Cloud) {
     this.cloud = cloud;
@@ -321,7 +322,7 @@ export abstract class zkCloudWorker {
   // Those methods should be implemented for recursive proofs calculations
   /**
    * Creates a new proof from a transaction
-   * @param transaction: the transaction
+   * @param transaction the transaction
    * @returns the serialized proof
    */
   async create(transaction: string): Promise<string | undefined> {
@@ -330,8 +331,8 @@ export abstract class zkCloudWorker {
 
   /**
    * Merges two proofs
-   * @param proof1: the first proof
-   * @param proof2: the second proof
+   * @param proof1 the first proof
+   * @param proof2 the second proof
    * @returns the merged proof
    */
   async merge(proof1: string, proof2: string): Promise<string | undefined> {
@@ -341,7 +342,7 @@ export abstract class zkCloudWorker {
   // Those methods should be implemented for anything except for recursive proofs
   /**
    * Executes the transactions
-   * @param transactions: the transactions, can be empty list
+   * @param transactions the transactions, can be empty list
    * @returns the result
    */
   async execute(transactions: string[]): Promise<string | undefined> {
