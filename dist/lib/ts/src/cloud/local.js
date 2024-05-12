@@ -1,9 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocalStorage = exports.LocalCloud = void 0;
-const o1js_1 = require("o1js");
 const cloud_1 = require("./cloud");
-const mina_1 = require("../utils/mina");
+const utils_1 = require("../utils/utils");
 const files_1 = require("./files");
 class LocalCloud extends cloud_1.Cloud {
     constructor(params) {
@@ -14,7 +13,7 @@ class LocalCloud extends cloud_1.Cloud {
             jobId: jobId,
             stepId: stepId ?? "stepId",
             taskId: taskId ?? "taskId",
-            cache: cache ?? o1js_1.Cache.FileSystem("./cache"),
+            cache: cache ?? "./cache",
             developer: developer,
             repo: repo,
             task: task,
@@ -27,17 +26,18 @@ class LocalCloud extends cloud_1.Cloud {
         this.localWorker = localWorker;
     }
     async getDeployer() {
-        const deployer = process.env.DEPLOYER;
+        const privateKey = process.env.DEPLOYER_PRIVATE_KEY;
+        const publicKey = process.env.DEPLOYER_PUBLIC_KEY;
         try {
-            return deployer === undefined
+            return privateKey === undefined || publicKey === undefined
                 ? undefined
                 : {
-                    privateKey: deployer,
-                    publicKey: o1js_1.PrivateKey.fromBase58(deployer).toPublicKey().toBase58(),
+                    privateKey,
+                    publicKey,
                 };
         }
         catch (error) {
-            console.error(`getDeployer: process.env.DEPLOYER has wrong encoding, should be base58 private key ("EKE...")`, error);
+            console.error(`getDeployer: error getting deployer key pair: ${error}`, error);
             return undefined;
         }
     }
@@ -68,7 +68,7 @@ class LocalCloud extends cloud_1.Cloud {
         throw new Error("Method not implemented.");
     }
     static generateId() {
-        return "local." + Date.now().toString() + "." + (0, mina_1.makeString)(32);
+        return "local." + Date.now().toString() + "." + (0, utils_1.makeString)(32);
     }
     static async addTransactions(transactions) {
         const timeReceived = Date.now();

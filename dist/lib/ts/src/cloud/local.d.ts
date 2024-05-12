@@ -1,5 +1,4 @@
 /// <reference types="node" />
-import { Cache } from "o1js";
 import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
 import { TaskData } from "./task";
@@ -11,7 +10,7 @@ export declare class LocalCloud extends Cloud {
     constructor(params: {
         job: JobData;
         chain: blockchain;
-        cache?: Cache;
+        cache?: string;
         stepId?: string;
         localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
     });

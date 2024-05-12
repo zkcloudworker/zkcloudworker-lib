@@ -20,3 +20,4 @@ __exportStar(require("./fields"), exports);
 __exportStar(require("./graphql"), exports);
 __exportStar(require("./fee"), exports);
 __exportStar(require("./mina"), exports);
+__exportStar(require("./utils"), exports);

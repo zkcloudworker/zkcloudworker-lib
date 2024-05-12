@@ -1,8 +1,7 @@
-import { Cache, PrivateKey } from "o1js";
 import { Cloud, zkCloudWorker } from "./cloud";
 import { JobData } from "./job";
 import { TaskData } from "./task";
-import { makeString } from "../utils/mina";
+import { makeString } from "../utils/utils";
 import { blockchain } from "../networks";
 import { saveFile, loadFile, saveBinaryFile, loadBinaryFile } from "./files";
 import { CloudTransaction, DeployerKeyPair } from "./cloud";
@@ -13,7 +12,7 @@ export class LocalCloud extends Cloud {
   constructor(params: {
     job: JobData;
     chain: blockchain;
-    cache?: Cache;
+    cache?: string;
     stepId?: string;
     localWorker: (cloud: Cloud) => Promise<zkCloudWorker>;
   }) {
@@ -26,7 +25,7 @@ export class LocalCloud extends Cloud {
       jobId: jobId,
       stepId: stepId ?? "stepId",
       taskId: taskId ?? "taskId",
-      cache: cache ?? Cache.FileSystem("./cache"),
+      cache: cache ?? "./cache",
       developer: developer,
       repo: repo,
       task: task,
@@ -39,17 +38,18 @@ export class LocalCloud extends Cloud {
     this.localWorker = localWorker;
   }
   public async getDeployer(): Promise<DeployerKeyPair | undefined> {
-    const deployer = process.env.DEPLOYER;
+    const privateKey = process.env.DEPLOYER_PRIVATE_KEY;
+    const publicKey = process.env.DEPLOYER_PUBLIC_KEY;
     try {
-      return deployer === undefined
+      return privateKey === undefined || publicKey === undefined
         ? undefined
         : ({
-            privateKey: deployer,
-            publicKey: PrivateKey.fromBase58(deployer).toPublicKey().toBase58(),
+            privateKey,
+            publicKey,
           } as DeployerKeyPair);
     } catch (error) {
       console.error(
-        `getDeployer: process.env.DEPLOYER has wrong encoding, should be base58 private key ("EKE...")`,
+        `getDeployer: error getting deployer key pair: ${error}`,
         error
       );
       return undefined;

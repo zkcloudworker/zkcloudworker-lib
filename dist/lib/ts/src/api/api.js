@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.zkCloudWorkerClient = void 0;
 const axios_1 = __importDefault(require("axios"));
 const chalk_1 = __importDefault(require("chalk"));
-const mina_1 = require("../utils/mina");
+const utils_1 = require("../utils/utils");
 const local_1 = require("../cloud/local");
 const config_1 = __importDefault(require("../config"));
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config_1.default;
@@ -312,7 +312,7 @@ class zkCloudWorkerClient {
                         result: undefined,
                     };
                 }
-                await (0, mina_1.sleep)(errorDelay * errors);
+                await (0, utils_1.sleep)(errorDelay * errors);
             }
             else {
                 if (this.isError(result.data))
@@ -335,7 +335,7 @@ class zkCloudWorkerClient {
                         result: result.data,
                     };
                 }
-                await (0, mina_1.sleep)(interval);
+                await (0, utils_1.sleep)(interval);
             }
             attempts++;
         }

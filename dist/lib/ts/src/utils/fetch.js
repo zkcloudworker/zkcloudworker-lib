@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.checkMinaZkappTransaction = exports.fetchMinaActions = exports.fetchMinaAccount = void 0;
 const o1js_1 = require("o1js");
-const mina_1 = require("./mina");
+const utils_1 = require("./utils");
 async function fetchMinaAccount(params) {
     const { publicKey, tokenId, force } = params;
     const timeout = 1000 * 60 * 2; // 2 minutes
@@ -34,7 +34,7 @@ async function fetchMinaAccount(params) {
                 return result;
             }
         }
-        await (0, mina_1.sleep)(1000 * 5);
+        await (0, utils_1.sleep)(1000 * 5);
     }
     if (force === true)
         throw new Error(`fetchMinaAccount timeout
@@ -65,7 +65,7 @@ async function fetchMinaActions(publicKey, fromActionState, endActionState) {
         catch (error) {
             console.log("Error in fetchMinaActions", error.toString().substring(0, 300));
         }
-        await (0, mina_1.sleep)(1000 * 60 * 2);
+        await (0, utils_1.sleep)(1000 * 60 * 2);
     }
     console.log("Timeout in fetchMinaActions");
     return undefined;

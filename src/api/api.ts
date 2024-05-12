@@ -1,6 +1,6 @@
 import axios, { all } from "axios";
 import chalk from "chalk";
-import { sleep } from "../utils/mina";
+import { sleep } from "../utils/utils";
 import { LocalCloud, LocalStorage } from "../cloud/local";
 import config from "../config";
 import { zkCloudWorker, Cloud } from "../cloud/cloud";

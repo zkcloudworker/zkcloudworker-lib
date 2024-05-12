@@ -1,4 +1,3 @@
-import type { Cache, VerificationKey } from "o1js";
 import { blockchain } from "../networks";
 import { JobData } from "./job";
 
@@ -23,7 +22,7 @@ export abstract class Cloud {
   readonly jobId: string;
   readonly stepId: string;
   readonly taskId: string;
-  readonly cache: Cache;
+  readonly cache: string;
   readonly developer: string;
   readonly repo: string;
   readonly task?: string;
@@ -38,7 +37,7 @@ export abstract class Cloud {
     jobId: string;
     stepId: string;
     taskId: string;
-    cache: Cache;
+    cache: string;
     developer: string;
     repo: string;
     task?: string;
