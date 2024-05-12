@@ -2,39 +2,40 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.zkCloudWorker = exports.Cloud = void 0;
 /*
- * Abstract class for the cloud
+ * Abstract class for the cloud service
  * Used to define the cloud methods and properties
  * Should be implemented by for local testing and for the zkCloudWorker in the cloud
- * @param id: the id of the user
- * @param jobId: the job id
- * @param stepId: the step id
- * @param taskId: the task id
- * @param cache: the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
- * @param developer: the developer id
- * @param repo: the repo id
- * @param task: the task id
- * @param userId: the user id
- * @param args: the arguments, should be a string or serialized JSON
- * @param metadata: the metadata, should be a string or serialized JSON
- * @param chain: the blockchain network
- * @param isLocalCloud: a boolean to check if the cloud is local or not
+ * @param id the id of the user
+ * @param jobId the job id
+ * @param stepId the step id
+ * @param taskId the task id
+ * @param cache the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
+ * @param developer the developer id
+ * @param repo the repo id
+ * @param task the task id
+ * @param userId the user id
+ * @param args the arguments, should be a string or serialized JSON
+ * @param metadata the metadata, should be a string or serialized JSON
+ * @param chain the blockchain network
+ * @param isLocalCloud a boolean to check if the cloud is local or not
  */
 class Cloud {
     /**
      * Constructor for the Cloud class
-     * @param id: the id of the user
-     * @param jobId: the job id
-     * @param stepId: the step id
-     * @param taskId: the task id
-     * @param cache: the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
-     * @param developer: the developer id
-     * @param repo: the repo id
-     * @param task: the task id
-     * @param userId: the user id
-     * @param args: the arguments, should be a string or serialized JSON
-     * @param metadata: the metadata, should be a string or serialized JSON
-     * @param chain: the blockchain network
-     * @param isLocalCloud: a boolean to check if the cloud is local or not
+     * @param params the parameters for the Cloud class
+     * @param params.id the id of the user
+     * @param params.jobId the job id
+     * @param params.stepId the step id
+     * @param params.taskId the task id
+     * @param params.cache the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
+     * @param params.developer the developer id
+     * @param params.repo the repo id
+     * @param params.task the task id
+     * @param params.userId the user id
+     * @param params.args the arguments, should be a string or serialized JSON
+     * @param params.metadata the metadata, should be a string or serialized JSON
+     * @param params.chain the blockchain network
+     * @param params.isLocalCloud a boolean to check if the cloud is local or not
      */
     constructor(params) {
         const { id, jobId, stepId, taskId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, chain, } = params;
@@ -63,7 +64,7 @@ exports.Cloud = Cloud;
 class zkCloudWorker {
     /**
      * Constructor for the zkCloudWorker class
-     * @param cloud: the cloud instance provided by the zkCloudWorker in the local environment or in the cloud
+     * @param cloud the cloud instance provided by the zkCloudWorker in the local environment or in the cloud
      */
     constructor(cloud) {
         this.cloud = cloud;
@@ -78,7 +79,7 @@ class zkCloudWorker {
     // Those methods should be implemented for recursive proofs calculations
     /**
      * Creates a new proof from a transaction
-     * @param transaction: the transaction
+     * @param transaction the transaction
      * @returns the serialized proof
      */
     async create(transaction) {
@@ -86,8 +87,8 @@ class zkCloudWorker {
     }
     /**
      * Merges two proofs
-     * @param proof1: the first proof
-     * @param proof2: the second proof
+     * @param proof1 the first proof
+     * @param proof2 the second proof
      * @returns the merged proof
      */
     async merge(proof1, proof2) {
@@ -96,7 +97,7 @@ class zkCloudWorker {
     // Those methods should be implemented for anything except for recursive proofs
     /**
      * Executes the transactions
-     * @param transactions: the transactions, can be empty list
+     * @param transactions the transactions, can be empty list
      * @returns the result
      */
     async execute(transactions) {

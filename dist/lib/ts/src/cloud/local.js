@@ -15,11 +15,11 @@ class LocalCloud extends cloud_1.Cloud {
     /**
      * Constructor for LocalCloud
      * @param params the parameters to create the LocalCloud
-     * @param job the job data
-     * @param chain the blockchain to execute the job on, can be any blockchain, not only local
-     * @param cache the cache folder
-     * @param stepId the step id
-     * @param localWorker the worker to execute the tasks
+     * @param params.job the job data
+     * @param params.chain the blockchain to execute the job on, can be any blockchain, not only local
+     * @param params.cache the cache folder
+     * @param params.stepId the step id
+     * @param params.localWorker the worker to execute the tasks
      */
     constructor(params) {
         const { job, chain, cache, stepId, localWorker } = params;

@@ -28,10 +28,11 @@ export declare class zkCloudWorkerClient {
     readonly localWorker?: (cloud: Cloud) => Promise<zkCloudWorker>;
     /**
      * Constructor for the API class
-     * @param jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
-     * @param zkcloudworker The local worker for the serverless api to test the code locally
-     * @param chain The blockchain network to use
-     * @param webhook The webhook for the serverless api to get the results
+     * @param params the parameters for the API class
+     * @param params.jwt The jwt token for authentication, get it at https://t.me/minanft_bot?start=auth
+     * @param params.zkcloudworker The local worker for the serverless api to test the code locally
+     * @param params.chain The blockchain network to use
+     * @param params.webhook The webhook for the serverless api to get the results
      */
     constructor(params: {
         jwt: string;
