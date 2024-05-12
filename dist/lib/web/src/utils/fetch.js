@@ -1,5 +1,5 @@
 import { Mina, fetchAccount, checkZkappTransaction, } from "o1js";
-import { sleep } from "./mina";
+import { sleep } from "./utils";
 export async function fetchMinaAccount(params) {
     const { publicKey, tokenId, force } = params;
     const timeout = 1000 * 60 * 2; // 2 minutes

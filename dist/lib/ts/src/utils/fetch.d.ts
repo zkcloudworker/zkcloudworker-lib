@@ -4,10 +4,10 @@ export declare function fetchMinaAccount(params: {
     tokenId?: string | Field | undefined;
     force?: boolean;
 }): Promise<{
+    account: undefined;
+} | {
     account: import("o1js/dist/node/bindings/mina-transaction/gen/transaction").Account;
     error: undefined;
-} | {
-    account: undefined;
 }>;
 export declare function fetchMinaActions(publicKey: PublicKey, fromActionState: Field, endActionState?: Field): Promise<{
     actions: string[][];

@@ -4,4 +4,5 @@ export * from "./fields";
 export * from "./graphql";
 export * from "./fee";
 export * from "./mina";
+export * from "./utils";
 //# sourceMappingURL=index.js.map

@@ -1,5 +1,4 @@
 /// <reference types="node" />
-import type { Cache } from "o1js";
 import { blockchain } from "../networks";
 import { JobData } from "./job";
 export interface DeployedSmartContract {
@@ -25,7 +24,7 @@ export declare abstract class Cloud {
     readonly jobId: string;
     readonly stepId: string;
     readonly taskId: string;
-    readonly cache: Cache;
+    readonly cache: string;
     readonly developer: string;
     readonly repo: string;
     readonly task?: string;
@@ -39,7 +38,7 @@ export declare abstract class Cloud {
         jobId: string;
         stepId: string;
         taskId: string;
-        cache: Cache;
+        cache: string;
         developer: string;
         repo: string;
         task?: string;
