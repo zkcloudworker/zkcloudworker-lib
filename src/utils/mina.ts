@@ -22,6 +22,12 @@ import {
 } from "o1js";
 import { networks, blockchain, MinaNetwork, Local } from "../networks";
 
+/**
+ * MinaNetworkInstance is the data structure for a Mina network instance, keeping track of the keys, network, and network id hash
+ * @param keys the keys for the deployers
+ * @param network the network
+ * @param networkIdHash the network id hash
+ */
 interface MinaNetworkInstance {
   keys: Mina.TestPublicKey[];
   network: MinaNetwork;
@@ -52,6 +58,14 @@ function getDeployer(): Mina.TestPublicKey | undefined {
   return currentNetwork.keys[0];
 }
 
+/**
+ * Initializes the Mina blockchain network
+ * Due to the limitations of the Mina SDK, only one network can be initialized at a time
+ * This function should be called before any other Mina functions
+ * @param instance the blockchain instance to initialize
+ * @param deployersNumber the number of deployers to use for the network (only for local and lightnet networks)
+ * @returns the Mina network instance
+ */
 async function initBlockchain(
   instance: blockchain,
   deployersNumber: number = 0
@@ -131,12 +145,22 @@ async function initBlockchain(
   return currentNetwork;
 }
 
+/**
+ * Fetches the account balance for a given public key
+ * @param address the public key
+ * @returns the account balance
+ */
 async function accountBalance(address: PublicKey): Promise<UInt64> {
   await fetchAccount({ publicKey: address });
   if (Mina.hasAccount(address)) return Mina.getBalance(address);
   else return UInt64.from(0);
 }
 
+/**
+ * Fetches the account balance for a given public key and returns it in Mina
+ * @param address the public key
+ * @returns the account balance in MINA
+ */
 async function accountBalanceMina(address: PublicKey): Promise<number> {
   return Number((await accountBalance(address)).toBigInt()) / 1e9;
 }

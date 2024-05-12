@@ -1,4 +1,38 @@
+/*
+ * Abstract class for the cloud
+ * Used to define the cloud methods and properties
+ * Should be implemented by for local testing and for the zkCloudWorker in the cloud
+ * @param id: the id of the user
+ * @param jobId: the job id
+ * @param stepId: the step id
+ * @param taskId: the task id
+ * @param cache: the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
+ * @param developer: the developer id
+ * @param repo: the repo id
+ * @param task: the task id
+ * @param userId: the user id
+ * @param args: the arguments, should be a string or serialized JSON
+ * @param metadata: the metadata, should be a string or serialized JSON
+ * @param chain: the blockchain network
+ * @param isLocalCloud: a boolean to check if the cloud is local or not
+ */
 export class Cloud {
+    /**
+     * Constructor for the Cloud class
+     * @param id: the id of the user
+     * @param jobId: the job id
+     * @param stepId: the step id
+     * @param taskId: the task id
+     * @param cache: the cache folder. Use it to get the Cache object: cache = Cache.FileSystem(this.cloud.cache);
+     * @param developer: the developer id
+     * @param repo: the repo id
+     * @param task: the task id
+     * @param userId: the user id
+     * @param args: the arguments, should be a string or serialized JSON
+     * @param metadata: the metadata, should be a string or serialized JSON
+     * @param chain: the blockchain network
+     * @param isLocalCloud: a boolean to check if the cloud is local or not
+     */
     constructor(params) {
         const { id, jobId, stepId, taskId, cache, developer, repo, task, userId, args, metadata, isLocalCloud, chain, } = params;
         this.id = id;
@@ -16,28 +50,62 @@ export class Cloud {
         this.chain = chain;
     }
 }
+/**
+ * Abstract class for the zkCloudWorker
+ * Used to define the zkCloudWorker methods and properties
+ * Should be implemented for by the developer for the zkCloudWorker in the cloud
+ * @param cloud: the cloud
+ */
 export class zkCloudWorker {
+    /**
+     * Constructor for the zkCloudWorker class
+     * @param cloud: the cloud instance provided by the zkCloudWorker in the local environment or in the cloud
+     */
     constructor(cloud) {
         this.cloud = cloud;
     }
-    // To verify the SmartContract code
+    /**
+     * Returns the deployed smart contracts for verification in the blockchain explorer
+     * @returns the deployed smart contracts
+     */
     async deployedContracts() {
         return [];
     }
     // Those methods should be implemented for recursive proofs calculations
+    /**
+     * Creates a new proof from a transaction
+     * @param transaction: the transaction
+     * @returns the serialized proof
+     */
     async create(transaction) {
         return undefined;
     }
+    /**
+     * Merges two proofs
+     * @param proof1: the first proof
+     * @param proof2: the second proof
+     * @returns the merged proof
+     */
     async merge(proof1, proof2) {
         return undefined;
     }
     // Those methods should be implemented for anything except for recursive proofs
+    /**
+     * Executes the transactions
+     * @param transactions: the transactions, can be empty list
+     * @returns the result
+     */
     async execute(transactions) {
         return undefined;
     }
-    // process the transactions received by the cloud
+    /* Process the transactions received by the cloud
+     * @param transactions: the transactions
+     */
     async processTransactions(transactions) { }
-    // process the task defined by the developer
+    /**
+     * process the task defined by the developer
+     * @returns the result
+     */
     async task() {
         return undefined;
     }

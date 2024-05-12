@@ -3,6 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deserializeFields = exports.serializeFields = void 0;
 const o1js_1 = require("o1js");
 const base64_1 = require("./base64");
+/**
+ * Serialize fields to a string using base64 URL-friendly encoding
+ * @param fields the fields array to serialize
+ * @returns the serialized string
+ */
 function serializeFields(fields) {
     const hash = o1js_1.Poseidon.hash(fields);
     const value = [(0, o1js_1.Field)(fields.length), hash, ...fields];
@@ -10,6 +15,11 @@ function serializeFields(fields) {
     return value.map((f) => (0, base64_1.fieldToBase64)(f)).join(".");
 }
 exports.serializeFields = serializeFields;
+/**
+ * Deserialize fields from a string using base64 URL-friendly encoding
+ * @param s the string to deserialize
+ * @returns the deserialized fields array
+ */
 function deserializeFields(s) {
     try {
         //const value = s.split(".").map((n) => Field(BigInt(convert(n, 36))));

@@ -1,6 +1,11 @@
 import { Field, Poseidon } from "o1js";
 import { fieldToBase64, fieldFromBase64 } from "./base64";
 
+/**
+ * Serialize fields to a string using base64 URL-friendly encoding
+ * @param fields the fields array to serialize
+ * @returns the serialized string
+ */
 export function serializeFields(fields: Field[]): string {
   const hash = Poseidon.hash(fields);
   const value = [Field(fields.length), hash, ...fields];
@@ -8,6 +13,11 @@ export function serializeFields(fields: Field[]): string {
   return value.map((f) => fieldToBase64(f)).join(".");
 }
 
+/**
+ * Deserialize fields from a string using base64 URL-friendly encoding
+ * @param s the string to deserialize
+ * @returns the deserialized fields array
+ */
 export function deserializeFields(s: string): Field[] {
   try {
     //const value = s.split(".").map((n) => Field(BigInt(convert(n, 36))));
