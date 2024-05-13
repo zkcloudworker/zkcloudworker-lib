@@ -77,6 +77,12 @@ export declare class LocalCloud extends Cloud {
      */
     private static generateId;
     /**
+     * Send transactions to the local cloud
+     * @param transactions the transactions to add
+     * @returns the transaction ids
+     */
+    sendTransactions(transactions: string[]): Promise<string[]>;
+    /**
      * Adds transactions to the local cloud
      * @param transactions the transactions to add
      * @returns the transaction ids

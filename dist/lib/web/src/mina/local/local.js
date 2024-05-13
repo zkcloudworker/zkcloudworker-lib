@@ -116,6 +116,14 @@ export class LocalCloud extends Cloud {
         return "local." + Date.now().toString() + "." + makeString(32);
     }
     /**
+     * Send transactions to the local cloud
+     * @param transactions the transactions to add
+     * @returns the transaction ids
+     */
+    async sendTransactions(transactions) {
+        return await LocalCloud.addTransactions(transactions);
+    }
+    /**
      * Adds transactions to the local cloud
      * @param transactions the transactions to add
      * @returns the transaction ids
