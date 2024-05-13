@@ -276,12 +276,6 @@ class zkCloudWorkerClient {
         const errorDelay = 30000; // 30 seconds
         const printedLogs = [];
         const printLogs = data.printLogs ?? true;
-        function isAllLogsFetched() {
-            if (printLogs === false)
-                return true;
-            // search for "Billed Duration" in the logs and return true if found
-            return printedLogs.some((log) => log.includes("Billed Duration"));
-        }
         function print(logs) {
             logs.forEach((log) => {
                 if (printedLogs.includes(log) === false) {
@@ -301,6 +295,7 @@ class zkCloudWorkerClient {
                 jobId: data.jobId,
                 includeLogs: printLogs,
             });
+            const isAllLogsFetched = result?.data?.isFullLog === true || printLogs === false;
             if (printLogs === true &&
                 result?.data?.logs !== undefined &&
                 result?.data?.logs !== null &&
@@ -318,20 +313,20 @@ class zkCloudWorkerClient {
                 await (0, utils_1.sleep)(errorDelay * errors);
             }
             else {
-                if (this.isError(result.data))
+                if (this.isError(result.data) && isAllLogsFetched)
                     return {
                         success: false,
                         error: result.error,
                         result: result.data,
                     };
-                else if (result.data?.result !== undefined && isAllLogsFetched()) {
+                else if (result.data?.result !== undefined && isAllLogsFetched) {
                     return {
                         success: result.success,
                         error: result.error,
                         result: result.data,
                     };
                 }
-                else if (result.data?.jobStatus === "failed" && isAllLogsFetched()) {
+                else if (result.data?.jobStatus === "failed" && isAllLogsFetched) {
                     return {
                         success: false,
                         error: "Job failed",

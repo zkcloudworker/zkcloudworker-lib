@@ -3,7 +3,7 @@ import chalk from "chalk";
 import { sleep } from "../../cloud/utils";
 import { LocalCloud, LocalStorage } from "../local/local";
 import config from "../../cloud/config";
-import { zkCloudWorker, Cloud } from "../../cloud/worker";
+import { zkCloudWorker, Cloud, JobData } from "../../cloud/worker";
 import { blockchain } from "../../cloud/networks";
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 
@@ -397,12 +397,6 @@ export class zkCloudWorkerClient {
     const printedLogs: string[] = [];
     const printLogs: boolean = data.printLogs ?? true;
 
-    function isAllLogsFetched(): boolean {
-      if (printLogs === false) return true;
-      // search for "Billed Duration" in the logs and return true if found
-      return printedLogs.some((log) => log.includes("Billed Duration"));
-    }
-
     function print(logs: string[]) {
       logs.forEach((log) => {
         if (printedLogs.includes(log) === false) {
@@ -424,6 +418,8 @@ export class zkCloudWorkerClient {
         jobId: data.jobId,
         includeLogs: printLogs,
       });
+      const isAllLogsFetched =
+        result?.data?.isFullLog === true || printLogs === false;
       if (
         printLogs === true &&
         result?.data?.logs !== undefined &&
@@ -442,19 +438,19 @@ export class zkCloudWorkerClient {
         }
         await sleep(errorDelay * errors);
       } else {
-        if (this.isError(result.data))
+        if (this.isError(result.data) && isAllLogsFetched)
           return {
             success: false,
             error: result.error,
             result: result.data,
           };
-        else if (result.data?.result !== undefined && isAllLogsFetched()) {
+        else if (result.data?.result !== undefined && isAllLogsFetched) {
           return {
             success: result.success,
             error: result.error,
             result: result.data,
           };
-        } else if (result.data?.jobStatus === "failed" && isAllLogsFetched()) {
+        } else if (result.data?.jobStatus === "failed" && isAllLogsFetched) {
           return {
             success: false,
             error: "Job failed",

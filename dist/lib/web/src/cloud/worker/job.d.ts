@@ -51,6 +51,7 @@ export interface LogStream {
  * @param result the result of the job
  * @param logStreams the log streams of the job
  * @param logs the logs of the job
+ * @param isFullLog whether the logs are full
  */
 export interface JobData {
     id: string;
@@ -83,4 +84,5 @@ export interface JobData {
     result?: string;
     logStreams?: LogStream[];
     logs?: string[];
+    isFullLog?: boolean;
 }
