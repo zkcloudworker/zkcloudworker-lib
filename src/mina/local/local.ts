@@ -152,6 +152,15 @@ export class LocalCloud extends Cloud {
   }
 
   /**
+   * Send transactions to the local cloud
+   * @param transactions the transactions to add
+   * @returns the transaction ids
+   */
+  public async sendTransactions(transactions: string[]): Promise<string[]> {
+    return await LocalCloud.addTransactions(transactions);
+  }
+
+  /**
    * Adds transactions to the local cloud
    * @param transactions the transactions to add
    * @returns the transaction ids

@@ -199,6 +199,11 @@ export declare abstract class Cloud {
         maxAttempts?: number;
     }): Promise<string>;
     /**
+     * Abstract method to send the transactions
+     * @param transactions
+     */
+    abstract sendTransactions(transactions: string[]): Promise<string[]>;
+    /**
      * Abstract method to delete the transaction
      * Used to delete the transaction
      * @param txId the transaction id

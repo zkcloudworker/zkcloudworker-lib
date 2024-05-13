@@ -119,6 +119,14 @@ class LocalCloud extends cloud_1.Cloud {
         return "local." + Date.now().toString() + "." + (0, cloud_2.makeString)(32);
     }
     /**
+     * Send transactions to the local cloud
+     * @param transactions the transactions to add
+     * @returns the transaction ids
+     */
+    async sendTransactions(transactions) {
+        return await LocalCloud.addTransactions(transactions);
+    }
+    /**
      * Adds transactions to the local cloud
      * @param transactions the transactions to add
      * @returns the transaction ids
