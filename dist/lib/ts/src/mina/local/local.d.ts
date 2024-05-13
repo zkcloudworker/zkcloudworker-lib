@@ -93,13 +93,6 @@ export declare class LocalCloud extends Cloud {
      * @param params the parameters to run the worker
      * @param params.command the command to run
      * @param params.data the data to use
-     * @param params.data.developer the developer of the repo
-     * @param params.data.repo the repo
-     * @param params.data.transactions the transactions to process
-     * @param params.data.task the task to execute
-     * @param params.data.userId the user id
-     * @param params.data.args the arguments for the job
-     * @param params.data.metadata the metadata for the job
      * @param params.chain the blockchain to execute the job on
      * @param params.localWorker the worker to execute the tasks
      * @returns the job id
@@ -203,13 +196,6 @@ export declare class LocalCloud extends Cloud {
      * @param params the parameters to run the sequencer
      * @param params.worker the worker to execute the tasks
      * @param params.data the data to use
-     * @param params.data.developer the developer of the repo
-     * @param params.data.repo the repo
-     * @param params.data.transactions the transactions to process
-     * @param params.data.task the task to execute
-     * @param params.data.userId the user id
-     * @param params.data.args the arguments for the job
-     * @param params.data.metadata the metadata for the job
      * @returns the proof
      */
     static sequencer(params: {
