@@ -407,6 +407,12 @@ export class LocalCloud extends Cloud {
         }
         return proof;
     }
+    /**
+     * forces the worker to restart
+     */
+    async forceWorkerRestart() {
+        throw new Error("forceWorkerRestart called in LocalCloud");
+    }
 }
 /**
  * LocalStorage is a local storage for the local cloud

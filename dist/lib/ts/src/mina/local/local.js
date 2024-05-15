@@ -410,6 +410,12 @@ class LocalCloud extends cloud_1.Cloud {
         }
         return proof;
     }
+    /**
+     * forces the worker to restart
+     */
+    async forceWorkerRestart() {
+        throw new Error("forceWorkerRestart called in LocalCloud");
+    }
 }
 exports.LocalCloud = LocalCloud;
 /**

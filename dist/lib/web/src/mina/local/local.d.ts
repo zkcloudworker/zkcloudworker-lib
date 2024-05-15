@@ -216,6 +216,10 @@ export declare class LocalCloud extends Cloud {
             metadata?: string;
         };
     }): Promise<string>;
+    /**
+     * forces the worker to restart
+     */
+    forceWorkerRestart(): Promise<void>;
 }
 /**
  * LocalStorage is a local storage for the local cloud

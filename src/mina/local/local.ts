@@ -502,6 +502,13 @@ export class LocalCloud extends Cloud {
     }
     return proof;
   }
+
+  /**
+   * forces the worker to restart
+   */
+  async forceWorkerRestart(): Promise<void> {
+    throw new Error("forceWorkerRestart called in LocalCloud");
+  }
 }
 
 /**
