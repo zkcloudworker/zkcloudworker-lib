@@ -17,3 +17,4 @@ Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./files"), exports);
 __exportStar(require("./graphql"), exports);
 __exportStar(require("./utils"), exports);
+__exportStar(require("./hash"), exports);

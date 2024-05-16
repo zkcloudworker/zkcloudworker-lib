@@ -1,6 +1,7 @@
 import { Cloud } from "../../cloud";
 import { makeString } from "../../cloud";
 import { saveFile, loadFile, saveBinaryFile, loadBinaryFile, } from "../../cloud";
+import { stringHash } from "../../cloud";
 /**
  * LocalCloud is a cloud that runs on the local machine for testing and development
  * It uses LocalStorage to store jobs, tasks, transactions, and data
@@ -112,8 +113,9 @@ export class LocalCloud extends Cloud {
      * Generates an id for local cloud
      * @returns generated unique id
      */
-    static generateId() {
-        return "local." + Date.now().toString() + "." + makeString(32);
+    static generateId(tx = undefined) {
+        const data = tx ?? JSON.stringify({ time: Date.now(), data: makeString(32) });
+        return stringHash(data);
     }
     /**
      * Send transactions to the local cloud
@@ -130,13 +132,25 @@ export class LocalCloud extends Cloud {
      */
     static async addTransactions(transactions) {
         const timeReceived = Date.now();
-        const txId = [];
+        const txs = [];
         transactions.forEach((tx) => {
-            const id = LocalCloud.generateId();
-            LocalStorage.transactions[id] = { transaction: tx, timeReceived };
-            txId.push(id);
+            if (typeof tx === "string") {
+                const txId = LocalCloud.generateId(JSON.stringify({ tx, time: timeReceived }));
+                const transaction = {
+                    txId,
+                    transaction: tx,
+                    timeReceived,
+                    status: "accepted",
+                };
+                LocalStorage.transactions[txId] = transaction;
+                txs.push(transaction);
+            }
+            else {
+                LocalStorage.transactions[tx.txId] = tx;
+                txs.push(tx);
+            }
         });
-        return txId;
+        return txs;
     }
     /**
      * Deletes a transaction from the local cloud
@@ -149,12 +163,7 @@ export class LocalCloud extends Cloud {
     }
     async getTransactions() {
         const txs = Object.keys(LocalStorage.transactions).map((txId) => {
-            const { transaction, timeReceived } = LocalStorage.transactions[txId];
-            return {
-                txId,
-                transaction,
-                timeReceived,
-            };
+            return LocalStorage.transactions[txId];
         });
         return txs;
     }

@@ -11,6 +11,8 @@ import {
 } from "../../cloud";
 import { CloudTransaction, DeployerKeyPair } from "../../cloud";
 import { ApiCommand } from "../api/api";
+import { stringHash } from "../../cloud";
+import { time } from "console";
 
 /**
  * LocalCloud is a cloud that runs on the local machine for testing and development
@@ -147,8 +149,10 @@ export class LocalCloud extends Cloud {
    * Generates an id for local cloud
    * @returns generated unique id
    */
-  private static generateId(): string {
-    return "local." + Date.now().toString() + "." + makeString(32);
+  private static generateId(tx: string | undefined = undefined): string {
+    const data =
+      tx ?? JSON.stringify({ time: Date.now(), data: makeString(32) });
+    return stringHash(data);
   }
 
   /**
@@ -156,7 +160,9 @@ export class LocalCloud extends Cloud {
    * @param transactions the transactions to add
    * @returns the transaction ids
    */
-  public async sendTransactions(transactions: string[]): Promise<string[]> {
+  public async sendTransactions(
+    transactions: string[]
+  ): Promise<CloudTransaction[]> {
     return await LocalCloud.addTransactions(transactions);
   }
 
@@ -166,16 +172,29 @@ export class LocalCloud extends Cloud {
    * @returns the transaction ids
    */
   public static async addTransactions(
-    transactions: string[]
-  ): Promise<string[]> {
+    transactions: string[] | CloudTransaction[]
+  ): Promise<CloudTransaction[]> {
     const timeReceived = Date.now();
-    const txId: string[] = [];
+    const txs: CloudTransaction[] = [];
     transactions.forEach((tx) => {
-      const id = LocalCloud.generateId();
-      LocalStorage.transactions[id] = { transaction: tx, timeReceived };
-      txId.push(id);
+      if (typeof tx === "string") {
+        const txId = LocalCloud.generateId(
+          JSON.stringify({ tx, time: timeReceived })
+        );
+        const transaction: CloudTransaction = {
+          txId,
+          transaction: tx,
+          timeReceived,
+          status: "accepted",
+        };
+        LocalStorage.transactions[txId] = transaction;
+        txs.push(transaction);
+      } else {
+        LocalStorage.transactions[tx.txId] = tx;
+        txs.push(tx);
+      }
     });
-    return txId;
+    return txs;
   }
 
   /**
@@ -190,12 +209,7 @@ export class LocalCloud extends Cloud {
 
   public async getTransactions(): Promise<CloudTransaction[]> {
     const txs = Object.keys(LocalStorage.transactions).map((txId) => {
-      const { transaction, timeReceived } = LocalStorage.transactions[txId];
-      return {
-        txId,
-        transaction,
-        timeReceived,
-      };
+      return LocalStorage.transactions[txId];
     });
     return txs;
   }
@@ -524,7 +538,7 @@ export class LocalStorage {
   static jobs: { [key: string]: JobData } = {};
   static data: { [key: string]: string } = {};
   static transactions: {
-    [key: string]: { transaction: string; timeReceived: number };
+    [key: string]: CloudTransaction;
   } = {};
   static tasks: { [key: string]: TaskData } = {};
 

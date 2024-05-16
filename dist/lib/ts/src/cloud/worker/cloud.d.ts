@@ -43,6 +43,7 @@ export interface CloudTransaction {
     txId: string;
     transaction: string;
     timeReceived: number;
+    status: string;
 }
 export declare abstract class Cloud {
     readonly id: string;
@@ -202,7 +203,7 @@ export declare abstract class Cloud {
      * Abstract method to send the transactions
      * @param transactions
      */
-    abstract sendTransactions(transactions: string[]): Promise<string[]>;
+    abstract sendTransactions(transactions: string[] | CloudTransaction[]): Promise<CloudTransaction[]>;
     /**
      * Abstract method to delete the transaction
      * Used to delete the transaction

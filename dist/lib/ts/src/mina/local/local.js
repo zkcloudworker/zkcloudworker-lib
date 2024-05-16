@@ -4,6 +4,7 @@ exports.LocalStorage = exports.LocalCloud = void 0;
 const cloud_1 = require("../../cloud");
 const cloud_2 = require("../../cloud");
 const cloud_3 = require("../../cloud");
+const cloud_4 = require("../../cloud");
 /**
  * LocalCloud is a cloud that runs on the local machine for testing and development
  * It uses LocalStorage to store jobs, tasks, transactions, and data
@@ -115,8 +116,9 @@ class LocalCloud extends cloud_1.Cloud {
      * Generates an id for local cloud
      * @returns generated unique id
      */
-    static generateId() {
-        return "local." + Date.now().toString() + "." + (0, cloud_2.makeString)(32);
+    static generateId(tx = undefined) {
+        const data = tx ?? JSON.stringify({ time: Date.now(), data: (0, cloud_2.makeString)(32) });
+        return (0, cloud_4.stringHash)(data);
     }
     /**
      * Send transactions to the local cloud
@@ -133,13 +135,25 @@ class LocalCloud extends cloud_1.Cloud {
      */
     static async addTransactions(transactions) {
         const timeReceived = Date.now();
-        const txId = [];
+        const txs = [];
         transactions.forEach((tx) => {
-            const id = LocalCloud.generateId();
-            LocalStorage.transactions[id] = { transaction: tx, timeReceived };
-            txId.push(id);
+            if (typeof tx === "string") {
+                const txId = LocalCloud.generateId(JSON.stringify({ tx, time: timeReceived }));
+                const transaction = {
+                    txId,
+                    transaction: tx,
+                    timeReceived,
+                    status: "accepted",
+                };
+                LocalStorage.transactions[txId] = transaction;
+                txs.push(transaction);
+            }
+            else {
+                LocalStorage.transactions[tx.txId] = tx;
+                txs.push(tx);
+            }
         });
-        return txId;
+        return txs;
     }
     /**
      * Deletes a transaction from the local cloud
@@ -152,12 +166,7 @@ class LocalCloud extends cloud_1.Cloud {
     }
     async getTransactions() {
         const txs = Object.keys(LocalStorage.transactions).map((txId) => {
-            const { transaction, timeReceived } = LocalStorage.transactions[txId];
-            return {
-                txId,
-                transaction,
-                timeReceived,
-            };
+            return LocalStorage.transactions[txId];
         });
         return txs;
     }

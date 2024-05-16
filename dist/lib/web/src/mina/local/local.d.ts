@@ -81,13 +81,13 @@ export declare class LocalCloud extends Cloud {
      * @param transactions the transactions to add
      * @returns the transaction ids
      */
-    sendTransactions(transactions: string[]): Promise<string[]>;
+    sendTransactions(transactions: string[]): Promise<CloudTransaction[]>;
     /**
      * Adds transactions to the local cloud
      * @param transactions the transactions to add
      * @returns the transaction ids
      */
-    static addTransactions(transactions: string[]): Promise<string[]>;
+    static addTransactions(transactions: string[] | CloudTransaction[]): Promise<CloudTransaction[]>;
     /**
      * Deletes a transaction from the local cloud
      * @param txId the transaction id to delete
@@ -238,10 +238,7 @@ export declare class LocalStorage {
         [key: string]: string;
     };
     static transactions: {
-        [key: string]: {
-            transaction: string;
-            timeReceived: number;
-        };
+        [key: string]: CloudTransaction;
     };
     static tasks: {
         [key: string]: TaskData;
