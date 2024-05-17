@@ -22,7 +22,7 @@ export type ApiCommand = "recursiveProof" | "execute" | "sendTransactions" | "jo
  */
 export declare class zkCloudWorkerClient {
     readonly jwt: string;
-    readonly endpoint: string;
+    readonly endpoint?: string;
     readonly chain: blockchain;
     readonly webhook?: string;
     readonly localWorker?: (cloud: Cloud) => Promise<zkCloudWorker>;
