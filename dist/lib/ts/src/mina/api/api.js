@@ -28,10 +28,14 @@ class zkCloudWorkerClient {
      * @param params.webhook The webhook for the serverless api to get the results
      */
     constructor(params) {
-        const { jwt, zkcloudworker, chain, webhook } = params;
+        const { jwt, zkcloudworker, webhook } = params;
         this.jwt = jwt;
-        this.endpoint = ZKCLOUDWORKER_API;
-        this.chain = chain ?? "devnet";
+        const chain = params.chain ?? "devnet";
+        this.chain = chain;
+        this.endpoint =
+            chain === "devnet" || chain === "zeko"
+                ? ZKCLOUDWORKER_API + chain
+                : undefined;
         this.webhook = webhook;
         if (jwt === "local") {
             if (zkcloudworker === undefined)
@@ -423,6 +427,8 @@ class zkCloudWorkerClient {
             }
         }
         else {
+            if (this.endpoint === undefined)
+                throw new Error("zkCloudWorker supports only devnet and zeko chains in the cloud.");
             const apiData = {
                 auth: ZKCLOUDWORKER_AUTH,
                 command: command,

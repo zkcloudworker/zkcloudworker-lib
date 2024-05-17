@@ -37,7 +37,7 @@ export type ApiCommand =
  */
 export class zkCloudWorkerClient {
   readonly jwt: string;
-  readonly endpoint: string;
+  readonly endpoint?: string;
   readonly chain: blockchain;
   readonly webhook?: string;
   readonly localWorker?: (cloud: Cloud) => Promise<zkCloudWorker>;
@@ -56,10 +56,15 @@ export class zkCloudWorkerClient {
     chain?: blockchain;
     webhook?: string;
   }) {
-    const { jwt, zkcloudworker, chain, webhook } = params;
+    const { jwt, zkcloudworker, webhook } = params;
     this.jwt = jwt;
-    this.endpoint = ZKCLOUDWORKER_API;
-    this.chain = chain ?? "devnet";
+
+    const chain = params.chain ?? "devnet";
+    this.chain = chain;
+    this.endpoint =
+      chain === "devnet" || chain === "zeko"
+        ? ZKCLOUDWORKER_API + chain
+        : undefined;
     this.webhook = webhook;
     if (jwt === "local") {
       if (zkcloudworker === undefined)
@@ -548,6 +553,10 @@ export class zkCloudWorkerClient {
           };
       }
     } else {
+      if (this.endpoint === undefined)
+        throw new Error(
+          "zkCloudWorker supports only devnet and zeko chains in the cloud."
+        );
       const apiData = {
         auth: ZKCLOUDWORKER_AUTH,
         command: command,
