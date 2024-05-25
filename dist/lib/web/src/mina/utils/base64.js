@@ -1,5 +1,5 @@
 import { Field } from "o1js";
-import { toBase, fromBase } from "../../cloud/utils/hash";
+import { toBase, fromBase } from "../../cloud/utils/base64";
 // URL friendly base64 encoding
 const TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 export function fieldToBase56(field) {

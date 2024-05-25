@@ -3,16 +3,8 @@ import { JobData } from "../../cloud";
 import { TaskData } from "../../cloud";
 import { makeString } from "../../cloud";
 import { blockchain } from "../../cloud";
-import {
-  saveFile,
-  loadFile,
-  saveBinaryFile,
-  loadBinaryFile,
-} from "../../cloud";
 import { CloudTransaction, DeployerKeyPair } from "../../cloud";
 import { ApiCommand } from "../api/api";
-import { stringHash } from "../../cloud";
-import { time } from "console";
 
 /**
  * LocalCloud is a cloud that runs on the local machine for testing and development
@@ -124,7 +116,8 @@ export class LocalCloud extends Cloud {
    * @param value the value to save
    */
   public async saveFile(filename: string, value: Buffer): Promise<void> {
-    await saveBinaryFile({ data: value, filename });
+    throw new Error("Method not implemented.");
+    //await saveBinaryFile({ data: value, filename });
   }
 
   /**
@@ -133,8 +126,9 @@ export class LocalCloud extends Cloud {
    * @returns the file data
    */
   public async loadFile(filename: string): Promise<Buffer | undefined> {
-    const data = await loadBinaryFile(filename);
-    return data;
+    throw new Error("Method not implemented.");
+    //const data = await loadBinaryFile(filename);
+    //return data;
   }
 
   /**
@@ -150,9 +144,10 @@ export class LocalCloud extends Cloud {
    * @returns generated unique id
    */
   private static generateId(tx: string | undefined = undefined): string {
-    const data =
-      tx ?? JSON.stringify({ time: Date.now(), data: makeString(32) });
-    return stringHash(data);
+    //const data =
+    //  tx ?? JSON.stringify({ time: Date.now(), data: makeString(32) });
+    //return stringHash(data);
+    return Date.now() + "." + makeString(32);
   }
 
   /**
@@ -547,6 +542,7 @@ export class LocalStorage {
    * @param name the name to save the data
    */
   static async saveData(name: string): Promise<void> {
+    throw new Error("Method not implemented.");
     const data = {
       jobs: LocalStorage.jobs,
       data: LocalStorage.data,
@@ -554,7 +550,7 @@ export class LocalStorage {
       tasks: LocalStorage.tasks,
     };
     const filename = name + ".cloud";
-    await saveFile({ data, filename });
+    //await saveFile({ data, filename });
   }
 
   /**
@@ -562,12 +558,15 @@ export class LocalStorage {
    * @param name the name to load the data
    */
   static async loadData(name: string): Promise<void> {
+    throw new Error("Method not implemented.");
     const filename = name + ".cloud";
+    /*
     const data = await loadFile(filename);
     if (data === undefined) return;
     LocalStorage.jobs = data.jobs;
     LocalStorage.data = data.data;
     LocalStorage.transactions = data.transactions;
     LocalStorage.tasks = data.tasks;
+    */
   }
 }

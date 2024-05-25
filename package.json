@@ -16,7 +16,7 @@
     "web3",
     "zero knowledge"
   ],
-  "version": "0.8.2",
+  "version": "0.9.0",
   "homepage": "https://docs.zkcloudworker.com",
   "repository": "git@zkcloudworker.github.com:zkcloudworker/zkcloudworker-lib.git",
   "main": "src/index.ts",
@@ -29,10 +29,10 @@
     "publish": "yarn compile && cd dist && yarn npm publish --access public && cd .."
   },
   "dependencies": {
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
     "chalk": "^4.1.2",
-    "nats": "^2.25.0",
-    "o1js": "^1.2.0"
+    "nats": "^2.26.0",
+    "o1js": "^1.3.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.12",

@@ -3,8 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocalStorage = exports.LocalCloud = void 0;
 const cloud_1 = require("../../cloud");
 const cloud_2 = require("../../cloud");
-const cloud_3 = require("../../cloud");
-const cloud_4 = require("../../cloud");
 /**
  * LocalCloud is a cloud that runs on the local machine for testing and development
  * It uses LocalStorage to store jobs, tasks, transactions, and data
@@ -94,7 +92,8 @@ class LocalCloud extends cloud_1.Cloud {
      * @param value the value to save
      */
     async saveFile(filename, value) {
-        await (0, cloud_3.saveBinaryFile)({ data: value, filename });
+        throw new Error("Method not implemented.");
+        //await saveBinaryFile({ data: value, filename });
     }
     /**
      * Loads the file
@@ -102,8 +101,9 @@ class LocalCloud extends cloud_1.Cloud {
      * @returns the file data
      */
     async loadFile(filename) {
-        const data = await (0, cloud_3.loadBinaryFile)(filename);
-        return data;
+        throw new Error("Method not implemented.");
+        //const data = await loadBinaryFile(filename);
+        //return data;
     }
     /**
      * Loads the environment
@@ -117,8 +117,10 @@ class LocalCloud extends cloud_1.Cloud {
      * @returns generated unique id
      */
     static generateId(tx = undefined) {
-        const data = tx ?? JSON.stringify({ time: Date.now(), data: (0, cloud_2.makeString)(32) });
-        return (0, cloud_4.stringHash)(data);
+        //const data =
+        //  tx ?? JSON.stringify({ time: Date.now(), data: makeString(32) });
+        //return stringHash(data);
+        return Date.now() + "." + (0, cloud_2.makeString)(32);
     }
     /**
      * Send transactions to the local cloud
@@ -442,6 +444,7 @@ class LocalStorage {
      * @param name the name to save the data
      */
     static async saveData(name) {
+        throw new Error("Method not implemented.");
         const data = {
             jobs: LocalStorage.jobs,
             data: LocalStorage.data,
@@ -449,21 +452,23 @@ class LocalStorage {
             tasks: LocalStorage.tasks,
         };
         const filename = name + ".cloud";
-        await (0, cloud_3.saveFile)({ data, filename });
+        //await saveFile({ data, filename });
     }
     /**
      * Loads the data
      * @param name the name to load the data
      */
     static async loadData(name) {
+        throw new Error("Method not implemented.");
         const filename = name + ".cloud";
-        const data = await (0, cloud_3.loadFile)(filename);
-        if (data === undefined)
-            return;
+        /*
+        const data = await loadFile(filename);
+        if (data === undefined) return;
         LocalStorage.jobs = data.jobs;
         LocalStorage.data = data.data;
         LocalStorage.transactions = data.transactions;
         LocalStorage.tasks = data.tasks;
+        */
     }
 }
 exports.LocalStorage = LocalStorage;
