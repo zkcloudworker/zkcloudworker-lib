@@ -1,47 +1,30 @@
-"use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.toBase = exports.fromBase = exports.bigintFromBase64 = exports.bigintToBase64 = exports.bigintFromBase56 = exports.bigintToBase56 = exports.stringHash = void 0;
-const crypto_1 = __importDefault(require("crypto"));
-function stringHash(jsonString) {
-    if (typeof jsonString !== "string")
-        throw new Error("stringHash: input must be a string");
-    return bigintToBase56(BigInt("0x" + crypto_1.default.createHash("sha256").update(jsonString).digest("hex")));
-}
-exports.stringHash = stringHash;
 // URL friendly base64 encoding
 const TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-function bigintToBase56(value) {
+export function bigintToBase56(value) {
     const digits = toBase(value, 56n);
     //console.log("digits:", digits);
     const str = digits.map((x) => TABLE[Number(x)]).join("");
     //console.log("str:", str);
     return str;
 }
-exports.bigintToBase56 = bigintToBase56;
-function bigintFromBase56(str) {
+export function bigintFromBase56(str) {
     const base56Digits = str.split("").map((x) => BigInt(TABLE.indexOf(x)));
     const x = fromBase(base56Digits, 56n);
     return x;
 }
-exports.bigintFromBase56 = bigintFromBase56;
-function bigintToBase64(value) {
+export function bigintToBase64(value) {
     const digits = toBase(value, 64n);
     //console.log("digits:", digits);
     const str = digits.map((x) => TABLE[Number(x)]).join("");
     //console.log("str:", str);
     return str;
 }
-exports.bigintToBase64 = bigintToBase64;
-function bigintFromBase64(str) {
+export function bigintFromBase64(str) {
     const base64Digits = str.split("").map((x) => BigInt(TABLE.indexOf(x)));
     const x = fromBase(base64Digits, 64n);
     return x;
 }
-exports.bigintFromBase64 = bigintFromBase64;
-function fromBase(digits, base) {
+export function fromBase(digits, base) {
     if (base <= 0n)
         throw Error("fromBase: base must be positive");
     // compute powers base, base^2, base^4, ..., base^(2^k)
@@ -67,8 +50,7 @@ function fromBase(digits, base) {
     let [digit] = digits;
     return digit;
 }
-exports.fromBase = fromBase;
-function toBase(x, base) {
+export function toBase(x, base) {
     if (base <= 0n)
         throw Error("toBase: base must be positive");
     // compute powers base, base^2, base^4, ..., base^(2^k)
@@ -98,4 +80,4 @@ function toBase(x, base) {
     }
     return digits;
 }
-exports.toBase = toBase;
+//# sourceMappingURL=base64.js.map

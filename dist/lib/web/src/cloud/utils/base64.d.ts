@@ -1,4 +1,3 @@
-export declare function stringHash(jsonString: string): string;
 export declare function bigintToBase56(value: bigint): string;
 export declare function bigintFromBase56(str: string): bigint;
 export declare function bigintToBase64(value: bigint): string;
