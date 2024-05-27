@@ -197,10 +197,8 @@ class LocalCloud extends cloud_1.Cloud {
             metadata,
             txNumber: command === "recursiveProof" ? transactions.length : 1,
             timeCreated,
-            timeCreatedString: new Date(timeCreated).toISOString(),
             timeStarted: timeCreated,
-            jobStatus: "started",
-            maxAttempts: 0,
+            chain,
         };
         const cloud = new LocalCloud({
             job,
@@ -220,15 +218,22 @@ class LocalCloud extends cloud_1.Cloud {
                 : undefined;
         const timeFinished = Date.now();
         if (result !== undefined) {
-            job.jobStatus = "finished";
+            LocalStorage.jobEvents[jobId] = {
+                jobId,
+                jobStatus: "finished",
+                eventTime: timeFinished,
+                result,
+            };
             job.timeFinished = timeFinished;
-            job.result = result;
         }
         else {
-            job.jobStatus = "failed";
+            LocalStorage.jobEvents[jobId] = {
+                jobId,
+                jobStatus: "failed",
+                eventTime: timeFinished,
+            };
             job.timeFailed = timeFinished;
         }
-        job.maxAttempts = 1;
         job.billedDuration = timeFinished - timeCreated;
         LocalStorage.jobs[jobId] = job;
         return jobId;
@@ -364,10 +369,6 @@ class LocalCloud extends cloud_1.Cloud {
                 metadata: data.metadata,
                 txNumber: 1,
                 timeCreated: timeCreated,
-                timeCreatedString: new Date(timeCreated).toISOString(),
-                timeStarted: Date.now(),
-                jobStatus: "started",
-                maxAttempts: 0,
             };
             const cloud = new LocalCloud({
                 job,
@@ -376,16 +377,25 @@ class LocalCloud extends cloud_1.Cloud {
             });
             const worker = await localWorker(cloud);
             const result = await worker.task();
-            job.timeFinished = Date.now();
-            job.maxAttempts = 1;
-            job.billedDuration = job.timeFinished - timeCreated;
+            const timeFinished = Date.now();
             if (result !== undefined) {
-                job.jobStatus = "finished";
-                job.result = result;
+                LocalStorage.jobEvents[jobId] = {
+                    jobId,
+                    jobStatus: "finished",
+                    eventTime: timeFinished,
+                    result,
+                };
+                job.timeFinished = timeFinished;
             }
             else {
-                job.jobStatus = "failed";
+                LocalStorage.jobEvents[jobId] = {
+                    jobId,
+                    jobStatus: "failed",
+                    eventTime: timeFinished,
+                };
+                job.timeFailed = timeFinished;
             }
+            job.billedDuration = timeFinished - timeCreated;
             LocalStorage.jobs[jobId] = job;
         }
         let count = 0;
@@ -473,6 +483,7 @@ class LocalStorage {
 }
 exports.LocalStorage = LocalStorage;
 LocalStorage.jobs = {};
+LocalStorage.jobEvents = {};
 LocalStorage.data = {};
 LocalStorage.transactions = {};
 LocalStorage.tasks = {};

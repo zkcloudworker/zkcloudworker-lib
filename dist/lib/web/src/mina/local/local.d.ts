@@ -1,6 +1,6 @@
 /// <reference types="node" />
 import { Cloud, zkCloudWorker } from "../../cloud";
-import { JobData } from "../../cloud";
+import { JobData, JobEvent } from "../../cloud";
 import { TaskData } from "../../cloud";
 import { blockchain } from "../../cloud";
 import { CloudTransaction, DeployerKeyPair } from "../../cloud";
@@ -233,6 +233,9 @@ export declare class LocalCloud extends Cloud {
 export declare class LocalStorage {
     static jobs: {
         [key: string]: JobData;
+    };
+    static jobEvents: {
+        [key: string]: JobEvent;
     };
     static data: {
         [key: string]: string;

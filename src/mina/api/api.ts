@@ -509,7 +509,10 @@ export class zkCloudWorkerClient {
             localWorker: this.localWorker,
           });
           if (data.mode === "sync")
-            return { success: true, data: LocalStorage.jobs[jobId].result };
+            return {
+              success: true,
+              data: LocalStorage.jobEvents[jobId].result,
+            };
           else
             return {
               success: true,
