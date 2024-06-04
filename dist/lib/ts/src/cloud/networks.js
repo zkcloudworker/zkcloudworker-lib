@@ -2,9 +2,18 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Local = exports.Lightnet = exports.Zeko = exports.Devnet = exports.Mainnet = exports.networks = void 0;
 const Mainnet = {
-    mina: [],
-    archive: [],
+    mina: [
+        //"https://proxy.devnet.minaexplorer.com/graphql",
+        "https://api.minascan.io/node/mainnet/v1/graphql",
+    ],
+    archive: [
+        "https://api.minascan.io/archive/mainnet/v1/graphql",
+        //"https://archive.devnet.minaexplorer.com",
+    ],
+    explorerAccountUrl: "https://minascan.io/mainnet/account/",
+    explorerTransactionUrl: "https://minascan.io/mainnet/tx/",
     chainId: "mainnet",
+    name: "Mainnet",
 };
 exports.Mainnet = Mainnet;
 const Local = {

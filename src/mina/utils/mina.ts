@@ -16,9 +16,8 @@ import {
   UInt64,
   fetchAccount,
   Field,
-  Encoding,
-  Poseidon,
   Lightnet,
+  CircuitString,
 } from "o1js";
 import { networks, blockchain, MinaNetwork, Local } from "../../cloud";
 
@@ -70,9 +69,11 @@ async function initBlockchain(
   instance: blockchain,
   deployersNumber: number = 0
 ): Promise<MinaNetworkInstance> {
+  /*
   if (instance === "mainnet") {
     throw new Error("Mainnet is not supported yet by zkApps");
   }
+  */
   if (currentNetwork !== undefined) {
     if (currentNetwork?.network.chainId === instance) {
       return currentNetwork;
@@ -82,7 +83,7 @@ async function initBlockchain(
       );
     }
   }
-  const networkIdHash = Poseidon.hash(Encoding.stringToFields(instance));
+  const networkIdHash = CircuitString.fromString(instance).hash();
 
   // await used for compatibility with future versions of o1js
   if (instance === "local") {
