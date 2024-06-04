@@ -37,9 +37,11 @@ exports.getDeployer = getDeployer;
  * @returns the Mina network instance
  */
 async function initBlockchain(instance, deployersNumber = 0) {
+    /*
     if (instance === "mainnet") {
-        throw new Error("Mainnet is not supported yet by zkApps");
+      throw new Error("Mainnet is not supported yet by zkApps");
     }
+    */
     if (currentNetwork !== undefined) {
         if (currentNetwork?.network.chainId === instance) {
             return currentNetwork;
@@ -48,7 +50,7 @@ async function initBlockchain(instance, deployersNumber = 0) {
             throw new Error(`Network is already initialized to different chain ${currentNetwork.network.chainId}, cannot initialize to ${instance}`);
         }
     }
-    const networkIdHash = o1js_1.Poseidon.hash(o1js_1.Encoding.stringToFields(instance));
+    const networkIdHash = o1js_1.CircuitString.fromString(instance).hash();
     // await used for compatibility with future versions of o1js
     if (instance === "local") {
         const local = await o1js_1.Mina.LocalBlockchain({

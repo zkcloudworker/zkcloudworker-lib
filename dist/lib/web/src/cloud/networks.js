@@ -1,8 +1,17 @@
 export { networks, Mainnet, Devnet, Zeko, Lightnet, Local, };
 const Mainnet = {
-    mina: [],
-    archive: [],
+    mina: [
+        //"https://proxy.devnet.minaexplorer.com/graphql",
+        "https://api.minascan.io/node/mainnet/v1/graphql",
+    ],
+    archive: [
+        "https://api.minascan.io/archive/mainnet/v1/graphql",
+        //"https://archive.devnet.minaexplorer.com",
+    ],
+    explorerAccountUrl: "https://minascan.io/mainnet/account/",
+    explorerTransactionUrl: "https://minascan.io/mainnet/tx/",
     chainId: "mainnet",
+    name: "Mainnet",
 };
 const Local = {
     mina: [],

@@ -1,5 +1,5 @@
 export { initBlockchain, accountBalance, accountBalanceMina, currentNetwork, getNetworkIdHash, getCurrentNetwork, getDeployer, };
-import { Mina, PrivateKey, UInt64, fetchAccount, Encoding, Poseidon, Lightnet, } from "o1js";
+import { Mina, PrivateKey, UInt64, fetchAccount, Lightnet, CircuitString, } from "o1js";
 import { networks, Local } from "../../cloud";
 let currentNetwork = undefined;
 function getNetworkIdHash() {
@@ -31,9 +31,11 @@ function getDeployer() {
  * @returns the Mina network instance
  */
 async function initBlockchain(instance, deployersNumber = 0) {
+    /*
     if (instance === "mainnet") {
-        throw new Error("Mainnet is not supported yet by zkApps");
+      throw new Error("Mainnet is not supported yet by zkApps");
     }
+    */
     if (currentNetwork !== undefined) {
         if (currentNetwork?.network.chainId === instance) {
             return currentNetwork;
@@ -42,7 +44,7 @@ async function initBlockchain(instance, deployersNumber = 0) {
             throw new Error(`Network is already initialized to different chain ${currentNetwork.network.chainId}, cannot initialize to ${instance}`);
         }
     }
-    const networkIdHash = Poseidon.hash(Encoding.stringToFields(instance));
+    const networkIdHash = CircuitString.fromString(instance).hash();
     // await used for compatibility with future versions of o1js
     if (instance === "local") {
         const local = await Mina.LocalBlockchain({
