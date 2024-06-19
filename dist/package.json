@@ -1,6 +1,6 @@
 {
   "name": "zkcloudworker",
-  "version": "0.10.0",
+  "version": "0.11.0",
   "description": "zkCloudWorker library",
   "author": "zkCloudWorker",
   "license": "Apache-2.0",
@@ -12,17 +12,17 @@
     "type": "git",
     "url": "git+https://github.com/zkcloudworker/zkcloudworker-lib.git"
   },
-  "main": "lib/web/src/index.js",
+  "main": "lib/web/src/index-web.js",
   "exports": {
-    "types": "./lib/ts/src/index.d.ts",
-    "browser": "./lib/web/src/index.js",
+    "types": "./lib/ts/src/index-node.d.ts",
+    "browser": "./lib/web/src/index-web.js",
     "node": {
-      "import": "./lib/ts/src/index.js",
-      "require": "./lib/ts/src/index.js"
+      "import": "./lib/ts/src/index-node.js",
+      "require": "./lib/ts/src/index-node.js"
     },
-    "default": "./lib/ts/src/index.js"
+    "default": "./lib/ts/src/index-node.js"
   },
-  "types": "lib/web/src/index.d.ts",
+  "types": "lib/web/src/index-web.d.ts",
   "files": [
     "lib",
     "package.json",
