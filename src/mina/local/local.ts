@@ -116,7 +116,8 @@ export class LocalCloud extends Cloud {
    * @param value the value to save
    */
   public async saveFile(filename: string, value: Buffer): Promise<void> {
-    throw new Error("Method not implemented.");
+    LocalStorage.files[filename] = value;
+    //throw new Error("Method not implemented.");
     //await saveBinaryFile({ data: value, filename });
   }
 
@@ -126,17 +127,10 @@ export class LocalCloud extends Cloud {
    * @returns the file data
    */
   public async loadFile(filename: string): Promise<Buffer | undefined> {
-    throw new Error("Method not implemented.");
+    return LocalStorage.files[filename];
+    //throw new Error("Method not implemented.");
     //const data = await loadBinaryFile(filename);
     //return data;
-  }
-
-  /**
-   * Loads the environment
-   * @param password
-   */
-  public async loadEnvironment(password: string): Promise<void> {
-    throw new Error("Method not implemented.");
   }
 
   /**
@@ -543,6 +537,7 @@ export class LocalStorage {
   static jobs: { [key: string]: JobData } = {};
   static jobEvents: { [key: string]: JobEvent } = {};
   static data: { [key: string]: string } = {};
+  static files: { [key: string]: Buffer } = {};
   static transactions: {
     [key: string]: CloudTransaction;
   } = {};
@@ -553,7 +548,7 @@ export class LocalStorage {
    * @param name the name to save the data
    */
   static async saveData(name: string): Promise<void> {
-    throw new Error("Method not implemented.");
+    throw new Error("Method not implemented to keep web compatibility.");
     const data = {
       jobs: LocalStorage.jobs,
       data: LocalStorage.data,
@@ -569,7 +564,7 @@ export class LocalStorage {
    * @param name the name to load the data
    */
   static async loadData(name: string): Promise<void> {
-    throw new Error("Method not implemented.");
+    throw new Error("Method not implemented to keep web compatibility.");
     const filename = name + ".cloud";
     /*
     const data = await loadFile(filename);
