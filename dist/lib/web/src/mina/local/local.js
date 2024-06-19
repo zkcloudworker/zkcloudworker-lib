@@ -89,7 +89,8 @@ export class LocalCloud extends Cloud {
      * @param value the value to save
      */
     async saveFile(filename, value) {
-        throw new Error("Method not implemented.");
+        LocalStorage.files[filename] = value;
+        //throw new Error("Method not implemented.");
         //await saveBinaryFile({ data: value, filename });
     }
     /**
@@ -98,16 +99,10 @@ export class LocalCloud extends Cloud {
      * @returns the file data
      */
     async loadFile(filename) {
-        throw new Error("Method not implemented.");
+        return LocalStorage.files[filename];
+        //throw new Error("Method not implemented.");
         //const data = await loadBinaryFile(filename);
         //return data;
-    }
-    /**
-     * Loads the environment
-     * @param password
-     */
-    async loadEnvironment(password) {
-        throw new Error("Method not implemented.");
     }
     /**
      * Generates an id for local cloud
@@ -450,7 +445,7 @@ export class LocalStorage {
      * @param name the name to save the data
      */
     static async saveData(name) {
-        throw new Error("Method not implemented.");
+        throw new Error("Method not implemented to keep web compatibility.");
         const data = {
             jobs: LocalStorage.jobs,
             data: LocalStorage.data,
@@ -465,7 +460,7 @@ export class LocalStorage {
      * @param name the name to load the data
      */
     static async loadData(name) {
-        throw new Error("Method not implemented.");
+        throw new Error("Method not implemented to keep web compatibility.");
         const filename = name + ".cloud";
         /*
         const data = await loadFile(filename);
@@ -480,6 +475,7 @@ export class LocalStorage {
 LocalStorage.jobs = {};
 LocalStorage.jobEvents = {};
 LocalStorage.data = {};
+LocalStorage.files = {};
 LocalStorage.transactions = {};
 LocalStorage.tasks = {};
 //# sourceMappingURL=local.js.map

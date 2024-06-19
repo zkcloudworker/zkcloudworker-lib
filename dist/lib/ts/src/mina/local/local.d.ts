@@ -67,11 +67,6 @@ export declare class LocalCloud extends Cloud {
      */
     loadFile(filename: string): Promise<Buffer | undefined>;
     /**
-     * Loads the environment
-     * @param password
-     */
-    loadEnvironment(password: string): Promise<void>;
-    /**
      * Generates an id for local cloud
      * @returns generated unique id
      */
@@ -239,6 +234,9 @@ export declare class LocalStorage {
     };
     static data: {
         [key: string]: string;
+    };
+    static files: {
+        [key: string]: Buffer;
     };
     static transactions: {
         [key: string]: CloudTransaction;
