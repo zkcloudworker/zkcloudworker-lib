@@ -2,24 +2,6 @@ import { blockchain } from "../networks";
 import { JobData } from "./job";
 
 /**
- * Interface for the deployed smart contract
- * Used to get verification keys and addresses of the deployed smart contracts
- * to be published in the blockchain explorer
- * @param address: the address of the deployed smart contract
- * @param name: the name of the deployed smart contract
- * @param chain: the blockchain network where the smart contract is deployed
- * @param verificationKey: the verification key of the deployed smart contract
- * @param verificationKey.hash: the hash of the verification key
- * @param verificationKey.data: the data of the verification key
- */
-export interface DeployedSmartContract {
-  address: string;
-  name: string;
-  chain: blockchain;
-  verificationKey: { hash: string; data: string };
-}
-
-/**
  * Interface for the deployer key pair
  * Used to get the public and private keys of the deployer for test networks only
  * Devnet and Zeko are supported
@@ -315,14 +297,6 @@ export abstract class zkCloudWorker {
    */
   constructor(cloud: Cloud) {
     this.cloud = cloud;
-  }
-
-  /**
-   * Returns the deployed smart contracts for verification in the blockchain explorer
-   * @returns the deployed smart contracts
-   */
-  async deployedContracts(): Promise<DeployedSmartContract[]> {
-    return [];
   }
 
   // Those methods should be implemented for recursive proofs calculations

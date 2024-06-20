@@ -65,13 +65,6 @@ export class zkCloudWorker {
     constructor(cloud) {
         this.cloud = cloud;
     }
-    /**
-     * Returns the deployed smart contracts for verification in the blockchain explorer
-     * @returns the deployed smart contracts
-     */
-    async deployedContracts() {
-        return [];
-    }
     // Those methods should be implemented for recursive proofs calculations
     /**
      * Creates a new proof from a transaction

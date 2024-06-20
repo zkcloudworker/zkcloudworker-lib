@@ -220,6 +220,8 @@ class LocalCloud extends cloud_1.Cloud {
                 result,
             };
             job.timeFinished = timeFinished;
+            job.jobStatus = "finished";
+            job.result = result;
         }
         else {
             LocalStorage.jobEvents[jobId] = {
@@ -228,6 +230,7 @@ class LocalCloud extends cloud_1.Cloud {
                 eventTime: timeFinished,
             };
             job.timeFailed = timeFinished;
+            job.jobStatus = "failed";
         }
         job.billedDuration = timeFinished - timeCreated;
         LocalStorage.jobs[jobId] = job;
