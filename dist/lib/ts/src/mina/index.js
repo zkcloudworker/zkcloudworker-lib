@@ -18,3 +18,4 @@ __exportStar(require("./api/api"), exports);
 __exportStar(require("./encryption"), exports);
 __exportStar(require("./utils"), exports);
 __exportStar(require("./local/local"), exports);
+__exportStar(require("./verification"), exports);

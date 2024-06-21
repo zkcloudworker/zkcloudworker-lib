@@ -12,8 +12,8 @@ import { SmartContract } from "o1js";
  */
 export interface VerificationData {
     contract: typeof SmartContract;
-    contractDependencies: (typeof SmartContract)[];
-    programDependencies: any[];
+    contractDependencies?: (typeof SmartContract)[];
+    programDependencies?: any[];
     address: string;
     chain: blockchain;
 }
