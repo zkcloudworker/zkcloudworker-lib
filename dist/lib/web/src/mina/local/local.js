@@ -1,5 +1,4 @@
-import { Cloud } from "../../cloud";
-import { makeString } from "../../cloud";
+import { makeString, Cloud, } from "../../cloud";
 /**
  * LocalCloud is a cloud that runs on the local machine for testing and development
  * It uses LocalStorage to store jobs, tasks, transactions, and data
@@ -163,6 +162,15 @@ export class LocalCloud extends Cloud {
             return LocalStorage.transactions[txId];
         });
         return txs;
+    }
+    /**
+     * Publish the transaction metadata in human-readable format
+     * @param params
+     * @param params.txId the transaction id
+     * @param params.metadata the metadata
+     */
+    async publishTransactionMetadata(params) {
+        console.log("publishTransactionMetadata:", params);
     }
     /**
      * Runs the worker in the local cloud

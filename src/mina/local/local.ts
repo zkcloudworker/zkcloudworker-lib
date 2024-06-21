@@ -1,9 +1,16 @@
-import { Cloud, Local, zkCloudWorker } from "../../cloud";
-import { JobData, JobEvent } from "../../cloud";
-import { TaskData } from "../../cloud";
-import { makeString } from "../../cloud";
-import { blockchain } from "../../cloud";
-import { CloudTransaction, DeployerKeyPair } from "../../cloud";
+import {
+  makeString,
+  blockchain,
+  TransactionMetadata,
+  CloudTransaction,
+  DeployerKeyPair,
+  TaskData,
+  JobData,
+  JobEvent,
+  Cloud,
+  Local,
+  zkCloudWorker,
+} from "../../cloud";
 import { ApiCommand } from "../api/api";
 
 /**
@@ -201,6 +208,19 @@ export class LocalCloud extends Cloud {
       return LocalStorage.transactions[txId];
     });
     return txs;
+  }
+
+  /**
+   * Publish the transaction metadata in human-readable format
+   * @param params
+   * @param params.txId the transaction id
+   * @param params.metadata the metadata
+   */
+  public async publishTransactionMetadata(params: {
+    txId: string;
+    metadata: TransactionMetadata;
+  }): Promise<void> {
+    console.log("publishTransactionMetadata:", params);
   }
 
   /**

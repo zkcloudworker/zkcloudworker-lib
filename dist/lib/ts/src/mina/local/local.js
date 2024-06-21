@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocalStorage = exports.LocalCloud = void 0;
 const cloud_1 = require("../../cloud");
-const cloud_2 = require("../../cloud");
 /**
  * LocalCloud is a cloud that runs on the local machine for testing and development
  * It uses LocalStorage to store jobs, tasks, transactions, and data
@@ -115,7 +114,7 @@ class LocalCloud extends cloud_1.Cloud {
         //const data =
         //  tx ?? JSON.stringify({ time: Date.now(), data: makeString(32) });
         //return stringHash(data);
-        return Date.now() + "." + (0, cloud_2.makeString)(32);
+        return Date.now() + "." + (0, cloud_1.makeString)(32);
     }
     /**
      * Send transactions to the local cloud
@@ -166,6 +165,15 @@ class LocalCloud extends cloud_1.Cloud {
             return LocalStorage.transactions[txId];
         });
         return txs;
+    }
+    /**
+     * Publish the transaction metadata in human-readable format
+     * @param params
+     * @param params.txId the transaction id
+     * @param params.metadata the metadata
+     */
+    async publishTransactionMetadata(params) {
+        console.log("publishTransactionMetadata:", params);
     }
     /**
      * Runs the worker in the local cloud

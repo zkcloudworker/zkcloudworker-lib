@@ -1,9 +1,5 @@
 /// <reference types="node" />
-import { Cloud, zkCloudWorker } from "../../cloud";
-import { JobData, JobEvent } from "../../cloud";
-import { TaskData } from "../../cloud";
-import { blockchain } from "../../cloud";
-import { CloudTransaction, DeployerKeyPair } from "../../cloud";
+import { blockchain, TransactionMetadata, CloudTransaction, DeployerKeyPair, TaskData, JobData, JobEvent, Cloud, zkCloudWorker } from "../../cloud";
 import { ApiCommand } from "../api/api";
 /**
  * LocalCloud is a cloud that runs on the local machine for testing and development
@@ -89,6 +85,16 @@ export declare class LocalCloud extends Cloud {
      */
     deleteTransaction(txId: string): Promise<void>;
     getTransactions(): Promise<CloudTransaction[]>;
+    /**
+     * Publish the transaction metadata in human-readable format
+     * @param params
+     * @param params.txId the transaction id
+     * @param params.metadata the metadata
+     */
+    publishTransactionMetadata(params: {
+        txId: string;
+        metadata: TransactionMetadata;
+    }): Promise<void>;
     /**
      * Runs the worker in the local cloud
      * @param params the parameters to run the worker
