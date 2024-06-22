@@ -4,26 +4,27 @@ import { JobData } from "./job";
 import { TransactionMetadata } from "./transaction";
 /**
  * Interface for the deployer key pair
- * Used to get the public and private keys of the deployer for test networks only
- * Devnet and Zeko are supported
- * @param publicKey: the public key of the deployer
- * @param privateKey: the private key of the deployer
+ * Used to get the public and private keys of the deployer for test networks only.
+ * Devnet and Zeko are supported.
  */
 export interface DeployerKeyPair {
+    /** The public key of the deployer */
     publicKey: string;
+    /** The private key of the deployer */
     privateKey: string;
 }
 /**
  * Interface for the cloud transaction
  * Used to get the transaction id, the transaction, and the time received
- * @param txId: the transaction id
- * @param transaction: the transaction
- * @param timeReceived: the time received
  */
 export interface CloudTransaction {
+    /** The transaction id */
     txId: string;
+    /** The transaction */
     transaction: string;
+    /** The time received */
     timeReceived: number;
+    /** The status of the transaction */
     status: string;
 }
 export declare abstract class Cloud {

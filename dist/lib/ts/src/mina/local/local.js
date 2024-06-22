@@ -446,18 +446,15 @@ class LocalCloud extends cloud_1.Cloud {
 }
 exports.LocalCloud = LocalCloud;
 /**
- * LocalStorage is a local storage for the local cloud
- * It stores jobs, tasks, transactions, and data
- * It can be used to test the cloud functionality without deploying to the cloud
- * @param jobs the jobs
- * @param data the data
- * @param transactions the transactions
- * @param tasks the tasks
+ * LocalStorage is a local storage for the local cloud.
+ * It stores jobs, tasks, transactions, and data.
+ * It can be used to test the cloud functionality without deploying to the cloud.
  */
 class LocalStorage {
     /**
-     * Saves the data
-     * @param name the name to save the data
+     * Saves the data.
+     * @param name The name to save the data under.
+     * @throws Error Method not implemented to keep web compatibility.
      */
     static async saveData(name) {
         throw new Error("Method not implemented to keep web compatibility.");
@@ -468,11 +465,12 @@ class LocalStorage {
             tasks: LocalStorage.tasks,
         };
         const filename = name + ".cloud";
-        //await saveFile({ data, filename });
+        // await saveFile({ data, filename });
     }
     /**
-     * Loads the data
-     * @param name the name to load the data
+     * Loads the data.
+     * @param name The name to load the data from.
+     * @throws Error Method not implemented to keep web compatibility.
      */
     static async loadData(name) {
         throw new Error("Method not implemented to keep web compatibility.");
@@ -488,9 +486,15 @@ class LocalStorage {
     }
 }
 exports.LocalStorage = LocalStorage;
+/** The jobs */
 LocalStorage.jobs = {};
+/** The job events */
 LocalStorage.jobEvents = {};
+/** The data */
 LocalStorage.data = {};
+/** The files */
 LocalStorage.files = {};
+/** The transactions */
 LocalStorage.transactions = {};
+/** The tasks */
 LocalStorage.tasks = {};
