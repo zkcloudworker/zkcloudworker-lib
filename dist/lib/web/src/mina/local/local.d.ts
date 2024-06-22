@@ -223,41 +223,45 @@ export declare class LocalCloud extends Cloud {
     forceWorkerRestart(): Promise<void>;
 }
 /**
- * LocalStorage is a local storage for the local cloud
- * It stores jobs, tasks, transactions, and data
- * It can be used to test the cloud functionality without deploying to the cloud
- * @param jobs the jobs
- * @param data the data
- * @param transactions the transactions
- * @param tasks the tasks
+ * LocalStorage is a local storage for the local cloud.
+ * It stores jobs, tasks, transactions, and data.
+ * It can be used to test the cloud functionality without deploying to the cloud.
  */
 export declare class LocalStorage {
+    /** The jobs */
     static jobs: {
         [key: string]: JobData;
     };
+    /** The job events */
     static jobEvents: {
         [key: string]: JobEvent;
     };
+    /** The data */
     static data: {
         [key: string]: string;
     };
+    /** The files */
     static files: {
         [key: string]: Buffer;
     };
+    /** The transactions */
     static transactions: {
         [key: string]: CloudTransaction;
     };
+    /** The tasks */
     static tasks: {
         [key: string]: TaskData;
     };
     /**
-     * Saves the data
-     * @param name the name to save the data
+     * Saves the data.
+     * @param name The name to save the data under.
+     * @throws Error Method not implemented to keep web compatibility.
      */
     static saveData(name: string): Promise<void>;
     /**
-     * Loads the data
-     * @param name the name to load the data
+     * Loads the data.
+     * @param name The name to load the data from.
+     * @throws Error Method not implemented to keep web compatibility.
      */
     static loadData(name: string): Promise<void>;
 }

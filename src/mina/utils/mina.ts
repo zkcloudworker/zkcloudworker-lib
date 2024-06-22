@@ -22,14 +22,16 @@ import {
 import { networks, blockchain, MinaNetwork, Local } from "../../cloud";
 
 /**
- * MinaNetworkInstance is the data structure for a Mina network instance, keeping track of the keys, network, and network id hash
- * @param keys the keys for the deployers
- * @param network the network
- * @param networkIdHash the network id hash
+ * MinaNetworkInstance is the data structure for a Mina network instance, keeping track of the keys, network, and network ID hash.
  */
 interface MinaNetworkInstance {
+  /** The keys for the deployers */
   keys: Mina.TestPublicKey[];
+
+  /** The network */
   network: MinaNetwork;
+
+  /** The network ID hash */
   networkIdHash: Field;
 }
 

@@ -7,6 +7,7 @@ import { SmartContract } from "o1js";
  * programDependencies: The zk programs that need to be compiled before verification.
  * address: The address of the smart contract on the blockchain.
  * chain: The blockchain on which the smart contract is deployed.
+ * image: The logo of the smart contract (public url)
  *
  * Contract, contractDependencies, and programDependencies should be exported from the repo
  */
@@ -16,4 +17,5 @@ export interface VerificationData {
     programDependencies?: any[];
     address: string;
     chain: blockchain;
+    image?: string;
 }
