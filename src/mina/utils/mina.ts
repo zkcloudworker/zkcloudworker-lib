@@ -112,6 +112,7 @@ async function initBlockchain(
     mina: network.mina,
     archive: network.archive,
     lightnetAccountManager: network.accountManager,
+    networkId: instance === "mainnet" ? "mainnet" : "testnet",
   });
   Mina.setActiveInstance(networkInstance);
 
