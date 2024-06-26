@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listen = exports.NATSClient = void 0;
+exports.NATSClient = NATSClient;
+exports.listen = listen;
 const o1js_1 = require("o1js");
 const nats_1 = require("nats");
 const o1js_2 = require("o1js");
@@ -21,7 +22,6 @@ async function NATSClient(callme) {
         callme: callme,
     };
 }
-exports.NATSClient = NATSClient;
 async function listen(subject, callme) {
     // Create a JSON codec for encoding and decoding messages
     const codec = (0, nats_1.JSONCodec)();
@@ -124,7 +124,6 @@ async function listen(subject, callme) {
         }
     })();
 }
-exports.listen = listen;
 /*
 async function main(args: string[]) {
   const nc = await connect({ servers: NATS_SERVER });
