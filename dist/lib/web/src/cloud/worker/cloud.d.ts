@@ -129,7 +129,7 @@ export declare abstract class Cloud {
         data: string;
         context: string;
         keyId?: string;
-    }): Promise<string>;
+    }): Promise<string | undefined>;
     /**
      * Abstract method to decrypt the data
      * @param params
@@ -141,7 +141,7 @@ export declare abstract class Cloud {
         data: string;
         context: string;
         keyId?: string;
-    }): Promise<string>;
+    }): Promise<string | undefined>;
     /**
      * Abstract method to calculate the recursive proof
      * Used to calculate the recursive proof

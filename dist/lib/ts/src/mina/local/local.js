@@ -127,10 +127,14 @@ class LocalCloud extends cloud_1.Cloud {
      */
     async decrypt(params) {
         const { data, context, keyId } = JSON.parse(params.data);
-        if (context !== params.context)
-            throw new Error("decrypt: context mismatch");
-        if (keyId !== params.keyId)
-            throw new Error("decrypt: keyId mismatch");
+        if (context !== params.context) {
+            console.error("decrypt: context mismatch");
+            return undefined;
+        }
+        if (keyId !== params.keyId) {
+            console.error("decrypt: keyId mismatch");
+            return undefined;
+        }
         return data;
     }
     /**

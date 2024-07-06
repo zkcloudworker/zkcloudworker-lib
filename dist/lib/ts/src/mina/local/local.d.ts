@@ -73,7 +73,7 @@ export declare class LocalCloud extends Cloud {
         data: string;
         context: string;
         keyId?: string;
-    }): Promise<string>;
+    }): Promise<string | undefined>;
     /**
      * Decrypts the data
      * @param params
@@ -86,7 +86,7 @@ export declare class LocalCloud extends Cloud {
         data: string;
         context: string;
         keyId?: string;
-    }): Promise<string>;
+    }): Promise<string | undefined>;
     /**
      * Generates an id for local cloud
      * @returns generated unique id
