@@ -5,12 +5,12 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@types/node@npm:^20.14.9":
-  version: 20.14.9
-  resolution: "@types/node@npm:20.14.9"
+"@types/node@npm:^20.14.10":
+  version: 20.14.10
+  resolution: "@types/node@npm:20.14.10"
   dependencies:
     undici-types: "npm:~5.26.4"
-  checksum: 10c0/911ffa444dc032897f4a23ed580c67903bd38ea1c5ec99b1d00fa10b83537a3adddef8e1f29710cbdd8e556a61407ed008e06537d834e48caf449ce59f87d387
+  checksum: 10c0/0b06cff14365c2d0085dc16cc8cbea5c40ec09cfc1fea966be9eeecf35562760bfde8f88e86de6edfaf394501236e229d9c1084fad04fb4dec472ae245d8ae69
   languageName: node
   linkType: hard
 
@@ -158,12 +158,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nats@npm:^2.27.0":
-  version: 2.27.0
-  resolution: "nats@npm:2.27.0"
+"nats@npm:^2.28.0":
+  version: 2.28.0
+  resolution: "nats@npm:2.28.0"
   dependencies:
     nkeys.js: "npm:1.1.0"
-  checksum: 10c0/cf121fe6bca0cfaded3a848b75044a9f158ab6f6cee3716a34dcb9d1c266e5fecb902a73b1f2f203856509eb7978951dd5889c0a904b1456b321989014d863ff
+  checksum: 10c0/a14738a8e2730f76e164e3debf99d5d7d10ca93346e87c7e4c3e56ac81167be1565baae92bb5785f374c0483c79e29879984fda76a21a1de0d5f1f047c0535bb
   languageName: node
   linkType: hard
 
@@ -250,23 +250,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:5.5.2":
-  version: 5.5.2
-  resolution: "typescript@npm:5.5.2"
+"typescript@npm:5.5.3":
+  version: 5.5.3
+  resolution: "typescript@npm:5.5.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/8ca39b27b5f9bd7f32db795045933ab5247897660627251e8254180b792a395bf061ea7231947d5d7ffa5cb4cc771970fd4ef543275f9b559f08c9325cccfce3
+  checksum: 10c0/f52c71ccbc7080b034b9d3b72051d563601a4815bf3e39ded188e6ce60813f75dbedf11ad15dd4d32a12996a9ed8c7155b46c93a9b9c9bad1049766fe614bbdd
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A5.5.2#optional!builtin<compat/typescript>":
-  version: 5.5.2
-  resolution: "typescript@patch:typescript@npm%3A5.5.2#optional!builtin<compat/typescript>::version=5.5.2&hash=5adc0c"
+"typescript@patch:typescript@npm%3A5.5.3#optional!builtin<compat/typescript>":
+  version: 5.5.3
+  resolution: "typescript@patch:typescript@npm%3A5.5.3#optional!builtin<compat/typescript>::version=5.5.3&hash=5adc0c"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/6721ac8933a70c252d7b640b345792e103d881811ff660355617c1836526dbb71c2044e2e77a8823fb3570b469f33276875a4cab6d3c4de4ae7d7ee1c3074ae4
+  checksum: 10c0/5a437c416251334deeaf29897157032311f3f126547cfdc4b133768b606cb0e62bcee733bb97cf74c42fe7268801aea1392d8e40988cdef112e9546eba4c03c5
   languageName: node
   linkType: hard
 
@@ -305,11 +305,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zkcloudworker@workspace:."
   dependencies:
-    "@types/node": "npm:^20.14.9"
+    "@types/node": "npm:^20.14.10"
     axios: "npm:^1.7.2"
     chalk: "npm:^4.1.2"
-    nats: "npm:^2.27.0"
+    nats: "npm:^2.28.0"
     o1js: "npm:^1.4.0"
-    typescript: "npm:5.5.2"
+    typescript: "npm:5.5.3"
   languageName: unknown
   linkType: soft

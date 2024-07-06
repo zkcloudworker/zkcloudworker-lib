@@ -5,7 +5,7 @@
  * custom: the custom metadata defined by the developer
  */
 export interface TransactionMetadata {
-    events: object[];
-    actions: object[];
-    custom: object;
+    events?: object[];
+    actions?: object[];
+    custom?: object;
 }

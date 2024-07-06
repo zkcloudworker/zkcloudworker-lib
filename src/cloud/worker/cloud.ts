@@ -181,6 +181,32 @@ export abstract class Cloud {
   abstract loadFile(filename: string): Promise<Buffer | undefined>;
 
   /**
+   * Abstract method to encrypt the data
+   * @param params
+   * @param params.data the data
+   * @param params.context the context
+   * @param params.keyId the key id, optional
+   */
+  abstract encrypt(params: {
+    data: string;
+    context: string;
+    keyId?: string;
+  }): Promise<string | undefined>;
+
+  /**
+   * Abstract method to decrypt the data
+   * @param params
+   * @param params.data the data
+   * @param params.context the context
+   * @param params.keyId the key id, optional
+   */
+  abstract decrypt(params: {
+    data: string;
+    context: string;
+    keyId?: string;
+  }): Promise<string | undefined>;
+
+  /**
    * Abstract method to calculate the recursive proof
    * Used to calculate the recursive proof
    * @param data the data
