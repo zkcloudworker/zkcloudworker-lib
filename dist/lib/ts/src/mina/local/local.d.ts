@@ -62,6 +62,32 @@ export declare class LocalCloud extends Cloud {
      */
     loadFile(filename: string): Promise<Buffer | undefined>;
     /**
+     * Encrypts the data
+     * @param params
+     * @param params.data the data
+     * @param params.context the context
+     * @param params.keyId the key id, optional
+     * @returns encrypted data
+     */
+    encrypt(params: {
+        data: string;
+        context: string;
+        keyId?: string;
+    }): Promise<string>;
+    /**
+     * Decrypts the data
+     * @param params
+     * @param params.data the data
+     * @param params.context the context
+     * @param params.keyId the key id, optional
+     * @returns
+     */
+    decrypt(params: {
+        data: string;
+        context: string;
+        keyId?: string;
+    }): Promise<string>;
+    /**
      * Generates an id for local cloud
      * @returns generated unique id
      */

@@ -141,6 +141,42 @@ export class LocalCloud extends Cloud {
   }
 
   /**
+   * Encrypts the data
+   * @param params
+   * @param params.data the data
+   * @param params.context the context
+   * @param params.keyId the key id, optional
+   * @returns encrypted data
+   */
+  public async encrypt(params: {
+    data: string;
+    context: string;
+    keyId?: string;
+  }): Promise<string> {
+    return JSON.stringify(params);
+  }
+
+  /**
+   * Decrypts the data
+   * @param params
+   * @param params.data the data
+   * @param params.context the context
+   * @param params.keyId the key id, optional
+   * @returns
+   */
+  public async decrypt(params: {
+    data: string;
+    context: string;
+    keyId?: string;
+  }): Promise<string> {
+    const { data, context, keyId } = JSON.parse(params.data);
+    if (context !== params.context)
+      throw new Error("decrypt: context mismatch");
+    if (keyId !== params.keyId) throw new Error("decrypt: keyId mismatch");
+    return data;
+  }
+
+  /**
    * Generates an id for local cloud
    * @returns generated unique id
    */
