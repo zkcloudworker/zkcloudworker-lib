@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fetchMinaAccount = fetchMinaAccount;
-exports.fetchMinaActions = fetchMinaActions;
-exports.checkMinaZkappTransaction = checkMinaZkappTransaction;
+exports.checkMinaZkappTransaction = exports.fetchMinaActions = exports.fetchMinaAccount = void 0;
 const o1js_1 = require("o1js");
 const cloud_1 = require("../../cloud");
 /**
@@ -44,7 +42,7 @@ async function fetchMinaAccount(params) {
                 return result;
             }
         }
-        await (0, cloud_1.sleep)(1000 * 5);
+        await (0, cloud_1.sleep)(1000 * 6);
     }
     if (force === true)
         throw new Error(`fetchMinaAccount timeout
@@ -57,6 +55,7 @@ async function fetchMinaAccount(params) {
         console.log("fetchMinaAccount timeout", typeof publicKey === "string" ? publicKey : publicKey.toBase58(), tokenId?.toString(), force);
     return result;
 }
+exports.fetchMinaAccount = fetchMinaAccount;
 /**
  * Fetches the Mina actions for a given public key with error handling
  * @param publicKey the public key of the contract
@@ -86,6 +85,7 @@ async function fetchMinaActions(publicKey, fromActionState, endActionState) {
     console.log("Timeout in fetchMinaActions");
     return undefined;
 }
+exports.fetchMinaActions = fetchMinaActions;
 /**
  * Fetches the Mina transaction for a given hash with error handling
  * @param hash the hash of the transaction
@@ -101,3 +101,4 @@ async function checkMinaZkappTransaction(hash) {
         return { success: false };
     }
 }
+exports.checkMinaZkappTransaction = checkMinaZkappTransaction;

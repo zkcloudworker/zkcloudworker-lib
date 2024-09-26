@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.postOptionsMessage = postOptionsMessage;
-exports.postReadyMessage = postReadyMessage;
-exports.postDoneMessage = postDoneMessage;
+exports.postDoneMessage = exports.postReadyMessage = exports.postOptionsMessage = void 0;
 const nats_1 = require("nats");
 const connections_1 = require("./connections");
 const codec = (0, nats_1.JSONCodec)();
@@ -19,6 +17,7 @@ async function postOptionsMessage(clientAddress, workerAddress) {
     await nc.drain();
     return response;
 }
+exports.postOptionsMessage = postOptionsMessage;
 ;
 async function postReadyMessage(clientAddress, workerAddress) {
     // connect to the NATS server and send a 'ready' request
@@ -33,6 +32,7 @@ async function postReadyMessage(clientAddress, workerAddress) {
     await nc.drain();
     return response;
 }
+exports.postReadyMessage = postReadyMessage;
 ;
 async function postDoneMessage(clientAddress, encrypted) {
     // connect to the NATS server and send a 'ready' request
@@ -47,4 +47,5 @@ async function postDoneMessage(clientAddress, encrypted) {
     await nc.drain();
     return response;
 }
+exports.postDoneMessage = postDoneMessage;
 ;
