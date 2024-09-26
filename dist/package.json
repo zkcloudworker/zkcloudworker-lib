@@ -1,6 +1,6 @@
 {
   "name": "zkcloudworker",
-  "version": "0.12.2",
+  "version": "0.14.0",
   "description": "zkCloudWorker library",
   "author": "zkCloudWorker",
   "license": "Apache-2.0",
@@ -29,7 +29,7 @@
     "README.md"
   ],
   "engines": {
-    "node": ">=18.14.0"
+    "node": ">=20.0.0"
   },
   "keywords": [
     "javascript",
@@ -41,11 +41,11 @@
     "proving"
   ],
   "dependencies": {
-    "axios": "^1.7.2",
+    "axios": "^1.7.7",
     "chalk": "^4.1.2",
-    "nats": "^2.27.0"
+    "nats": "^2.28.2"
   },
   "peerDependencies": {
-    "o1js": "^1.4.0"
+    "o1js": "^1.8.0"
   }
 }

@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNonce = getNonce;
-const blockberry_1 = require("./blockberry");
-async function getNonce(params) {
+import { getZkAppTxsFromBlockBerry, getPaymentTxsFromBlockBerry, } from "./blockberry";
+export async function getNonce(params) {
     const { account, chain, blockBerryApiKey } = params;
     try {
         if (account === undefined || account === null || account === "") {
@@ -21,12 +18,12 @@ async function getNonce(params) {
                 message: "blockBerryApiKey is required",
             };
         }
-        const zkAppTxsPromise = (0, blockberry_1.getZkAppTxsFromBlockBerry)({
+        const zkAppTxsPromise = getZkAppTxsFromBlockBerry({
             account,
             chain,
             blockBerryApiKey,
         });
-        const paymentTxs = (0, blockberry_1.getPaymentTxsFromBlockBerry)({
+        const paymentTxs = getPaymentTxsFromBlockBerry({
             account,
             chain,
             blockBerryApiKey,
@@ -58,3 +55,4 @@ async function getNonce(params) {
         };
     }
 }
+//# sourceMappingURL=nonce.js.map

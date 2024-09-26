@@ -5,12 +5,12 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@types/node@npm:^20.16.9":
-  version: 20.16.9
-  resolution: "@types/node@npm:20.16.9"
+"@types/node@npm:^22.7.3":
+  version: 22.7.3
+  resolution: "@types/node@npm:22.7.3"
   dependencies:
     undici-types: "npm:~6.19.2"
-  checksum: 10c0/52d7cbd6792a26e6757c913d1f6dd0fb0104ac44c93dd87480c011d1211b3a1ba282962996bf6aec03f633b5b39f61576f1bafe8436592ab08ad39464e53e4b0
+  checksum: 10c0/0e579813528b0370454337a952f43b792cd12731e10fdca0fdb627158e980c1219bba99e9048c134b6a19325d817016059afe016ccd372326c838a1b85a51574
   languageName: node
   linkType: hard
 
@@ -305,7 +305,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zkcloudworker@workspace:."
   dependencies:
-    "@types/node": "npm:^20.16.9"
+    "@types/node": "npm:^22.7.3"
     axios: "npm:^1.7.7"
     chalk: "npm:^4.1.2"
     nats: "npm:^2.28.2"
