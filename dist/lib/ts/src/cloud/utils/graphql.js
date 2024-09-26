@@ -1,8 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.defaultToken = void 0;
-exports.getBalanceFromGraphQL = getBalanceFromGraphQL;
-exports.getAccountFromGraphQL = getAccountFromGraphQL;
+exports.getAccountFromGraphQL = exports.getBalanceFromGraphQL = exports.defaultToken = void 0;
 exports.defaultToken = "wSHV2S4qX9jFsLjQo8r1BsMLH2ZRKsZx6EJd1sbozGPieEC4Jf";
 async function getBalanceFromGraphQL(params) {
     const { publicKey, mina } = params;
@@ -19,6 +17,7 @@ async function getBalanceFromGraphQL(params) {
     const balance = account?.account?.balance?.total;
     return balance ? BigInt(balance) : 0n;
 }
+exports.getBalanceFromGraphQL = getBalanceFromGraphQL;
 async function getAccountFromGraphQL(params) {
     const { publicKey, mina } = params;
     const tokenId = params.tokenId ?? exports.defaultToken;
@@ -32,6 +31,7 @@ async function getAccountFromGraphQL(params) {
     });
     return account?.account;
 }
+exports.getAccountFromGraphQL = getAccountFromGraphQL;
 async function fetchAccountInternal(params) {
     const { publicKey, tokenId, mina, timeout, queryType } = params;
     const query = queryType === "balance"

@@ -1,11 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.bigintToBase56 = bigintToBase56;
-exports.bigintFromBase56 = bigintFromBase56;
-exports.bigintToBase64 = bigintToBase64;
-exports.bigintFromBase64 = bigintFromBase64;
-exports.fromBase = fromBase;
-exports.toBase = toBase;
+exports.toBase = exports.fromBase = exports.bigintFromBase64 = exports.bigintToBase64 = exports.bigintFromBase56 = exports.bigintToBase56 = void 0;
 // URL friendly base64 encoding
 const TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
 function bigintToBase56(value) {
@@ -15,11 +10,13 @@ function bigintToBase56(value) {
     //console.log("str:", str);
     return str;
 }
+exports.bigintToBase56 = bigintToBase56;
 function bigintFromBase56(str) {
     const base56Digits = str.split("").map((x) => BigInt(TABLE.indexOf(x)));
     const x = fromBase(base56Digits, 56n);
     return x;
 }
+exports.bigintFromBase56 = bigintFromBase56;
 function bigintToBase64(value) {
     const digits = toBase(value, 64n);
     //console.log("digits:", digits);
@@ -27,11 +24,13 @@ function bigintToBase64(value) {
     //console.log("str:", str);
     return str;
 }
+exports.bigintToBase64 = bigintToBase64;
 function bigintFromBase64(str) {
     const base64Digits = str.split("").map((x) => BigInt(TABLE.indexOf(x)));
     const x = fromBase(base64Digits, 64n);
     return x;
 }
+exports.bigintFromBase64 = bigintFromBase64;
 function fromBase(digits, base) {
     if (base <= 0n)
         throw Error("fromBase: base must be positive");
@@ -58,6 +57,7 @@ function fromBase(digits, base) {
     let [digit] = digits;
     return digit;
 }
+exports.fromBase = fromBase;
 function toBase(x, base) {
     if (base <= 0n)
         throw Error("toBase: base must be positive");
@@ -88,3 +88,4 @@ function toBase(x, base) {
     }
     return digits;
 }
+exports.toBase = toBase;

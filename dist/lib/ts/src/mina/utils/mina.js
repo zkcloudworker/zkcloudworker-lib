@@ -1,12 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.currentNetwork = void 0;
-exports.initBlockchain = initBlockchain;
-exports.accountBalance = accountBalance;
-exports.accountBalanceMina = accountBalanceMina;
-exports.getNetworkIdHash = getNetworkIdHash;
-exports.getCurrentNetwork = getCurrentNetwork;
-exports.getDeployer = getDeployer;
+exports.getDeployer = exports.getCurrentNetwork = exports.getNetworkIdHash = exports.currentNetwork = exports.accountBalanceMina = exports.accountBalance = exports.initBlockchain = void 0;
 const o1js_1 = require("o1js");
 const cloud_1 = require("../../cloud");
 let currentNetwork = undefined;
@@ -17,12 +11,14 @@ function getNetworkIdHash() {
     }
     return currentNetwork.networkIdHash;
 }
+exports.getNetworkIdHash = getNetworkIdHash;
 function getCurrentNetwork() {
     if (currentNetwork === undefined) {
         throw new Error("Network is not initialized");
     }
     return currentNetwork;
 }
+exports.getCurrentNetwork = getCurrentNetwork;
 function getDeployer() {
     if (currentNetwork === undefined) {
         throw new Error("Network is not initialized");
@@ -31,6 +27,7 @@ function getDeployer() {
         return undefined;
     return currentNetwork.keys[0];
 }
+exports.getDeployer = getDeployer;
 /**
  * Initializes the Mina blockchain network
  * Due to the limitations of the Mina SDK, only one network can be initialized at a time
@@ -109,6 +106,7 @@ async function initBlockchain(instance, deployersNumber = 0) {
     };
     return currentNetwork;
 }
+exports.initBlockchain = initBlockchain;
 /**
  * Fetches the account balance for a given public key
  * @param address the public key
@@ -121,6 +119,7 @@ async function accountBalance(address) {
     else
         return o1js_1.UInt64.from(0);
 }
+exports.accountBalance = accountBalance;
 /**
  * Fetches the account balance for a given public key and returns it in Mina
  * @param address the public key
@@ -129,3 +128,4 @@ async function accountBalance(address) {
 async function accountBalanceMina(address) {
     return Number((await accountBalance(address)).toBigInt()) / 1e9;
 }
+exports.accountBalanceMina = accountBalanceMina;

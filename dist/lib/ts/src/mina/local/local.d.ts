@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { blockchain, TransactionMetadata, CloudTransaction, DeployerKeyPair, TaskData, JobData, JobEvent, Cloud, zkCloudWorker } from "../../cloud";
 import { ApiCommand } from "../api/api";
 /**
