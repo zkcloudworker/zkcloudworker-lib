@@ -18,3 +18,4 @@ __exportStar(require("./nonce"), exports);
 __exportStar(require("./transaction"), exports);
 __exportStar(require("./txstatus"), exports);
 __exportStar(require("./chain"), exports);
+__exportStar(require("./blockberry"), exports);

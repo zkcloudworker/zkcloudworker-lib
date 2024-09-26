@@ -1,11 +1,8 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.txStatus = txStatus;
-const blockberry_1 = require("./blockberry");
+import { getZkAppTxFromBlockBerry } from "./blockberry";
 const TIMEOUT = 1000 * 60 * 21;
-async function txStatus(params) {
+export async function txStatus(params) {
     const { hash, chain, time, blockBerryApiKey } = params;
-    const tx = await (0, blockberry_1.getZkAppTxFromBlockBerry)({ hash, chain, blockBerryApiKey });
+    const tx = await getZkAppTxFromBlockBerry({ hash, chain, blockBerryApiKey });
     if (tx?.txStatus)
         return tx?.txStatus;
     if (Date.now() - time > (params.timeout ?? TIMEOUT)) {
@@ -16,3 +13,4 @@ async function txStatus(params) {
         return "pending";
     }
 }
+//# sourceMappingURL=txstatus.js.map

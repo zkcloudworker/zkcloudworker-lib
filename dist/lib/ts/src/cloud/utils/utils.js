@@ -1,10 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Memory = exports.formatTime = exports.makeString = exports.sleep = void 0;
+exports.Memory = void 0;
+exports.sleep = sleep;
+exports.makeString = makeString;
+exports.formatTime = formatTime;
 function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
 }
-exports.sleep = sleep;
 function makeString(length) {
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     let outString = ``;
@@ -15,7 +17,6 @@ function makeString(length) {
     }
     return outString;
 }
-exports.makeString = makeString;
 function formatTime(ms) {
     if (ms === undefined)
         return "";
@@ -34,7 +35,6 @@ function formatTime(ms) {
         return hours.toString() + " h " + minutes.toString() + " min";
     }
 }
-exports.formatTime = formatTime;
 class Memory {
     constructor() {
         Memory.rss = 0;

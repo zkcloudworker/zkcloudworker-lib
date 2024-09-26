@@ -39,7 +39,7 @@ export async function fetchMinaAccount(params) {
                 return result;
             }
         }
-        await sleep(1000 * 5);
+        await sleep(1000 * 6);
     }
     if (force === true)
         throw new Error(`fetchMinaAccount timeout
