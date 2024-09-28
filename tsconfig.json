@@ -30,6 +30,7 @@
     "mycache/**",
     "nftcache/**",
     "experimental/**",
+    "encryption/**",
     "node_modules",
     "deprecated/**",
     "images/**"

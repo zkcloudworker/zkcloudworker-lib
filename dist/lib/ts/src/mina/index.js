@@ -15,7 +15,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./api/api"), exports);
-__exportStar(require("./encryption"), exports);
+//export * from "./encryption";
 __exportStar(require("./utils"), exports);
 __exportStar(require("./local/local"), exports);
 __exportStar(require("./verification"), exports);
