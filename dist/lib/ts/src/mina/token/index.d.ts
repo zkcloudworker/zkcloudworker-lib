@@ -1,3 +1,3 @@
 export * from "./FungibleToken";
 export * from "./FungibleTokenAdmin";
-export * from "./deploy";
+export * from "./api";

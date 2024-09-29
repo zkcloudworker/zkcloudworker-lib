@@ -1,6 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.serializeTransaction = exports.deserializeTransaction = exports.transactionParams = void 0;
+exports.transactionParams = transactionParams;
+exports.deserializeTransaction = deserializeTransaction;
+exports.serializeTransaction = serializeTransaction;
 const o1js_1 = require("o1js");
 function transactionParams(serializedTransaction, signedJson) {
     const { sender, nonce, tx } = JSON.parse(serializedTransaction);
@@ -13,7 +15,6 @@ function transactionParams(serializedTransaction, signedJson) {
         memo,
     };
 }
-exports.transactionParams = transactionParams;
 function deserializeTransaction(serializedTransaction, txNew, signedJson) {
     //console.log("new transaction", txNew);
     const { tx, blindingValues, length } = JSON.parse(serializedTransaction);
@@ -43,7 +44,6 @@ function deserializeTransaction(serializedTransaction, txNew, signedJson) {
     }
     return transaction;
 }
-exports.deserializeTransaction = deserializeTransaction;
 function serializeTransaction(tx) {
     const length = tx.transaction.accountUpdates.length;
     let i;
@@ -67,4 +67,3 @@ function serializeTransaction(tx) {
     }, null, 2);
     return serializedTransaction;
 }
-exports.serializeTransaction = serializeTransaction;

@@ -1,4 +1,4 @@
-import { AccountUpdate, AccountUpdateForest, Bool, DeployArgs, Int64, PublicKey, State, TokenContractV2, Types, UInt64, UInt8, VerificationKey } from "o1js";
+import { AccountUpdate, AccountUpdateForest, Bool, DeployArgs, Field, Int64, PublicKey, State, TokenContractV2, Types, UInt64, UInt8, VerificationKey } from "o1js";
 import { FungibleTokenAdminBase } from "./FungibleTokenAdmin.js";
 interface FungibleTokenDeployProps extends Exclude<DeployArgs, undefined> {
     /** The token symbol. */
@@ -82,8 +82,8 @@ declare const SetAdminEvent_base: (new (value: {
 } & {
     fromValue: (value: {
         adminKey: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field.js").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool.js").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
     }) => {
         adminKey: PublicKey;
@@ -91,8 +91,8 @@ declare const SetAdminEvent_base: (new (value: {
     toInput: (x: {
         adminKey: PublicKey;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         adminKey: PublicKey;
@@ -133,8 +133,8 @@ declare const PauseEvent_base: (new (value: {
     toInput: (x: {
         isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
@@ -177,8 +177,8 @@ declare const MintEvent_base: (new (value: {
 } & {
     fromValue: (value: {
         recipient: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field.js").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool.js").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         amount: bigint | Types.UInt64;
     }) => {
@@ -189,8 +189,8 @@ declare const MintEvent_base: (new (value: {
         recipient: PublicKey;
         amount: Types.UInt64;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         recipient: PublicKey;
@@ -238,8 +238,8 @@ declare const BurnEvent_base: (new (value: {
 } & {
     fromValue: (value: {
         from: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field.js").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool.js").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         amount: bigint | Types.UInt64;
     }) => {
@@ -250,8 +250,8 @@ declare const BurnEvent_base: (new (value: {
         from: PublicKey;
         amount: Types.UInt64;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         from: PublicKey;
@@ -299,8 +299,8 @@ declare const BalanceChangeEvent_base: (new (value: {
 } & {
     fromValue: (value: {
         address: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field.js").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool.js").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         amount: any;
     }) => {
@@ -311,8 +311,8 @@ declare const BalanceChangeEvent_base: (new (value: {
         address: PublicKey;
         amount: Int64;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         address: PublicKey;

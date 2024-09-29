@@ -1,4 +1,4 @@
 export * from "./FungibleToken";
 export * from "./FungibleTokenAdmin";
-export * from "./deploy";
+export * from "./api";
 //# sourceMappingURL=index.js.map
