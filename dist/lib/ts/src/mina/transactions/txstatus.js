@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.txStatus = void 0;
+exports.txStatus = txStatus;
 const blockberry_1 = require("./blockberry");
 const TIMEOUT = 1000 * 60 * 21;
 async function txStatus(params) {
@@ -16,4 +16,3 @@ async function txStatus(params) {
         return "pending";
     }
 }
-exports.txStatus = txStatus;
