@@ -21,6 +21,17 @@ export interface FungibleTokenMintParams {
     amount: number;
     sendTransaction: boolean;
 }
+export interface FungibleTokenTransferParams {
+    tokenPublicKey: string;
+    chain: string;
+    symbol: string;
+    serializedTransaction: string;
+    signedData: string;
+    from: string;
+    to: string;
+    amount: number;
+    sendTransaction: boolean;
+}
 export interface FungibleTokenJobResult {
     success: boolean;
     tx?: string;
