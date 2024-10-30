@@ -5,12 +5,12 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@types/node@npm:^22.7.5":
-  version: 22.7.5
-  resolution: "@types/node@npm:22.7.5"
+"@types/node@npm:^22.8.4":
+  version: 22.8.4
+  resolution: "@types/node@npm:22.8.4"
   dependencies:
-    undici-types: "npm:~6.19.2"
-  checksum: 10c0/cf11f74f1a26053ec58066616e3a8685b6bcd7259bc569738b8f752009f9f0f7f85a1b2d24908e5b0f752482d1e8b6babdf1fbb25758711ec7bb9500bfcd6e60
+    undici-types: "npm:~6.19.8"
+  checksum: 10c0/f88d030480630194a9168772462ec09b2d86454f34368c46d2b7fda5dc6e14594b1576fcc5c35cc53b57a4d1e8dd2865a85ae81f34ded0d1af753a0f5d294c25
   languageName: node
   linkType: hard
 
@@ -172,9 +172,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"o1js@npm:^1.8.0":
-  version: 1.8.0
-  resolution: "o1js@npm:1.8.0"
+"o1js@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "o1js@npm:2.0.0"
   dependencies:
     blakejs: "npm:1.2.1"
     cachedir: "npm:^2.4.0"
@@ -184,7 +184,7 @@ __metadata:
     tslib: "npm:^2.3.0"
   bin:
     snarky-run: src/build/run.js
-  checksum: 10c0/a1c58a22937eb9bcc33a8763bea8cde40ca93a7afb8ee684e1ebc756bdc2aa504e8164868da490ca2146ef813d79b33a0beb589c7ab433bcddbdf9d38911a9dc
+  checksum: 10c0/29f848e834e9eaf4e6982e291f95779b677015952b82ec39b19b07a416f014004d6adae49b745419b3a6caa82e0acbc1fec1c1c4fb487c12f1dcdea9733dafe8
   languageName: node
   linkType: hard
 
@@ -245,7 +245,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"undici-types@npm:~6.19.2":
+"undici-types@npm:~6.19.8":
   version: 6.19.8
   resolution: "undici-types@npm:6.19.8"
   checksum: 10c0/078afa5990fba110f6824823ace86073b4638f1d5112ee26e790155f481f2a868cc3e0615505b6f4282bdf74a3d8caad715fd809e870c2bb0704e3ea6082f344
@@ -280,10 +280,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zkcloudworker@workspace:."
   dependencies:
-    "@types/node": "npm:^22.7.5"
+    "@types/node": "npm:^22.8.4"
     axios: "npm:^1.7.7"
     chalk: "npm:^4.1.2"
-    o1js: "npm:^1.8.0"
+    o1js: "npm:^2.0.0"
     typescript: "npm:5.6.3"
   languageName: unknown
   linkType: soft

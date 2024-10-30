@@ -1,4 +1,4 @@
-import { AccountUpdate, AccountUpdateForest, Bool, DeployArgs, Field, Int64, PublicKey, State, TokenContractV2, Types, UInt64, UInt8, VerificationKey } from "o1js";
+import { AccountUpdate, AccountUpdateForest, Bool, DeployArgs, Field, Int64, PublicKey, State, TokenContract, Types, UInt64, UInt8, VerificationKey } from "o1js";
 import { FungibleTokenAdminBase } from "./FungibleTokenAdmin.js";
 interface FungibleTokenDeployProps extends Exclude<DeployArgs, undefined> {
     /** The token symbol. */
@@ -19,7 +19,7 @@ export declare const FungibleTokenErrors: {
     flashMinting: string;
     unbalancedTransaction: string;
 };
-export declare class FungibleToken extends TokenContractV2 {
+export declare class FungibleToken extends TokenContract {
     decimals: State<UInt8>;
     admin: State<PublicKey>;
     paused: State<import("o1js/dist/node/lib/provable/bool.js").Bool>;
