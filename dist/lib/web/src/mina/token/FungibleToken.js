@@ -1,6 +1,6 @@
 import { __decorate, __metadata } from "tslib";
-import { AccountUpdate, AccountUpdateForest, assert, Bool, Int64, method, Permissions, Provable, PublicKey, State, state, Struct, TokenContractV2, Types, UInt64, UInt8, VerificationKey, } from "o1js";
-import { FungibleTokenAdmin } from "./FungibleTokenAdmin.js";
+import { AccountUpdate, AccountUpdateForest, assert, Bool, Int64, method, Permissions, Provable, PublicKey, State, state, Struct, TokenContract, Types, UInt64, UInt8, VerificationKey, } from "o1js";
+import { FungibleTokenAdmin, } from "./FungibleTokenAdmin.js";
 export const FungibleTokenErrors = {
     noAdminKey: "could not fetch admin contract key",
     noPermissionToChangeAdmin: "Not allowed to change admin contract",
@@ -13,7 +13,7 @@ export const FungibleTokenErrors = {
     flashMinting: "Flash-minting or unbalanced transaction detected. Please make sure that your transaction is balanced, and that your `AccountUpdate`s are ordered properly, so that tokens are not received before they are sent.",
     unbalancedTransaction: "Transaction is unbalanced",
 };
-export class FungibleToken extends TokenContractV2 {
+export class FungibleToken extends TokenContract {
     constructor() {
         super(...arguments);
         this.decimals = State();
@@ -70,7 +70,7 @@ export class FungibleToken extends TokenContractV2 {
             return pk;
         });
         this.admin.requireEquals(admin);
-        return (new FungibleToken.AdminContract(admin));
+        return new FungibleToken.AdminContract(admin);
     }
     async setAdmin(admin) {
         const adminContract = await this.getAdminContract();
@@ -80,12 +80,16 @@ export class FungibleToken extends TokenContractV2 {
         this.emitEvent("SetAdmin", new SetAdminEvent({ adminKey: admin }));
     }
     async mint(recipient, amount) {
-        this.paused.getAndRequireEquals().assertFalse(FungibleTokenErrors.tokenPaused);
+        this.paused
+            .getAndRequireEquals()
+            .assertFalse(FungibleTokenErrors.tokenPaused);
         const accountUpdate = this.internal.mint({ address: recipient, amount });
         const adminContract = await this.getAdminContract();
         const canMint = await adminContract.canMint(accountUpdate);
         canMint.assertTrue(FungibleTokenErrors.noPermissionToMint);
-        recipient.equals(this.address).assertFalse(FungibleTokenErrors.noTransferFromCirculation);
+        recipient
+            .equals(this.address)
+            .assertFalse(FungibleTokenErrors.noTransferFromCirculation);
         this.approve(accountUpdate);
         this.emitEvent("Mint", new MintEvent({ recipient, amount }));
         const circulationUpdate = AccountUpdate.create(this.address, this.deriveTokenId());
@@ -93,11 +97,15 @@ export class FungibleToken extends TokenContractV2 {
         return accountUpdate;
     }
     async burn(from, amount) {
-        this.paused.getAndRequireEquals().assertFalse(FungibleTokenErrors.tokenPaused);
+        this.paused
+            .getAndRequireEquals()
+            .assertFalse(FungibleTokenErrors.tokenPaused);
         const accountUpdate = this.internal.burn({ address: from, amount });
         const circulationUpdate = AccountUpdate.create(this.address, this.deriveTokenId());
-        from.equals(this.address).assertFalse(FungibleTokenErrors.noTransferFromCirculation);
-        circulationUpdate.balanceChange = Int64.fromUnsigned(amount).negV2();
+        from
+            .equals(this.address)
+            .assertFalse(FungibleTokenErrors.noTransferFromCirculation);
+        circulationUpdate.balanceChange = Int64.fromUnsigned(amount).neg();
         this.emitEvent("Burn", new BurnEvent({ from, amount }));
         return accountUpdate;
     }
@@ -116,8 +124,12 @@ export class FungibleToken extends TokenContractV2 {
         this.emitEvent("Pause", new PauseEvent({ isPaused: Bool(false) }));
     }
     async transfer(from, to, amount) {
-        this.paused.getAndRequireEquals().assertFalse(FungibleTokenErrors.tokenPaused);
-        from.equals(this.address).assertFalse(FungibleTokenErrors.noTransferFromCirculation);
+        this.paused
+            .getAndRequireEquals()
+            .assertFalse(FungibleTokenErrors.tokenPaused);
+        from
+            .equals(this.address)
+            .assertFalse(FungibleTokenErrors.noTransferFromCirculation);
         to.equals(this.address).assertFalse(FungibleTokenErrors.noTransferFromCirculation);
         this.internal.send({ from, to, amount });
     }
@@ -134,16 +146,24 @@ export class FungibleToken extends TokenContractV2 {
      * @argument {AccountUpdateForest} updates - The `AccountUpdate`s to approve. Note that the forest size is limited by the base token contract, @see TokenContractV2.MAX_ACCOUNT_UPDATES The current limit is 9.
      */
     async approveBase(updates) {
-        this.paused.getAndRequireEquals().assertFalse(FungibleTokenErrors.tokenPaused);
+        this.paused
+            .getAndRequireEquals()
+            .assertFalse(FungibleTokenErrors.tokenPaused);
         let totalBalance = Int64.from(0);
         this.forEachUpdate(updates, (update, usesToken) => {
             // Make sure that the account permissions are not changed
             this.checkPermissionsUpdate(update);
-            this.emitEventIf(usesToken, "BalanceChange", new BalanceChangeEvent({ address: update.publicKey, amount: update.balanceChange }));
+            this.emitEventIf(usesToken, "BalanceChange", new BalanceChangeEvent({
+                address: update.publicKey,
+                amount: update.balanceChange,
+            }));
             // Don't allow transfers to/from the account that's tracking circulation
-            update.publicKey.equals(this.address).and(usesToken).assertFalse(FungibleTokenErrors.noTransferFromCirculation);
+            update.publicKey
+                .equals(this.address)
+                .and(usesToken)
+                .assertFalse(FungibleTokenErrors.noTransferFromCirculation);
             totalBalance = Provable.if(usesToken, totalBalance.add(update.balanceChange), totalBalance);
-            totalBalance.isPositiveV2().assertFalse(FungibleTokenErrors.flashMinting);
+            totalBalance.isPositive().assertFalse(FungibleTokenErrors.flashMinting);
         });
         totalBalance.assertEquals(Int64.zero, FungibleTokenErrors.unbalancedTransaction);
     }
@@ -189,9 +209,7 @@ __decorate([
 __decorate([
     method,
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [PublicKey,
-        UInt8,
-        Bool]),
+    __metadata("design:paramtypes", [PublicKey, UInt8, Bool]),
     __metadata("design:returntype", Promise)
 ], FungibleToken.prototype, "initialize", null);
 __decorate([
