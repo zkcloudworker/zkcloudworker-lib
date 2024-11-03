@@ -73,4 +73,34 @@ export async function getZkAppTxFromBlockBerry(params) {
         return undefined;
     }
 }
+export async function getZkAppFromBlockBerry(params) {
+    const { account, chain, blockBerryApiKey } = params;
+    const options = {
+        method: "GET",
+        headers: {
+            accept: "application/json",
+            "x-api-key": blockBerryApiKey,
+        },
+    };
+    try {
+        const response = await fetch(`https://api.blockberry.one/mina-${chain}/v1/zkapps/${account}`, options);
+        if (response.ok) {
+            const result = await response.json();
+            return result;
+        }
+        else {
+            console.error("getZkAppFromBlockBerry error while getting account", {
+                account,
+                chain,
+                text: response.statusText,
+                status: response.status,
+            });
+            return undefined;
+        }
+    }
+    catch (err) {
+        console.error("getZkAppFromBlockBerry error while getting account - catch", account, chain, err);
+        return undefined;
+    }
+}
 //# sourceMappingURL=blockberry.js.map

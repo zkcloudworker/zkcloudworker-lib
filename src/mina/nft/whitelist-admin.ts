@@ -102,9 +102,10 @@ export class NFTWhitelistedAdmin extends SmartContract implements NFTAdminBase {
   }
 
   @method
-  async updateMerkleMapRoot(root: Field) {
+  async updateMerkleMapRoot(root: Field, storage: Storage) {
     const sender = this.sender.getAndRequireSignature();
     this.admin.getAndRequireEquals().assertEquals(sender);
     this.whitelist.set(root);
+    this.storage.set(storage);
   }
 }

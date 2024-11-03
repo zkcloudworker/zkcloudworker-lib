@@ -19,5 +19,5 @@ export declare class NFTWhitelistedAdmin extends SmartContract implements NFTAdm
     canTransfer(address: PublicKey, from: PublicKey, to: PublicKey): Promise<import("o1js/dist/node/lib/provable/bool").Bool>;
     canSell(address: PublicKey, seller: PublicKey, price: UInt64): Promise<import("o1js/dist/node/lib/provable/bool").Bool>;
     canBuy(address: PublicKey, seller: PublicKey, buyer: PublicKey, price: UInt64): Promise<import("o1js/dist/node/lib/provable/bool").Bool>;
-    updateMerkleMapRoot(root: Field): Promise<void>;
+    updateMerkleMapRoot(root: Field, storage: Storage): Promise<void>;
 }
