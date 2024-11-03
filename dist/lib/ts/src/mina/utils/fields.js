@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deserializeFields = exports.serializeFields = void 0;
+exports.serializeFields = serializeFields;
+exports.deserializeFields = deserializeFields;
 const o1js_1 = require("o1js");
 const base64_1 = require("./base64");
 /**
@@ -14,7 +15,6 @@ function serializeFields(fields) {
     //return value.map((f) => f.toBigInt().toString(36)).join(".");
     return value.map((f) => (0, base64_1.fieldToBase64)(f)).join(".");
 }
-exports.serializeFields = serializeFields;
 /**
  * Deserialize fields from a string using base64 URL-friendly encoding
  * @param s the string to deserialize
@@ -40,4 +40,3 @@ function deserializeFields(s) {
         throw new Error(`deserializeFields: invalid string: ${s}: ${e}`);
     }
 }
-exports.deserializeFields = deserializeFields;

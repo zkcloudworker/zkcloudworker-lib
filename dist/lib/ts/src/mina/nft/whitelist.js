@@ -1,6 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseIndexedMapSerialized = exports.deserializeWhitelist = exports.serializeWhitelist = exports.loadWhitelist = exports.Whitelist = void 0;
+exports.Whitelist = void 0;
+exports.loadWhitelist = loadWhitelist;
+exports.serializeWhitelist = serializeWhitelist;
+exports.deserializeWhitelist = deserializeWhitelist;
+exports.parseIndexedMapSerialized = parseIndexedMapSerialized;
 const o1js_1 = require("o1js");
 const cloud_1 = require("../../cloud");
 const { IndexedMerkleMap } = o1js_1.Experimental;
@@ -23,7 +27,6 @@ async function loadWhitelist(storage) {
     }
     return map;
 }
-exports.loadWhitelist = loadWhitelist;
 function serializeWhitelist(map) {
     const serializedMap = JSON.stringify({
         height: map.height,
@@ -41,7 +44,6 @@ function serializeWhitelist(map) {
     }, null, 2);
     return serializedMap;
 }
-exports.serializeWhitelist = serializeWhitelist;
 function deserializeWhitelist(params) {
     try {
         const { serializedIndexedMap, type } = params;
@@ -56,7 +58,6 @@ function deserializeWhitelist(params) {
         return undefined;
     }
 }
-exports.deserializeWhitelist = deserializeWhitelist;
 function parseIndexedMapSerialized(serializedMap) {
     const json = JSON.parse(serializedMap);
     if (json.height === undefined ||
@@ -77,7 +78,6 @@ function parseIndexedMapSerialized(serializedMap) {
         throw new Error("wrong IndexedMerkleMap sortedLeaves format");
     return json;
 }
-exports.parseIndexedMapSerialized = parseIndexedMapSerialized;
 function deserializeIndexedMapInternal(params) {
     const { json, type } = params;
     const map = new type();

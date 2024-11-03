@@ -23,8 +23,8 @@ declare const Storage_base: (new (value: {
     toInput: (x: {
         url: import("o1js/dist/node/lib/provable/field").Field[];
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         url: import("o1js/dist/node/lib/provable/field").Field[];
@@ -117,8 +117,8 @@ declare const NFTImmutableState_base: (new (value: {
 } & {
     fromValue: (value: {
         creator: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         canChangeOwner: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
         canChangeMetadata: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
@@ -128,8 +128,8 @@ declare const NFTImmutableState_base: (new (value: {
         canChangeMetadataVerificationKeyHash: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
         canPause: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
         address: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         tokenId: string | number | bigint | import("o1js/dist/node/lib/provable/field").Field;
     }) => {
@@ -156,8 +156,8 @@ declare const NFTImmutableState_base: (new (value: {
         address: PublicKey;
         tokenId: import("o1js/dist/node/lib/provable/field").Field;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         creator: PublicKey;
@@ -296,8 +296,8 @@ declare const NFTState_base: (new (value: {
     fromValue: (value: {
         immutableState: NFTImmutableState | {
             creator: PublicKey | {
-                x: bigint | import("o1js/dist/node/lib/provable/field").Field;
-                isOdd: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
+                x: Field | bigint;
+                isOdd: Bool | boolean;
             };
             canChangeOwner: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
             canChangeMetadata: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
@@ -307,8 +307,8 @@ declare const NFTState_base: (new (value: {
             canChangeMetadataVerificationKeyHash: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
             canPause: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
             address: PublicKey | {
-                x: bigint | import("o1js/dist/node/lib/provable/field").Field;
-                isOdd: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
+                x: Field | bigint;
+                isOdd: Bool | boolean;
             };
             tokenId: string | number | bigint | import("o1js/dist/node/lib/provable/field").Field;
         };
@@ -318,8 +318,8 @@ declare const NFTState_base: (new (value: {
             url: import("o1js/dist/node/lib/provable/field").Field[] | bigint[];
         };
         owner: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         price: bigint | UInt64;
         version: bigint | UInt32;
@@ -344,8 +344,8 @@ declare const NFTState_base: (new (value: {
         version: UInt32;
         isPaused: import("o1js/dist/node/lib/provable/bool").Bool;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         immutableState: NFTImmutableState;
@@ -535,8 +535,8 @@ declare const NFTData_base: (new (value: {
         canPause: import("o1js/dist/node/lib/provable/bool").Bool;
         isPaused: import("o1js/dist/node/lib/provable/bool").Bool;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         price: UInt64;
@@ -732,8 +732,8 @@ declare const CollectionData_base: (new (value: {
         canChangeSaleCommission: import("o1js/dist/node/lib/provable/bool").Bool;
         isPaused: import("o1js/dist/node/lib/provable/bool").Bool;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         requireTransferApproval: import("o1js/dist/node/lib/provable/bool").Bool;
@@ -892,13 +892,13 @@ declare const MintParams_base: (new (value: {
     fromValue: (value: {
         name: string | number | bigint | import("o1js/dist/node/lib/provable/field").Field;
         address: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         tokenId: string | number | bigint | import("o1js/dist/node/lib/provable/field").Field;
         owner: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         data: NFTData | {
             price: bigint | UInt64;
@@ -958,8 +958,8 @@ declare const MintParams_base: (new (value: {
         nftVerificationKey: VerificationKey;
         expiry: UInt32;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         name: import("o1js/dist/node/lib/provable/field").Field;
@@ -1129,13 +1129,13 @@ declare const MintSignatureData_base: (new (value: {
     fromValue: (value: {
         name: string | number | bigint | import("o1js/dist/node/lib/provable/field").Field;
         address: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         tokenId: string | number | bigint | import("o1js/dist/node/lib/provable/field").Field;
         owner: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool").Bool;
+            x: Field | bigint;
+            isOdd: Bool | boolean;
         };
         packedData: string | number | bigint | import("o1js/dist/node/lib/provable/field").Field;
         fee: bigint | UInt64;
@@ -1172,8 +1172,8 @@ declare const MintSignatureData_base: (new (value: {
         nftVerificationKeyHash: import("o1js/dist/node/lib/provable/field").Field;
         expiry: UInt32;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field").Field, number][] | undefined;
+        fields?: Field[] | undefined;
+        packed?: [Field, number][] | undefined;
     };
     toJSON: (x: {
         name: import("o1js/dist/node/lib/provable/field").Field;

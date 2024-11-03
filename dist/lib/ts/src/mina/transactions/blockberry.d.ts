@@ -14,3 +14,8 @@ export declare function getZkAppTxFromBlockBerry(params: {
     chain: BlockBerryChain;
     blockBerryApiKey: string;
 }): Promise<any>;
+export declare function getZkAppFromBlockBerry(params: {
+    account: string;
+    chain: BlockBerryChain;
+    blockBerryApiKey: string;
+}): Promise<any>;

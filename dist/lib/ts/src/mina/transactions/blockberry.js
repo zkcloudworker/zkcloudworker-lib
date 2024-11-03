@@ -1,6 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getZkAppTxFromBlockBerry = exports.getPaymentTxsFromBlockBerry = exports.getZkAppTxsFromBlockBerry = void 0;
+exports.getZkAppTxsFromBlockBerry = getZkAppTxsFromBlockBerry;
+exports.getPaymentTxsFromBlockBerry = getPaymentTxsFromBlockBerry;
+exports.getZkAppTxFromBlockBerry = getZkAppTxFromBlockBerry;
+exports.getZkAppFromBlockBerry = getZkAppFromBlockBerry;
 async function getZkAppTxsFromBlockBerry(params) {
     const { account, chain, blockBerryApiKey } = params;
     const options = {
@@ -25,7 +28,6 @@ async function getZkAppTxsFromBlockBerry(params) {
         return undefined;
     }
 }
-exports.getZkAppTxsFromBlockBerry = getZkAppTxsFromBlockBerry;
 async function getPaymentTxsFromBlockBerry(params) {
     const { account, chain, blockBerryApiKey } = params;
     const options = {
@@ -52,7 +54,6 @@ async function getPaymentTxsFromBlockBerry(params) {
         return undefined;
     }
 }
-exports.getPaymentTxsFromBlockBerry = getPaymentTxsFromBlockBerry;
 async function getZkAppTxFromBlockBerry(params) {
     const { hash, chain, blockBerryApiKey } = params;
     const options = {
@@ -78,4 +79,33 @@ async function getZkAppTxFromBlockBerry(params) {
         return undefined;
     }
 }
-exports.getZkAppTxFromBlockBerry = getZkAppTxFromBlockBerry;
+async function getZkAppFromBlockBerry(params) {
+    const { account, chain, blockBerryApiKey } = params;
+    const options = {
+        method: "GET",
+        headers: {
+            accept: "application/json",
+            "x-api-key": blockBerryApiKey,
+        },
+    };
+    try {
+        const response = await fetch(`https://api.blockberry.one/mina-${chain}/v1/zkapps/${account}`, options);
+        if (response.ok) {
+            const result = await response.json();
+            return result;
+        }
+        else {
+            console.error("getZkAppFromBlockBerry error while getting account", {
+                account,
+                chain,
+                text: response.statusText,
+                status: response.status,
+            });
+            return undefined;
+        }
+    }
+    catch (err) {
+        console.error("getZkAppFromBlockBerry error while getting account - catch", account, chain, err);
+        return undefined;
+    }
+}

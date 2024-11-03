@@ -1,5 +1,3 @@
-/// <reference types="node" />
-/// <reference types="node" />
 import { blockchain } from "../networks";
 import { JobData } from "./job";
 import { TransactionMetadata } from "./transaction";
