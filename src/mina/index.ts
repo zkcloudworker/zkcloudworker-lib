@@ -6,3 +6,4 @@ export * from "./verification";
 export * from "./token";
 export * from "./transactions";
 export * from "./nft";
+export * from "./V1";

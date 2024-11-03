@@ -68,10 +68,11 @@ class NFTWhitelistedAdmin extends o1js_1.SmartContract {
     async canBuy(address, seller, buyer, price) {
         return (await this.isWhitelisted(buyer, price)).and(await this.isWhitelisted(seller, price));
     }
-    async updateMerkleMapRoot(root) {
+    async updateMerkleMapRoot(root, storage) {
         const sender = this.sender.getAndRequireSignature();
         this.admin.getAndRequireEquals().assertEquals(sender);
         this.whitelist.set(root);
+        this.storage.set(storage);
     }
 }
 exports.NFTWhitelistedAdmin = NFTWhitelistedAdmin;
@@ -133,6 +134,6 @@ __decorate([
 __decorate([
     o1js_1.method,
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [o1js_1.Field]),
+    __metadata("design:paramtypes", [o1js_1.Field, types_1.Storage]),
     __metadata("design:returntype", Promise)
 ], NFTWhitelistedAdmin.prototype, "updateMerkleMapRoot", null);

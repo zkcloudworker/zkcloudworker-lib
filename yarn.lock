@@ -5,12 +5,12 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@types/node@npm:^22.8.4":
-  version: 22.8.4
-  resolution: "@types/node@npm:22.8.4"
+"@types/node@npm:^22.8.7":
+  version: 22.8.7
+  resolution: "@types/node@npm:22.8.7"
   dependencies:
     undici-types: "npm:~6.19.8"
-  checksum: 10c0/f88d030480630194a9168772462ec09b2d86454f34368c46d2b7fda5dc6e14594b1576fcc5c35cc53b57a4d1e8dd2865a85ae81f34ded0d1af753a0f5d294c25
+  checksum: 10c0/14372885db80059ed6e92c320b2bcd8f7dc271698adce11f51aa0f424a3f82aa1749a4f66321b87043791b894346b2458d514cbb65ce70167c2fd8a78a124947
   languageName: node
   linkType: hard
 
@@ -98,23 +98,23 @@ __metadata:
   linkType: hard
 
 "follow-redirects@npm:^1.15.6":
-  version: 1.15.6
-  resolution: "follow-redirects@npm:1.15.6"
+  version: 1.15.9
+  resolution: "follow-redirects@npm:1.15.9"
   peerDependenciesMeta:
     debug:
       optional: true
-  checksum: 10c0/9ff767f0d7be6aa6870c82ac79cf0368cd73e01bbc00e9eb1c2a16fbb198ec105e3c9b6628bb98e9f3ac66fe29a957b9645bcb9a490bb7aa0d35f908b6b85071
+  checksum: 10c0/5829165bd112c3c0e82be6c15b1a58fa9dcfaede3b3c54697a82fe4a62dd5ae5e8222956b448d2f98e331525f05d00404aba7d696de9e761ef6e42fdc780244f
   languageName: node
   linkType: hard
 
 "form-data@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "form-data@npm:4.0.0"
+  version: 4.0.1
+  resolution: "form-data@npm:4.0.1"
   dependencies:
     asynckit: "npm:^0.4.0"
     combined-stream: "npm:^1.0.8"
     mime-types: "npm:^2.1.12"
-  checksum: 10c0/cb6f3ac49180be03ff07ba3ff125f9eba2ff0b277fb33c7fc47569fc5e616882c5b1c69b9904c4c4187e97dd0419dd03b134174756f296dec62041e6527e2c6e
+  checksum: 10c0/bb102d570be8592c23f4ea72d7df9daa50c7792eb0cf1c5d7e506c1706e7426a4e4ae48a35b109e91c85f1c0ec63774a21ae252b66f4eb981cb8efef7d0463c8
   languageName: node
   linkType: hard
 
@@ -188,6 +188,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"o1js_v1@npm:o1js@1.9.1":
+  version: 1.9.1
+  resolution: "o1js@npm:1.9.1"
+  dependencies:
+    blakejs: "npm:1.2.1"
+    cachedir: "npm:^2.4.0"
+    isomorphic-fetch: "npm:^3.0.0"
+    js-sha256: "npm:^0.9.0"
+    reflect-metadata: "npm:^0.1.13"
+    tslib: "npm:^2.3.0"
+  bin:
+    snarky-run: src/build/run.js
+  checksum: 10c0/d8df20990e300b28b1ceb7dbc6b308c50c43bc19c06938adff7cffcb4df5855c0942f7684f5c0bd292d5c7da1f610b463b33c67eb9c0f654459fb346a311fa41
+  languageName: node
+  linkType: hard
+
 "proxy-from-env@npm:^1.1.0":
   version: 1.1.0
   resolution: "proxy-from-env@npm:1.1.0"
@@ -219,9 +235,9 @@ __metadata:
   linkType: hard
 
 "tslib@npm:^2.3.0":
-  version: 2.6.2
-  resolution: "tslib@npm:2.6.2"
-  checksum: 10c0/e03a8a4271152c8b26604ed45535954c0a45296e32445b4b87f8a5abdb2421f40b59b4ca437c4346af0f28179780d604094eb64546bee2019d903d01c6c19bdb
+  version: 2.8.1
+  resolution: "tslib@npm:2.8.1"
+  checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
   languageName: node
   linkType: hard
 
@@ -237,11 +253,11 @@ __metadata:
 
 "typescript@patch:typescript@npm%3A5.6.3#optional!builtin<compat/typescript>":
   version: 5.6.3
-  resolution: "typescript@patch:typescript@npm%3A5.6.3#optional!builtin<compat/typescript>::version=5.6.3&hash=5adc0c"
+  resolution: "typescript@patch:typescript@npm%3A5.6.3#optional!builtin<compat/typescript>::version=5.6.3&hash=8c6c40"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 10c0/ac8307bb06bbfd08ae7137da740769b7d8c3ee5943188743bb622c621f8ad61d244767480f90fbd840277fbf152d8932aa20c33f867dea1bb5e79b187ca1a92f
+  checksum: 10c0/7c9d2e07c81226d60435939618c91ec2ff0b75fbfa106eec3430f0fcf93a584bc6c73176676f532d78c3594fe28a54b36eb40b3d75593071a7ec91301533ace7
   languageName: node
   linkType: hard
 
@@ -280,10 +296,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zkcloudworker@workspace:."
   dependencies:
-    "@types/node": "npm:^22.8.4"
+    "@types/node": "npm:^22.8.7"
     axios: "npm:^1.7.7"
     chalk: "npm:^4.1.2"
     o1js: "npm:^2.0.0"
+    o1js_v1: "npm:o1js@1.9.1"
     typescript: "npm:5.6.3"
   languageName: unknown
   linkType: soft

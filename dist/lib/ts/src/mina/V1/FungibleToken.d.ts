@@ -1,4 +1,4 @@
-import { AccountUpdate, AccountUpdateForest, Bool, DeployArgs, Int64, PublicKey, State, TokenContract, Types, UInt64, UInt8, VerificationKey } from "o1js";
+import { AccountUpdate, AccountUpdateForest, Bool, DeployArgs, Int64, PublicKey, State, TokenContractV2, Types, UInt64, UInt8, VerificationKey } from "o1js_v1";
 import { FungibleTokenAdminBase } from "./FungibleTokenAdmin.js";
 interface FungibleTokenDeployProps extends Exclude<DeployArgs, undefined> {
     /** The token symbol. */
@@ -19,10 +19,10 @@ export declare const FungibleTokenErrors: {
     flashMinting: string;
     unbalancedTransaction: string;
 };
-export declare class FungibleToken extends TokenContract {
+export declare class FungibleToken extends TokenContractV2 {
     decimals: State<UInt8>;
     admin: State<PublicKey>;
-    paused: State<import("o1js/dist/node/lib/provable/bool.js").Bool>;
+    paused: State<import("o1js_v1/dist/node/lib/provable/bool.js").Bool>;
     static AdminContract: new (...args: any) => FungibleTokenAdminBase;
     readonly events: {
         SetAdmin: typeof SetAdminEvent;
@@ -68,7 +68,7 @@ declare const SetAdminEvent_base: (new (value: {
     adminKey: PublicKey;
 }) & {
     _isStruct: true;
-} & Omit<import("o1js/dist/node/lib/provable/types/provable-intf.js").Provable<{
+} & Omit<import("o1js_v1/dist/node/lib/provable/types/provable-intf.js").Provable<{
     adminKey: PublicKey;
 }, {
     adminKey: {
@@ -76,14 +76,14 @@ declare const SetAdminEvent_base: (new (value: {
         isOdd: boolean;
     };
 }>, "fromFields"> & {
-    fromFields: (fields: import("o1js/dist/node/lib/provable/field.js").Field[]) => {
+    fromFields: (fields: import("o1js_v1/dist/node/lib/provable/field.js").Field[]) => {
         adminKey: PublicKey;
     };
 } & {
     fromValue: (value: {
         adminKey: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field.js").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool.js").Bool;
+            x: bigint | import("o1js_v1/dist/node/lib/provable/field.js").Field;
+            isOdd: boolean | import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
         };
     }) => {
         adminKey: PublicKey;
@@ -91,8 +91,8 @@ declare const SetAdminEvent_base: (new (value: {
     toInput: (x: {
         adminKey: PublicKey;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: import("o1js_v1/dist/node/lib/provable/field.js").Field[] | undefined;
+        packed?: [import("o1js_v1/dist/node/lib/provable/field.js").Field, number][] | undefined;
     };
     toJSON: (x: {
         adminKey: PublicKey;
@@ -111,43 +111,43 @@ declare const SetAdminEvent_base: (new (value: {
 export declare class SetAdminEvent extends SetAdminEvent_base {
 }
 declare const PauseEvent_base: (new (value: {
-    isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
+    isPaused: import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
 }) => {
-    isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
+    isPaused: import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
 }) & {
     _isStruct: true;
-} & Omit<import("o1js/dist/node/lib/provable/types/provable-intf.js").Provable<{
-    isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
+} & Omit<import("o1js_v1/dist/node/lib/provable/types/provable-intf.js").Provable<{
+    isPaused: import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
 }, {
     isPaused: boolean;
 }>, "fromFields"> & {
-    fromFields: (fields: import("o1js/dist/node/lib/provable/field.js").Field[]) => {
-        isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
+    fromFields: (fields: import("o1js_v1/dist/node/lib/provable/field.js").Field[]) => {
+        isPaused: import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
     };
 } & {
     fromValue: (value: {
-        isPaused: boolean | import("o1js/dist/node/lib/provable/bool.js").Bool;
+        isPaused: boolean | import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
     }) => {
-        isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
+        isPaused: import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
     };
     toInput: (x: {
-        isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
+        isPaused: import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: import("o1js_v1/dist/node/lib/provable/field.js").Field[] | undefined;
+        packed?: [import("o1js_v1/dist/node/lib/provable/field.js").Field, number][] | undefined;
     };
     toJSON: (x: {
-        isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
+        isPaused: import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
     }) => {
         isPaused: boolean;
     };
     fromJSON: (x: {
         isPaused: boolean;
     }) => {
-        isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
+        isPaused: import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
     };
     empty: () => {
-        isPaused: import("o1js/dist/node/lib/provable/bool.js").Bool;
+        isPaused: import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
     };
 };
 export declare class PauseEvent extends PauseEvent_base {
@@ -160,7 +160,7 @@ declare const MintEvent_base: (new (value: {
     amount: Types.UInt64;
 }) & {
     _isStruct: true;
-} & Omit<import("o1js/dist/node/lib/provable/types/provable-intf.js").Provable<{
+} & Omit<import("o1js_v1/dist/node/lib/provable/types/provable-intf.js").Provable<{
     recipient: PublicKey;
     amount: Types.UInt64;
 }, {
@@ -170,15 +170,15 @@ declare const MintEvent_base: (new (value: {
     };
     amount: bigint;
 }>, "fromFields"> & {
-    fromFields: (fields: import("o1js/dist/node/lib/provable/field.js").Field[]) => {
+    fromFields: (fields: import("o1js_v1/dist/node/lib/provable/field.js").Field[]) => {
         recipient: PublicKey;
         amount: Types.UInt64;
     };
 } & {
     fromValue: (value: {
         recipient: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field.js").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool.js").Bool;
+            x: bigint | import("o1js_v1/dist/node/lib/provable/field.js").Field;
+            isOdd: boolean | import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
         };
         amount: bigint | Types.UInt64;
     }) => {
@@ -189,8 +189,8 @@ declare const MintEvent_base: (new (value: {
         recipient: PublicKey;
         amount: Types.UInt64;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: import("o1js_v1/dist/node/lib/provable/field.js").Field[] | undefined;
+        packed?: [import("o1js_v1/dist/node/lib/provable/field.js").Field, number][] | undefined;
     };
     toJSON: (x: {
         recipient: PublicKey;
@@ -221,7 +221,7 @@ declare const BurnEvent_base: (new (value: {
     amount: Types.UInt64;
 }) & {
     _isStruct: true;
-} & Omit<import("o1js/dist/node/lib/provable/types/provable-intf.js").Provable<{
+} & Omit<import("o1js_v1/dist/node/lib/provable/types/provable-intf.js").Provable<{
     from: PublicKey;
     amount: Types.UInt64;
 }, {
@@ -231,15 +231,15 @@ declare const BurnEvent_base: (new (value: {
     };
     amount: bigint;
 }>, "fromFields"> & {
-    fromFields: (fields: import("o1js/dist/node/lib/provable/field.js").Field[]) => {
+    fromFields: (fields: import("o1js_v1/dist/node/lib/provable/field.js").Field[]) => {
         from: PublicKey;
         amount: Types.UInt64;
     };
 } & {
     fromValue: (value: {
         from: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field.js").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool.js").Bool;
+            x: bigint | import("o1js_v1/dist/node/lib/provable/field.js").Field;
+            isOdd: boolean | import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
         };
         amount: bigint | Types.UInt64;
     }) => {
@@ -250,8 +250,8 @@ declare const BurnEvent_base: (new (value: {
         from: PublicKey;
         amount: Types.UInt64;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: import("o1js_v1/dist/node/lib/provable/field.js").Field[] | undefined;
+        packed?: [import("o1js_v1/dist/node/lib/provable/field.js").Field, number][] | undefined;
     };
     toJSON: (x: {
         from: PublicKey;
@@ -282,7 +282,7 @@ declare const BalanceChangeEvent_base: (new (value: {
     amount: Int64;
 }) & {
     _isStruct: true;
-} & Omit<import("o1js/dist/node/lib/provable/types/provable-intf.js").Provable<{
+} & Omit<import("o1js_v1/dist/node/lib/provable/types/provable-intf.js").Provable<{
     address: PublicKey;
     amount: Int64;
 }, {
@@ -292,15 +292,15 @@ declare const BalanceChangeEvent_base: (new (value: {
     };
     amount: any;
 }>, "fromFields"> & {
-    fromFields: (fields: import("o1js/dist/node/lib/provable/field.js").Field[]) => {
+    fromFields: (fields: import("o1js_v1/dist/node/lib/provable/field.js").Field[]) => {
         address: PublicKey;
         amount: Int64;
     };
 } & {
     fromValue: (value: {
         address: PublicKey | {
-            x: bigint | import("o1js/dist/node/lib/provable/field.js").Field;
-            isOdd: boolean | import("o1js/dist/node/lib/provable/bool.js").Bool;
+            x: bigint | import("o1js_v1/dist/node/lib/provable/field.js").Field;
+            isOdd: boolean | import("o1js_v1/dist/node/lib/provable/bool.js").Bool;
         };
         amount: any;
     }) => {
@@ -311,8 +311,8 @@ declare const BalanceChangeEvent_base: (new (value: {
         address: PublicKey;
         amount: Int64;
     }) => {
-        fields?: import("o1js/dist/node/lib/provable/field.js").Field[] | undefined;
-        packed?: [import("o1js/dist/node/lib/provable/field.js").Field, number][] | undefined;
+        fields?: import("o1js_v1/dist/node/lib/provable/field.js").Field[] | undefined;
+        packed?: [import("o1js_v1/dist/node/lib/provable/field.js").Field, number][] | undefined;
     };
     toJSON: (x: {
         address: PublicKey;

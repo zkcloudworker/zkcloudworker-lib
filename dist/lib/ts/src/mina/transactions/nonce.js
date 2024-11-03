@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNonce = getNonce;
+exports.getNonce = void 0;
 const blockberry_1 = require("./blockberry");
 async function getNonce(params) {
     const { account, chain, blockBerryApiKey } = params;
@@ -58,3 +58,4 @@ async function getNonce(params) {
         };
     }
 }
+exports.getNonce = getNonce;
