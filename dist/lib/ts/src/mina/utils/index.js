@@ -19,3 +19,5 @@ __exportStar(require("./fetch"), exports);
 __exportStar(require("./fields"), exports);
 __exportStar(require("./fee"), exports);
 __exportStar(require("./mina"), exports);
+__exportStar(require("./ipfs"), exports);
+__exportStar(require("./indexed-map"), exports);
