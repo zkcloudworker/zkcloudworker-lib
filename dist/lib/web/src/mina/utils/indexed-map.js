@@ -1,25 +1,23 @@
 import { Experimental, Field } from "o1js";
 import { bigintToBase64, bigintFromBase64 } from "../../cloud";
 const { IndexedMerkleMap } = Experimental;
-export class Whitelist extends IndexedMerkleMap(10) {
-}
-export async function loadWhitelist(storage) {
-    const url = "https://gateway.pinata.cloud/ipfs/" + storage.toURL();
+export async function loadIndexedMerkleMap(params) {
+    const { url, type } = params;
     const response = await fetch(url);
     if (!response.ok) {
-        throw new Error("Failed to fetch whitelist");
+        throw new Error("Failed to fetch IndexedMerkleMap");
     }
-    const json = await response.json();
-    const map = deserializeWhitelist({
-        serializedIndexedMap: json,
-        type: Whitelist,
+    const json = (await response.json());
+    const map = deserializeIndexedMerkleMapInternal({
+        json,
+        type,
     });
     if (!map) {
         throw new Error("Failed to deserialize whitelist");
     }
     return map;
 }
-export function serializeWhitelist(map) {
+export function serializeIndexedMap(map) {
     const serializedMap = JSON.stringify({
         height: map.height,
         root: map.root.toJSON(),
@@ -36,11 +34,11 @@ export function serializeWhitelist(map) {
     }, null, 2);
     return serializedMap;
 }
-export function deserializeWhitelist(params) {
+export function deserializeIndexedMerkleMap(params) {
     try {
         const { serializedIndexedMap, type } = params;
         const json = parseIndexedMapSerialized(serializedIndexedMap);
-        return deserializeIndexedMapInternal({
+        return deserializeIndexedMerkleMapInternal({
             json,
             type: type ?? IndexedMerkleMap(json.height),
         });
@@ -70,7 +68,7 @@ export function parseIndexedMapSerialized(serializedMap) {
         throw new Error("wrong IndexedMerkleMap sortedLeaves format");
     return json;
 }
-function deserializeIndexedMapInternal(params) {
+function deserializeIndexedMerkleMapInternal(params) {
     const { json, type } = params;
     const map = new type();
     if (json.height !== map.height) {
@@ -102,4 +100,4 @@ function deserializeIndexedMapInternal(params) {
     });
     return map;
 }
-//# sourceMappingURL=whitelist.js.map
+//# sourceMappingURL=indexed-map.js.map

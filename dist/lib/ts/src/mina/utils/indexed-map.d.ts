@@ -1,9 +1,10 @@
-import { Storage } from "./types";
+import { Experimental } from "o1js";
 declare const IndexedMerkleMap: typeof import("o1js/dist/node/lib/provable/merkle-tree-indexed").IndexedMerkleMap;
-declare const Whitelist_base: typeof import("o1js/dist/node/lib/provable/merkle-tree-indexed").IndexedMerkleMapBase;
-export declare class Whitelist extends Whitelist_base {
-}
-export declare function loadWhitelist(storage: Storage): Promise<Whitelist>;
+type IndexedMerkleMap = Experimental.IndexedMerkleMap;
+export declare function loadIndexedMerkleMap(params: {
+    url: string;
+    type: ReturnType<typeof IndexedMerkleMap>;
+}): Promise<import("o1js/dist/node/lib/provable/merkle-tree-indexed").IndexedMerkleMapBase>;
 interface IndexedMapSerialized {
     height: number;
     root: string;
@@ -11,8 +12,8 @@ interface IndexedMapSerialized {
     nodes: string;
     sortedLeaves: string;
 }
-export declare function serializeWhitelist(map: Whitelist): string;
-export declare function deserializeWhitelist(params: {
+export declare function serializeIndexedMap(map: IndexedMerkleMap): string;
+export declare function deserializeIndexedMerkleMap(params: {
     serializedIndexedMap: string;
     type?: ReturnType<typeof IndexedMerkleMap>;
 }): InstanceType<ReturnType<typeof IndexedMerkleMap>> | undefined;

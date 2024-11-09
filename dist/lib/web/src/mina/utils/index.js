@@ -3,4 +3,6 @@ export * from "./fetch";
 export * from "./fields";
 export * from "./fee";
 export * from "./mina";
+export * from "./ipfs";
+export * from "./indexed-map";
 //# sourceMappingURL=index.js.map

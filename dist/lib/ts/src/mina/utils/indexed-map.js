@@ -1,33 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Whitelist = void 0;
-exports.loadWhitelist = loadWhitelist;
-exports.serializeWhitelist = serializeWhitelist;
-exports.deserializeWhitelist = deserializeWhitelist;
+exports.loadIndexedMerkleMap = loadIndexedMerkleMap;
+exports.serializeIndexedMap = serializeIndexedMap;
+exports.deserializeIndexedMerkleMap = deserializeIndexedMerkleMap;
 exports.parseIndexedMapSerialized = parseIndexedMapSerialized;
 const o1js_1 = require("o1js");
 const cloud_1 = require("../../cloud");
 const { IndexedMerkleMap } = o1js_1.Experimental;
-class Whitelist extends IndexedMerkleMap(10) {
-}
-exports.Whitelist = Whitelist;
-async function loadWhitelist(storage) {
-    const url = "https://gateway.pinata.cloud/ipfs/" + storage.toURL();
+async function loadIndexedMerkleMap(params) {
+    const { url, type } = params;
     const response = await fetch(url);
     if (!response.ok) {
-        throw new Error("Failed to fetch whitelist");
+        throw new Error("Failed to fetch IndexedMerkleMap");
     }
-    const json = await response.json();
-    const map = deserializeWhitelist({
-        serializedIndexedMap: json,
-        type: Whitelist,
+    const json = (await response.json());
+    const map = deserializeIndexedMerkleMapInternal({
+        json,
+        type,
     });
     if (!map) {
         throw new Error("Failed to deserialize whitelist");
     }
     return map;
 }
-function serializeWhitelist(map) {
+function serializeIndexedMap(map) {
     const serializedMap = JSON.stringify({
         height: map.height,
         root: map.root.toJSON(),
@@ -44,11 +40,11 @@ function serializeWhitelist(map) {
     }, null, 2);
     return serializedMap;
 }
-function deserializeWhitelist(params) {
+function deserializeIndexedMerkleMap(params) {
     try {
         const { serializedIndexedMap, type } = params;
         const json = parseIndexedMapSerialized(serializedIndexedMap);
-        return deserializeIndexedMapInternal({
+        return deserializeIndexedMerkleMapInternal({
             json,
             type: type ?? IndexedMerkleMap(json.height),
         });
@@ -78,7 +74,7 @@ function parseIndexedMapSerialized(serializedMap) {
         throw new Error("wrong IndexedMerkleMap sortedLeaves format");
     return json;
 }
-function deserializeIndexedMapInternal(params) {
+function deserializeIndexedMerkleMapInternal(params) {
     const { json, type } = params;
     const map = new type();
     if (json.height !== map.height) {

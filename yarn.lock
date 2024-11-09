@@ -5,12 +5,12 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@types/node@npm:^22.8.7":
-  version: 22.8.7
-  resolution: "@types/node@npm:22.8.7"
+"@types/node@npm:^22.9.0":
+  version: 22.9.0
+  resolution: "@types/node@npm:22.9.0"
   dependencies:
     undici-types: "npm:~6.19.8"
-  checksum: 10c0/14372885db80059ed6e92c320b2bcd8f7dc271698adce11f51aa0f424a3f82aa1749a4f66321b87043791b894346b2458d514cbb65ce70167c2fd8a78a124947
+  checksum: 10c0/3f46cbe0a49bab4ba30494025e4c8a6e699b98ac922857aa1f0209ce11a1313ee46e6808b8f13fe5b8b960a9d7796b77c8d542ad4e9810e85ef897d5593b5d51
   languageName: node
   linkType: hard
 
@@ -188,22 +188,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"o1js_v1@npm:o1js@1.9.1":
-  version: 1.9.1
-  resolution: "o1js@npm:1.9.1"
-  dependencies:
-    blakejs: "npm:1.2.1"
-    cachedir: "npm:^2.4.0"
-    isomorphic-fetch: "npm:^3.0.0"
-    js-sha256: "npm:^0.9.0"
-    reflect-metadata: "npm:^0.1.13"
-    tslib: "npm:^2.3.0"
-  bin:
-    snarky-run: src/build/run.js
-  checksum: 10c0/d8df20990e300b28b1ceb7dbc6b308c50c43bc19c06938adff7cffcb4df5855c0942f7684f5c0bd292d5c7da1f610b463b33c67eb9c0f654459fb346a311fa41
-  languageName: node
-  linkType: hard
-
 "proxy-from-env@npm:^1.1.0":
   version: 1.1.0
   resolution: "proxy-from-env@npm:1.1.0"
@@ -296,11 +280,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zkcloudworker@workspace:."
   dependencies:
-    "@types/node": "npm:^22.8.7"
+    "@types/node": "npm:^22.9.0"
     axios: "npm:^1.7.7"
     chalk: "npm:^4.1.2"
     o1js: "npm:^2.0.0"
-    o1js_v1: "npm:o1js@1.9.1"
     typescript: "npm:5.6.3"
   languageName: unknown
   linkType: soft
