@@ -13,9 +13,9 @@ async function loadIndexedMerkleMap(params) {
     if (!response.ok) {
         throw new Error("Failed to fetch IndexedMerkleMap");
     }
-    const json = (await response.json());
+    const serializedIndexedMap = (await response.json());
     const map = deserializeIndexedMerkleMapInternal({
-        json,
+        serializedIndexedMap,
         type,
     });
     if (!map) {
@@ -24,7 +24,7 @@ async function loadIndexedMerkleMap(params) {
     return map;
 }
 function serializeIndexedMap(map) {
-    const serializedMap = JSON.stringify({
+    return {
         height: map.height,
         root: map.root.toJSON(),
         length: map.length.toJSON(),
@@ -37,16 +37,14 @@ function serializeIndexedMap(map) {
             (0, cloud_1.bigintToBase64)(v.value),
             (0, cloud_1.bigintToBase64)(BigInt(v.index)),
         ])),
-    }, null, 2);
-    return serializedMap;
+    };
 }
 function deserializeIndexedMerkleMap(params) {
     try {
         const { serializedIndexedMap, type } = params;
-        const json = parseIndexedMapSerialized(serializedIndexedMap);
         return deserializeIndexedMerkleMapInternal({
-            json,
-            type: type ?? IndexedMerkleMap(json.height),
+            serializedIndexedMap,
+            type: type ?? IndexedMerkleMap(serializedIndexedMap.height),
         });
     }
     catch (error) {
@@ -75,12 +73,12 @@ function parseIndexedMapSerialized(serializedMap) {
     return json;
 }
 function deserializeIndexedMerkleMapInternal(params) {
-    const { json, type } = params;
+    const { serializedIndexedMap, type } = params;
     const map = new type();
-    if (json.height !== map.height) {
+    if (serializedIndexedMap.height !== map.height) {
         throw new Error("wrong IndexedMap height");
     }
-    const nodes = JSON.parse(json.nodes, (_, v) => {
+    const nodes = JSON.parse(serializedIndexedMap.nodes, (_, v) => {
         // Check if the value is a string that represents a BigInt
         if (typeof v === "string" && v[0] === "n") {
             // Remove the first 'n' and convert the string to a BigInt
@@ -88,7 +86,7 @@ function deserializeIndexedMerkleMapInternal(params) {
         }
         return v;
     });
-    const sortedLeaves = JSON.parse(json.sortedLeaves).map((row) => {
+    const sortedLeaves = JSON.parse(serializedIndexedMap.sortedLeaves).map((row) => {
         return {
             key: (0, cloud_1.bigintFromBase64)(row[0]),
             nextKey: (0, cloud_1.bigintFromBase64)(row[1]),
@@ -96,8 +94,8 @@ function deserializeIndexedMerkleMapInternal(params) {
             index: Number((0, cloud_1.bigintFromBase64)(row[3])),
         };
     });
-    map.root = o1js_1.Field.fromJSON(json.root);
-    map.length = o1js_1.Field.fromJSON(json.length);
+    map.root = o1js_1.Field.fromJSON(serializedIndexedMap.root);
+    map.length = o1js_1.Field.fromJSON(serializedIndexedMap.length);
     map.data.updateAsProver(() => {
         return {
             nodes: nodes.map((row) => [...row]),

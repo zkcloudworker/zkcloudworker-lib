@@ -5,12 +5,12 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
-"@types/node@npm:^22.9.0":
-  version: 22.9.0
-  resolution: "@types/node@npm:22.9.0"
+"@types/node@npm:^22.9.1":
+  version: 22.9.1
+  resolution: "@types/node@npm:22.9.1"
   dependencies:
     undici-types: "npm:~6.19.8"
-  checksum: 10c0/3f46cbe0a49bab4ba30494025e4c8a6e699b98ac922857aa1f0209ce11a1313ee46e6808b8f13fe5b8b960a9d7796b77c8d542ad4e9810e85ef897d5593b5d51
+  checksum: 10c0/ea489ae603aa8874e4e88980aab6f2dad09c755da779c88dd142983bfe9609803c89415ca7781f723072934066f63daf2b3339ef084a8ad1a8079cf3958be243
   languageName: node
   linkType: hard
 
@@ -172,9 +172,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"o1js@npm:^2.0.0":
-  version: 2.0.0
-  resolution: "o1js@npm:2.0.0"
+"o1js@npm:^2.1.0":
+  version: 2.1.0
+  resolution: "o1js@npm:2.1.0"
   dependencies:
     blakejs: "npm:1.2.1"
     cachedir: "npm:^2.4.0"
@@ -184,7 +184,7 @@ __metadata:
     tslib: "npm:^2.3.0"
   bin:
     snarky-run: src/build/run.js
-  checksum: 10c0/29f848e834e9eaf4e6982e291f95779b677015952b82ec39b19b07a416f014004d6adae49b745419b3a6caa82e0acbc1fec1c1c4fb487c12f1dcdea9733dafe8
+  checksum: 10c0/0aa167d51238ee3eef175867d272478aa1d22a519de47a1cfa9273cdbcb57ac9581645306a6573861d40de1214e21f3bd521eb5333d9643db406c33853040757
   languageName: node
   linkType: hard
 
@@ -280,10 +280,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zkcloudworker@workspace:."
   dependencies:
-    "@types/node": "npm:^22.9.0"
+    "@types/node": "npm:^22.9.1"
     axios: "npm:^1.7.7"
     chalk: "npm:^4.1.2"
-    o1js: "npm:^2.0.0"
+    o1js: "npm:^2.1.0"
     typescript: "npm:5.6.3"
   languageName: unknown
   linkType: soft
