@@ -4,6 +4,14 @@ import { bigintToBase64, bigintFromBase64 } from "../../cloud";
 const { IndexedMerkleMap } = Experimental;
 type IndexedMerkleMap = Experimental.IndexedMerkleMap;
 
+export interface IndexedMapSerialized {
+  height: number;
+  root: string;
+  length: string;
+  nodes: string;
+  sortedLeaves: string;
+}
+
 export async function loadIndexedMerkleMap(params: {
   url: string;
   type: ReturnType<typeof IndexedMerkleMap>;
@@ -13,9 +21,9 @@ export async function loadIndexedMerkleMap(params: {
   if (!response.ok) {
     throw new Error("Failed to fetch IndexedMerkleMap");
   }
-  const json = (await response.json()) as IndexedMapSerialized;
+  const serializedIndexedMap = (await response.json()) as IndexedMapSerialized;
   const map = deserializeIndexedMerkleMapInternal({
-    json,
+    serializedIndexedMap,
     type,
   });
   if (!map) {
@@ -24,50 +32,38 @@ export async function loadIndexedMerkleMap(params: {
   return map;
 }
 
-interface IndexedMapSerialized {
-  height: number;
-  root: string;
-  length: string;
-  nodes: string;
-  sortedLeaves: string;
-}
-
-export function serializeIndexedMap(map: IndexedMerkleMap) {
-  const serializedMap = JSON.stringify(
-    {
-      height: map.height,
-      root: map.root.toJSON(),
-      length: map.length.toJSON(),
-      nodes: JSON.stringify(map.data.get().nodes, (_, v) =>
-        typeof v === "bigint" ? "n" + bigintToBase64(v) : v
-      ),
-      sortedLeaves: JSON.stringify(
-        map.data
-          .get()
-          .sortedLeaves.map((v) => [
-            bigintToBase64(v.key),
-            bigintToBase64(v.nextKey),
-            bigintToBase64(v.value),
-            bigintToBase64(BigInt(v.index)),
-          ])
-      ),
-    },
-    null,
-    2
-  );
-  return serializedMap;
+export function serializeIndexedMap(
+  map: IndexedMerkleMap
+): IndexedMapSerialized {
+  return {
+    height: map.height,
+    root: map.root.toJSON(),
+    length: map.length.toJSON(),
+    nodes: JSON.stringify(map.data.get().nodes, (_, v) =>
+      typeof v === "bigint" ? "n" + bigintToBase64(v) : v
+    ),
+    sortedLeaves: JSON.stringify(
+      map.data
+        .get()
+        .sortedLeaves.map((v) => [
+          bigintToBase64(v.key),
+          bigintToBase64(v.nextKey),
+          bigintToBase64(v.value),
+          bigintToBase64(BigInt(v.index)),
+        ])
+    ),
+  };
 }
 
 export function deserializeIndexedMerkleMap(params: {
-  serializedIndexedMap: string;
+  serializedIndexedMap: IndexedMapSerialized;
   type?: ReturnType<typeof IndexedMerkleMap>;
 }): InstanceType<ReturnType<typeof IndexedMerkleMap>> | undefined {
   try {
     const { serializedIndexedMap, type } = params;
-    const json = parseIndexedMapSerialized(serializedIndexedMap);
     return deserializeIndexedMerkleMapInternal({
-      json,
-      type: type ?? IndexedMerkleMap(json.height),
+      serializedIndexedMap,
+      type: type ?? IndexedMerkleMap(serializedIndexedMap.height),
     });
   } catch (error: any) {
     console.error("Error deserializing map:", error?.message ?? error);
@@ -101,15 +97,15 @@ export function parseIndexedMapSerialized(
 }
 
 function deserializeIndexedMerkleMapInternal(params: {
-  json: IndexedMapSerialized;
+  serializedIndexedMap: IndexedMapSerialized;
   type: ReturnType<typeof IndexedMerkleMap>;
 }): InstanceType<ReturnType<typeof IndexedMerkleMap>> {
-  const { json, type } = params;
+  const { serializedIndexedMap, type } = params;
   const map = new type();
-  if (json.height !== map.height) {
+  if (serializedIndexedMap.height !== map.height) {
     throw new Error("wrong IndexedMap height");
   }
-  const nodes = JSON.parse(json.nodes, (_, v) => {
+  const nodes = JSON.parse(serializedIndexedMap.nodes, (_, v) => {
     // Check if the value is a string that represents a BigInt
     if (typeof v === "string" && v[0] === "n") {
       // Remove the first 'n' and convert the string to a BigInt
@@ -117,17 +113,19 @@ function deserializeIndexedMerkleMapInternal(params: {
     }
     return v;
   });
-  const sortedLeaves = JSON.parse(json.sortedLeaves).map((row: any) => {
-    return {
-      key: bigintFromBase64(row[0]),
-      nextKey: bigintFromBase64(row[1]),
-      value: bigintFromBase64(row[2]),
-      index: Number(bigintFromBase64(row[3])),
-    };
-  });
+  const sortedLeaves = JSON.parse(serializedIndexedMap.sortedLeaves).map(
+    (row: any) => {
+      return {
+        key: bigintFromBase64(row[0]),
+        nextKey: bigintFromBase64(row[1]),
+        value: bigintFromBase64(row[2]),
+        index: Number(bigintFromBase64(row[3])),
+      };
+    }
+  );
 
-  map.root = Field.fromJSON(json.root);
-  map.length = Field.fromJSON(json.length);
+  map.root = Field.fromJSON(serializedIndexedMap.root);
+  map.length = Field.fromJSON(serializedIndexedMap.length);
   map.data.updateAsProver(() => {
     return {
       nodes: nodes.map((row: any) => [...row]),

@@ -40,7 +40,7 @@ const Devnet = {
 exports.Devnet = Devnet;
 const Zeko = {
     mina: ["https://devnet.zeko.io/graphql"],
-    archive: [],
+    archive: ["https://devnet.zeko.io/graphql"],
     explorerAccountUrl: "https://zekoscan.io/devnet/account/",
     explorerTransactionUrl: "https://zekoscan.io/devnet/tx/",
     chainId: "zeko",

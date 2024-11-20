@@ -155,6 +155,7 @@ export class TokenAPI {
         return { success: false, error: callResult.error };
       }
       const jobResult = callResult.result?.result;
+      if (callResult.error) return { success: false, error: callResult.error };
       if (!jobResult) return { success: true };
 
       // TODO: handle the situation when job fails
