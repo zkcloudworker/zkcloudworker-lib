@@ -9,8 +9,9 @@ import { sleep } from "../../cloud";
  * @returns the account object
  */
 export async function fetchMinaAccount(params) {
-    const { publicKey, tokenId, force } = params;
-    const timeout = 1000 * 60 * 2; // 2 minutes
+    const { publicKey, tokenId, force = false } = params;
+    const timeout = 1000 * 60 * 3; // 3 minutes
+    let attempt = 0;
     const startTime = Date.now();
     let result = { account: undefined };
     while (Date.now() - startTime < timeout) {
@@ -19,7 +20,8 @@ export async function fetchMinaAccount(params) {
                 publicKey,
                 tokenId,
             });
-            return result;
+            if (result.account || force === false)
+                return result;
         }
         catch (error) {
             if (force === true)
@@ -39,7 +41,8 @@ export async function fetchMinaAccount(params) {
                 return result;
             }
         }
-        await sleep(1000 * 6);
+        attempt++;
+        await sleep(1000 * 6 * attempt); // to handle rate limit we increase the interval
     }
     if (force === true)
         throw new Error(`fetchMinaAccount timeout
