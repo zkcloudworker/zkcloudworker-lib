@@ -14,8 +14,9 @@ const cloud_1 = require("../../cloud");
  * @returns the account object
  */
 async function fetchMinaAccount(params) {
-    const { publicKey, tokenId, force } = params;
-    const timeout = 1000 * 60 * 2; // 2 minutes
+    const { publicKey, tokenId, force = false } = params;
+    const timeout = 1000 * 60 * 3; // 3 minutes
+    let attempt = 0;
     const startTime = Date.now();
     let result = { account: undefined };
     while (Date.now() - startTime < timeout) {
@@ -24,7 +25,8 @@ async function fetchMinaAccount(params) {
                 publicKey,
                 tokenId,
             });
-            return result;
+            if (result.account || force === false)
+                return result;
         }
         catch (error) {
             if (force === true)
@@ -44,7 +46,8 @@ async function fetchMinaAccount(params) {
                 return result;
             }
         }
-        await (0, cloud_1.sleep)(1000 * 6);
+        attempt++;
+        await (0, cloud_1.sleep)(1000 * 6 * attempt); // to handle rate limit we increase the interval
     }
     if (force === true)
         throw new Error(`fetchMinaAccount timeout
