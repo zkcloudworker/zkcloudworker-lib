@@ -1,4 +1,4 @@
-import { blockchain, Cloud } from "../../cloud";
+import { blockchain, Cloud, JobStatus } from "../../cloud";
 import { zkCloudWorkerClient } from "../api/api";
 import { zkCloudWorker } from "../../cloud/worker";
 export interface FungibleTokenDeployParams {
@@ -37,6 +37,7 @@ export interface FungibleTokenTransferParams {
 }
 export interface FungibleTokenJobResult {
     success: boolean;
+    jobStatus?: JobStatus;
     tx?: string;
     hash?: string;
     error?: string;

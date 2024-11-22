@@ -257,12 +257,18 @@ export class zkCloudWorkerClient {
   public async jobResult(data: {
     jobId: string;
     includeLogs?: boolean;
-  }): Promise<{
-    success: boolean;
-    error?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    result?: any;
-  }> {
+  }): Promise<
+    | {
+        success: false;
+        error?: string;
+        result?: string;
+      }
+    | {
+        success: true;
+        error?: string;
+        result: JobData;
+      }
+  > {
     const result = await this.apiHub("jobResult", data);
     if (this.isError(result.data))
       return {
@@ -274,7 +280,7 @@ export class zkCloudWorkerClient {
       return {
         success: result.success,
         error: result.error,
-        result: result.data,
+        result: result.success ? (result.data as JobData) : result.data,
       };
   }
 

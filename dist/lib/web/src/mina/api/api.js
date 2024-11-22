@@ -181,7 +181,7 @@ export class zkCloudWorkerClient {
             return {
                 success: result.success,
                 error: result.error,
-                result: result.data,
+                result: result.success ? result.data : result.data,
             };
     }
     /**

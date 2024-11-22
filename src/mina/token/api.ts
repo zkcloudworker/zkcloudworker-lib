@@ -1,4 +1,4 @@
-import { blockchain, Cloud } from "../../cloud";
+import { blockchain, Cloud, JobStatus } from "../../cloud";
 import { zkCloudWorkerClient } from "../api/api";
 import { zkCloudWorker } from "../../cloud/worker";
 
@@ -41,6 +41,7 @@ export interface FungibleTokenTransferParams {
 
 export interface FungibleTokenJobResult {
   success: boolean;
+  jobStatus?: JobStatus;
   tx?: string;
   hash?: string;
   error?: string;
@@ -151,22 +152,46 @@ export class TokenAPI {
   async getResult(jobId: string): Promise<FungibleTokenJobResult> {
     try {
       const callResult = await this.client.jobResult({ jobId });
+      const jobStatus: JobStatus | undefined =
+        callResult?.success === true
+          ? callResult?.result?.jobStatus
+          : undefined;
       if (!callResult.success) {
-        return { success: false, error: callResult.error };
+        return {
+          success: false,
+          error: callResult?.error,
+          jobStatus,
+        };
       }
       const jobResult = callResult.result?.result;
-      if (callResult.error) return { success: false, error: callResult.error };
-      if (!jobResult) return { success: true };
+      if (callResult.error)
+        return {
+          success: false,
+          error: callResult.error,
+          jobStatus,
+        };
+      if (!jobResult) return { success: true, jobStatus };
 
       // TODO: handle the situation when job fails
 
       if (jobResult.toLowerCase().startsWith("error"))
-        return { success: false, error: jobResult };
+        return {
+          success: false,
+          error: jobResult,
+          jobStatus,
+        };
 
       try {
         const { success, tx, hash, error } = JSON.parse(jobResult);
-        if (success === undefined) return { success: false, tx, hash, error };
-        return { success, tx, hash, error };
+        if (success === undefined)
+          return {
+            success: false,
+            tx,
+            hash,
+            error,
+            jobStatus,
+          };
+        return { success, tx, hash, error, jobStatus };
       } catch (e) {
         return {
           success: false,
