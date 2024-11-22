@@ -31,7 +31,7 @@ export async function fetchMinaAccount(params: {
         publicKey,
         tokenId,
       });
-      if (result.account || force === false) return result;
+      return result;
     } catch (error: any) {
       if (force === true)
         console.log("Error in fetchMinaAccount:", {

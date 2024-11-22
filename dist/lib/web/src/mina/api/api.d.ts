@@ -1,4 +1,4 @@
-import { zkCloudWorker, Cloud } from "../../cloud/worker";
+import { zkCloudWorker, Cloud, JobData } from "../../cloud/worker";
 import { blockchain } from "../../cloud/networks";
 /**
  * The APICommand type for interacting with the zkCloudWorker
@@ -134,9 +134,13 @@ export declare class zkCloudWorkerClient {
         jobId: string;
         includeLogs?: boolean;
     }): Promise<{
-        success: boolean;
+        success: false;
         error?: string;
-        result?: any;
+        result?: string;
+    } | {
+        success: true;
+        error?: string;
+        result: JobData;
     }>;
     /**
      * Deploys the code to the cloud using serverless api call
