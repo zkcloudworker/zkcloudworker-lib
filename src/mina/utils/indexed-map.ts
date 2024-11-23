@@ -1,5 +1,6 @@
 import { Experimental, Field } from "o1js";
 import { bigintToBase64, bigintFromBase64 } from "../../cloud";
+import { pinJSON } from "../storage/pinata";
 
 const { IndexedMerkleMap } = Experimental;
 type IndexedMerkleMap = Experimental.IndexedMerkleMap;
@@ -30,6 +31,23 @@ export async function loadIndexedMerkleMap(params: {
     throw new Error("Failed to deserialize whitelist");
   }
   return map;
+}
+
+export async function saveIndexedMerkleMap(params: {
+  map: IndexedMerkleMap;
+  name?: string;
+  keyvalues?: { key: string; value: string }[];
+  auth: string;
+}): Promise<string | undefined> {
+  const { map, name = "indexed-map", keyvalues, auth } = params;
+  const serialized = serializeIndexedMap(map);
+  const ipfsHash = await pinJSON({
+    data: serialized,
+    name,
+    keyvalues,
+    auth,
+  });
+  return ipfsHash;
 }
 
 export function serializeIndexedMap(

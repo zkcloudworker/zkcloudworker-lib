@@ -1,6 +1,6 @@
 import { getZkAppTxFromBlockBerry } from "./blockberry";
 const TIMEOUT = 1000 * 60 * 21;
-export async function txStatus(params) {
+export async function txStatusBlockberry(params) {
     const { hash, chain, time, blockBerryApiKey } = params;
     const tx = await getZkAppTxFromBlockBerry({ hash, chain, blockBerryApiKey });
     if (tx?.txStatus)

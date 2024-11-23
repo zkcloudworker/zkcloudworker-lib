@@ -1,4 +1,6 @@
 import { getZkAppTxsFromBlockBerry, getPaymentTxsFromBlockBerry, } from "./blockberry";
+import { fetchMinaAccount, getCurrentNetwork } from "..";
+import { Mina, PublicKey } from "o1js";
 export async function getNonce(params) {
     const { account, chain, blockBerryApiKey } = params;
     try {
@@ -53,6 +55,36 @@ export async function getNonce(params) {
             nonce: -1,
             message: String(error),
         };
+    }
+}
+export async function getAccountNonce(params) {
+    const { account, chain = getCurrentNetwork().network.chainId, blockBerryApiKey, verbose = true, } = params;
+    const canUseBlockBerry = blockBerryApiKey !== undefined &&
+        (chain === "devnet" || chain === "mainnet");
+    if (chain === "zeko") {
+        const publicKey = PublicKey.fromBase58(account);
+        await fetchMinaAccount({ publicKey });
+        const nonce = Number(Mina.getAccount(publicKey).nonce.toBigint());
+        return nonce;
+    }
+    else {
+        const blockberryNoncePromise = canUseBlockBerry
+            ? getNonce({
+                account,
+                blockBerryApiKey,
+                chain,
+            })
+            : undefined;
+        const publicKey = PublicKey.fromBase58(account);
+        await fetchMinaAccount({ publicKey });
+        const senderNonce = Number(Mina.getAccount(publicKey).nonce.toBigint());
+        const blockberryNonce = blockberryNoncePromise
+            ? (await blockberryNoncePromise).nonce ?? -1
+            : -1;
+        const nonce = Math.max(senderNonce, blockberryNonce + 1);
+        if (verbose && nonce > senderNonce)
+            console.log(`Nonce changed from ${senderNonce} to ${nonce} for ${account}`);
+        return nonce;
     }
 }
 //# sourceMappingURL=nonce.js.map

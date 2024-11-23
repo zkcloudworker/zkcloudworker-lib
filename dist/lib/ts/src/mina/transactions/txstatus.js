@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.txStatus = txStatus;
+exports.txStatusBlockberry = txStatusBlockberry;
 const blockberry_1 = require("./blockberry");
 const TIMEOUT = 1000 * 60 * 21;
-async function txStatus(params) {
+async function txStatusBlockberry(params) {
     const { hash, chain, time, blockBerryApiKey } = params;
     const tx = await (0, blockberry_1.getZkAppTxFromBlockBerry)({ hash, chain, blockBerryApiKey });
     if (tx?.txStatus)

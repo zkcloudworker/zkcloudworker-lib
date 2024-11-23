@@ -2,38 +2,34 @@ import { blockchain, Cloud, JobStatus } from "../../cloud";
 import { zkCloudWorkerClient } from "../api/api";
 import { zkCloudWorker } from "../../cloud/worker";
 export interface FungibleTokenDeployParams {
-    tokenPublicKey: string;
-    adminContractPublicKey: string;
-    adminPublicKey: string;
+    txType: "deploy";
+    tokenAddress: string;
+    adminContractAddress: string;
+    senderAddress: string;
     chain: string;
     symbol: string;
     uri: string;
     serializedTransaction: string;
     signedData: string;
     sendTransaction: boolean;
+    developerAddress?: string;
+    developerFee?: number;
 }
-export interface FungibleTokenMintParams {
-    tokenPublicKey: string;
-    adminContractPublicKey: string;
-    adminPublicKey: string;
+export type FungibleTokenTransactionType = "mint" | "transfer" | "bid" | "offer" | "buy" | "sell" | "withdrawBid" | "withdrawOffer";
+export interface FungibleTokenTransactionParams {
+    txType: FungibleTokenTransactionType;
+    tokenAddress: string;
     chain: string;
-    symbol: string;
-    serializedTransaction: string;
-    signedData: string;
-    to: string;
-    amount: number;
-    sendTransaction: boolean;
-}
-export interface FungibleTokenTransferParams {
-    tokenPublicKey: string;
-    chain: string;
-    symbol: string;
     serializedTransaction: string;
     signedData: string;
     from: string;
     to: string;
     amount: number;
+    price?: number;
     sendTransaction: boolean;
+    developerAddress?: string;
+    developerFee?: number;
+    symbol?: string;
 }
 export interface FungibleTokenJobResult {
     success: boolean;
@@ -50,8 +46,7 @@ export declare class TokenAPI {
         chain: blockchain;
     });
     sendDeployTransaction(params: FungibleTokenDeployParams): Promise<string | undefined>;
-    sendMintTransaction(params: FungibleTokenMintParams): Promise<string | undefined>;
-    sendTransferTransaction(params: FungibleTokenTransferParams): Promise<string | undefined>;
+    sendTransaction(params: FungibleTokenTransactionParams): Promise<string | undefined>;
     waitForJobResult(params: {
         jobId: string;
         maxAttempts?: number;

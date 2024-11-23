@@ -1,11 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loadIndexedMerkleMap = loadIndexedMerkleMap;
+exports.saveIndexedMerkleMap = saveIndexedMerkleMap;
 exports.serializeIndexedMap = serializeIndexedMap;
 exports.deserializeIndexedMerkleMap = deserializeIndexedMerkleMap;
 exports.parseIndexedMapSerialized = parseIndexedMapSerialized;
 const o1js_1 = require("o1js");
 const cloud_1 = require("../../cloud");
+const pinata_1 = require("../storage/pinata");
 const { IndexedMerkleMap } = o1js_1.Experimental;
 async function loadIndexedMerkleMap(params) {
     const { url, type } = params;
@@ -22,6 +24,17 @@ async function loadIndexedMerkleMap(params) {
         throw new Error("Failed to deserialize whitelist");
     }
     return map;
+}
+async function saveIndexedMerkleMap(params) {
+    const { map, name = "indexed-map", keyvalues, auth } = params;
+    const serialized = serializeIndexedMap(map);
+    const ipfsHash = await (0, pinata_1.pinJSON)({
+        data: serialized,
+        name,
+        keyvalues,
+        auth,
+    });
+    return ipfsHash;
 }
 function serializeIndexedMap(map) {
     return {
