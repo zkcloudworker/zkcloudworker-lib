@@ -3,40 +3,43 @@ import { zkCloudWorkerClient } from "../api/api";
 import { zkCloudWorker } from "../../cloud/worker";
 
 export interface FungibleTokenDeployParams {
-  tokenPublicKey: string;
-  adminContractPublicKey: string;
-  adminPublicKey: string;
+  txType: "deploy";
+  tokenAddress: string;
+  adminContractAddress: string;
+  senderAddress: string;
   chain: string;
   symbol: string;
   uri: string;
   serializedTransaction: string;
   signedData: string;
   sendTransaction: boolean;
+  developerAddress?: string;
+  developerFee?: number;
 }
 
-export interface FungibleTokenMintParams {
-  tokenPublicKey: string;
-  adminContractPublicKey: string;
-  adminPublicKey: string;
+export type FungibleTokenTransactionType =
+  | "mint"
+  | "transfer"
+  | "bid"
+  | "offer"
+  | "buy"
+  | "sell"
+  | "withdrawBid"
+  | "withdrawOffer";
+export interface FungibleTokenTransactionParams {
+  txType: FungibleTokenTransactionType;
+  tokenAddress: string;
   chain: string;
-  symbol: string;
-  serializedTransaction: string;
-  signedData: string;
-  to: string;
-  amount: number;
-  sendTransaction: boolean;
-}
-
-export interface FungibleTokenTransferParams {
-  tokenPublicKey: string;
-  chain: string;
-  symbol: string;
   serializedTransaction: string;
   signedData: string;
   from: string;
   to: string;
   amount: number;
+  price?: number;
   sendTransaction: boolean;
+  developerAddress?: string;
+  developerFee?: number;
+  symbol?: string;
 }
 
 export interface FungibleTokenJobResult {
@@ -69,7 +72,6 @@ export class TokenAPI {
     params: FungibleTokenDeployParams
   ): Promise<string | undefined> {
     const { symbol } = params;
-    console.log(`Deploying contract...`);
 
     const transaction = JSON.stringify(params, null, 2);
 
@@ -78,21 +80,20 @@ export class TokenAPI {
       repo: "token-launchpad",
       transactions: [transaction],
       task: "deploy",
-      args: JSON.stringify({ sender: params.adminPublicKey }),
+      args: JSON.stringify({ tokenAddress: params.tokenAddress }),
       metadata: `deploy token ${symbol}`,
     });
-    console.log("answer:", answer);
-    // TODO: handle errors and structure FungibleTokenJobResult
+
     const jobId = answer.jobId;
-    if (jobId === undefined) console.error("Job ID is undefined");
+    if (jobId === undefined)
+      console.error("Deploy Job ID is undefined", { answer, symbol });
     return jobId;
   }
 
-  async sendMintTransaction(
-    params: FungibleTokenMintParams
+  async sendTransaction(
+    params: FungibleTokenTransactionParams
   ): Promise<string | undefined> {
-    const { symbol } = params;
-    console.log(`Minting tokens...`);
+    const { txType, symbol } = params;
 
     const transaction = JSON.stringify(params, null, 2);
 
@@ -100,35 +101,13 @@ export class TokenAPI {
       developer: "DFST",
       repo: "token-launchpad",
       transactions: [transaction],
-      task: "mint",
-      args: JSON.stringify({ sender: params.adminPublicKey }),
-      metadata: `mint token ${symbol}`,
+      task: txType,
+      args: JSON.stringify({ tokenAddress: params.tokenAddress }),
+      metadata: `${txType} token${symbol ? ` ${symbol}` : ""}`,
     });
-    console.log("answer:", answer);
     const jobId = answer.jobId;
-    if (jobId === undefined) console.error("Job ID is undefined");
-    return jobId;
-  }
-
-  async sendTransferTransaction(
-    params: FungibleTokenTransferParams
-  ): Promise<string | undefined> {
-    const { symbol } = params;
-    console.log(`Transferring tokens...`);
-
-    const transaction = JSON.stringify(params, null, 2);
-
-    const answer = await this.client.execute({
-      developer: "DFST",
-      repo: "token-launchpad",
-      transactions: [transaction],
-      task: "transfer",
-      args: JSON.stringify({ sender: params.from }),
-      metadata: `transfer token ${symbol}`,
-    });
-    console.log("answer:", answer);
-    const jobId = answer.jobId;
-    if (jobId === undefined) console.error("Job ID is undefined");
+    if (jobId === undefined)
+      console.error("Job ID is undefined", { answer, txType, symbol });
     return jobId;
   }
 
@@ -171,8 +150,6 @@ export class TokenAPI {
           jobStatus,
         };
       if (!jobResult) return { success: true, jobStatus };
-
-      // TODO: handle the situation when job fails
 
       if (jobResult.toLowerCase().startsWith("error"))
         return {

@@ -20,3 +20,4 @@ __exportStar(require("./txstatus"), exports);
 __exportStar(require("./chain"), exports);
 __exportStar(require("./blockberry"), exports);
 __exportStar(require("./tiny-contract"), exports);
+__exportStar(require("./send"), exports);

@@ -16,7 +16,7 @@
     "web3",
     "zero knowledge"
   ],
-  "version": "0.16.11",
+  "version": "0.17.5",
   "homepage": "https://docs.zkcloudworker.com",
   "repository": "git@zkcloudworker.github.com:zkcloudworker/zkcloudworker-lib.git",
   "main": "src/index.ts",
@@ -35,7 +35,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.9.1",
-    "typescript": "5.6.3"
+    "typescript": "5.7.2"
   },
   "packageManager": "yarn@4.5.1"
 }

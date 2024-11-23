@@ -15,57 +15,34 @@ class TokenAPI {
     }
     async sendDeployTransaction(params) {
         const { symbol } = params;
-        console.log(`Deploying contract...`);
         const transaction = JSON.stringify(params, null, 2);
         const answer = await this.client.execute({
             developer: "DFST",
             repo: "token-launchpad",
             transactions: [transaction],
             task: "deploy",
-            args: JSON.stringify({ sender: params.adminPublicKey }),
+            args: JSON.stringify({ tokenAddress: params.tokenAddress }),
             metadata: `deploy token ${symbol}`,
         });
-        console.log("answer:", answer);
-        // TODO: handle errors and structure FungibleTokenJobResult
         const jobId = answer.jobId;
         if (jobId === undefined)
-            console.error("Job ID is undefined");
+            console.error("Deploy Job ID is undefined", { answer, symbol });
         return jobId;
     }
-    async sendMintTransaction(params) {
-        const { symbol } = params;
-        console.log(`Minting tokens...`);
+    async sendTransaction(params) {
+        const { txType, symbol } = params;
         const transaction = JSON.stringify(params, null, 2);
         const answer = await this.client.execute({
             developer: "DFST",
             repo: "token-launchpad",
             transactions: [transaction],
-            task: "mint",
-            args: JSON.stringify({ sender: params.adminPublicKey }),
-            metadata: `mint token ${symbol}`,
+            task: txType,
+            args: JSON.stringify({ tokenAddress: params.tokenAddress }),
+            metadata: `${txType} token${symbol ? ` ${symbol}` : ""}`,
         });
-        console.log("answer:", answer);
         const jobId = answer.jobId;
         if (jobId === undefined)
-            console.error("Job ID is undefined");
-        return jobId;
-    }
-    async sendTransferTransaction(params) {
-        const { symbol } = params;
-        console.log(`Transferring tokens...`);
-        const transaction = JSON.stringify(params, null, 2);
-        const answer = await this.client.execute({
-            developer: "DFST",
-            repo: "token-launchpad",
-            transactions: [transaction],
-            task: "transfer",
-            args: JSON.stringify({ sender: params.from }),
-            metadata: `transfer token ${symbol}`,
-        });
-        console.log("answer:", answer);
-        const jobId = answer.jobId;
-        if (jobId === undefined)
-            console.error("Job ID is undefined");
+            console.error("Job ID is undefined", { answer, txType, symbol });
         return jobId;
     }
     // Warning: this function will block the thread until the job is done and will print logs to the console
@@ -97,7 +74,6 @@ class TokenAPI {
                 };
             if (!jobResult)
                 return { success: true, jobStatus };
-            // TODO: handle the situation when job fails
             if (jobResult.toLowerCase().startsWith("error"))
                 return {
                     success: false,

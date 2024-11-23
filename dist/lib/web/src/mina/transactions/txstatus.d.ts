@@ -1,5 +1,5 @@
 import { BlockBerryChain } from "./chain";
-export declare function txStatus(params: {
+export declare function txStatusBlockberry(params: {
     hash: string;
     time: number;
     chain: BlockBerryChain;

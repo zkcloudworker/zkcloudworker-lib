@@ -12,6 +12,15 @@ export declare function loadIndexedMerkleMap(params: {
     url: string;
     type: ReturnType<typeof IndexedMerkleMap>;
 }): Promise<import("o1js/dist/node/lib/provable/merkle-tree-indexed").IndexedMerkleMapBase>;
+export declare function saveIndexedMerkleMap(params: {
+    map: IndexedMerkleMap;
+    name?: string;
+    keyvalues?: {
+        key: string;
+        value: string;
+    }[];
+    auth: string;
+}): Promise<string | undefined>;
 export declare function serializeIndexedMap(map: IndexedMerkleMap): IndexedMapSerialized;
 export declare function deserializeIndexedMerkleMap(params: {
     serializedIndexedMap: IndexedMapSerialized;
