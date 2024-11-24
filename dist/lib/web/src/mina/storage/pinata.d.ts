@@ -1,6 +1,6 @@
 export declare function pinJSON(params: {
     data: string | object;
-    name: string;
+    name?: string;
     keyvalues?: object;
-    auth: string;
+    auth?: string;
 }): Promise<string | undefined>;

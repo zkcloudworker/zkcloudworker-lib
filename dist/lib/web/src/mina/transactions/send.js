@@ -1,6 +1,18 @@
 import { checkZkappTransaction } from "o1js";
 import { sleep } from "../../cloud";
 import { fetchMinaAccount, getCurrentNetwork } from "..";
+/**
+ * The function `sendTx` sends a transaction, checks account updates, and waits for
+ * confirmation on the blockchain.
+ * @param params The parameters object
+ * @param params.tx The transaction to send
+ * @param params.description A description of the transaction
+ * @param params.verbose Whether to log verbose information
+ * @param params.wait Whether to wait for the transaction to be included in a block
+ * @param params.chain The blockchain to send the transaction on
+ * @returns The `sendTx` function returns a `Mina.IncludedTransaction`, `Mina.PendingTransaction`,
+ * `Mina.RejectedTransaction`, or `undefined` if there was an error during the process.
+ */
 export async function sendTx(params) {
     const { tx, description = "", verbose = true, wait = true, chain = getCurrentNetwork().network.chainId, } = params;
     // flatten accountUpdates
@@ -49,7 +61,7 @@ export async function sendTx(params) {
             }
             else {
                 console.error(`${description} tx NOT sent: hash: ${txSent?.hash} status: ${txSent?.status}`, txSent.errors);
-                return undefined;
+                return txSent;
             }
         }
         if (txSent === undefined)

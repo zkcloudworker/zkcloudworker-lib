@@ -5,4 +5,5 @@ export * from "./chain";
 export * from "./blockberry";
 export * from "./tiny-contract";
 export * from "./send";
+export * from "./account";
 //# sourceMappingURL=index.js.map

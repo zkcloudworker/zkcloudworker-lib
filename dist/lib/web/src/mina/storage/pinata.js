@@ -1,5 +1,9 @@
 export async function pinJSON(params) {
-    const { data, name, keyvalues, auth } = params;
+    const { data, name = "data.json", keyvalues = [{ key: "library", value: "zkcloudworker" }], } = params;
+    const auth = params.auth ??
+        process.env.PINATA_JWT ??
+        process.env.NEXT_PUBLIC_PINATA_JWT ??
+        process.env.REACT_APP_PINATA_JWT;
     try {
         const pinataData = {
             pinataOptions: {

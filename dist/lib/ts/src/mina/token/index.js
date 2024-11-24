@@ -18,3 +18,4 @@ __exportStar(require("./FungibleToken"), exports);
 __exportStar(require("./FungibleTokenAdmin"), exports);
 __exportStar(require("./api"), exports);
 __exportStar(require("./vk"), exports);
+__exportStar(require("./whitelist"), exports);

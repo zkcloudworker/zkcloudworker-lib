@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.accountExists = accountExists;
-exports.accountBalance = accountBalance;
+exports.tokenBalance = tokenBalance;
 exports.checkAddress = checkAddress;
 const __1 = require("..");
 const o1js_1 = require("o1js");
@@ -15,7 +15,7 @@ async function accountExists(address, tokenId) {
         return false;
     }
 }
-async function accountBalance(address, tokenId) {
+async function tokenBalance(address, tokenId) {
     try {
         const publicKey = typeof address === "string" ? o1js_1.PublicKey.fromBase58(address) : address;
         await (0, __1.fetchMinaAccount)({ publicKey, tokenId, force: false });

@@ -21,3 +21,4 @@ __exportStar(require("./local/local"), exports);
 __exportStar(require("./verification"), exports);
 __exportStar(require("./token"), exports);
 __exportStar(require("./transactions"), exports);
+__exportStar(require("./storage"), exports);
