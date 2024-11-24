@@ -10,7 +10,7 @@ export async function accountExists(address, tokenId) {
         return false;
     }
 }
-export async function accountBalance(address, tokenId) {
+export async function tokenBalance(address, tokenId) {
     try {
         const publicKey = typeof address === "string" ? PublicKey.fromBase58(address) : address;
         await fetchMinaAccount({ publicKey, tokenId, force: false });
@@ -41,4 +41,4 @@ export async function checkAddress(address) {
         return false;
     }
 }
-//# sourceMappingURL=accont.js.map
+//# sourceMappingURL=account.js.map

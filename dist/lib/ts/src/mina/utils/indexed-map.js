@@ -10,12 +10,22 @@ const cloud_1 = require("../../cloud");
 const pinata_1 = require("../storage/pinata");
 const { IndexedMerkleMap } = o1js_1.Experimental;
 async function loadIndexedMerkleMap(params) {
-    const { url, type } = params;
-    const response = await fetch(url);
+    const { url, type, timeout = 60000, attempts = 5 } = params;
+    let attempt = 0;
+    const start = Date.now();
+    let response = await fetch(url);
+    while (!response.ok && attempt < attempts && Date.now() - start < timeout) {
+        attempt++;
+        await (0, cloud_1.sleep)(5000 * attempt); // handle rate limiting
+        response = await fetch(url);
+    }
     if (!response.ok) {
         throw new Error("Failed to fetch IndexedMerkleMap");
     }
-    const serializedIndexedMap = (await response.json());
+    const json = await response.json();
+    const serializedIndexedMap = json.map;
+    if (!serializedIndexedMap)
+        throw new Error("wrong IndexedMerkleMap json format");
     const map = deserializeIndexedMerkleMapInternal({
         serializedIndexedMap,
         type,
@@ -29,7 +39,7 @@ async function saveIndexedMerkleMap(params) {
     const { map, name = "indexed-map", keyvalues, auth } = params;
     const serialized = serializeIndexedMap(map);
     const ipfsHash = await (0, pinata_1.pinJSON)({
-        data: serialized,
+        data: { map: serialized },
         name,
         keyvalues,
         auth,

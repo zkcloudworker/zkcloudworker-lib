@@ -21,3 +21,4 @@ __exportStar(require("./chain"), exports);
 __exportStar(require("./blockberry"), exports);
 __exportStar(require("./tiny-contract"), exports);
 __exportStar(require("./send"), exports);
+__exportStar(require("./account"), exports);

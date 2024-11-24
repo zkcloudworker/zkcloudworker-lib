@@ -15,7 +15,7 @@ export async function accountExists(
   }
 }
 
-export async function accountBalance(
+export async function tokenBalance(
   address: string | PublicKey,
   tokenId?: Field
 ): Promise<number | undefined> {

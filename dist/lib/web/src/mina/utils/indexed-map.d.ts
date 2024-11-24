@@ -11,6 +11,8 @@ export interface IndexedMapSerialized {
 export declare function loadIndexedMerkleMap(params: {
     url: string;
     type: ReturnType<typeof IndexedMerkleMap>;
+    timeout?: number;
+    attempts?: number;
 }): Promise<import("o1js/dist/node/lib/provable/merkle-tree-indexed").IndexedMerkleMapBase>;
 export declare function saveIndexedMerkleMap(params: {
     map: IndexedMerkleMap;

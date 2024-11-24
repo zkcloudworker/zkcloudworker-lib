@@ -11,17 +11,18 @@ import {
   State,
   state,
   VerificationKey,
-} from "o1js"
+} from "o1js";
 
 export type FungibleTokenAdminBase = SmartContract & {
-  canMint(accountUpdate: AccountUpdate): Promise<Bool>
-  canChangeAdmin(admin: PublicKey): Promise<Bool>
-  canPause(): Promise<Bool>
-  canResume(): Promise<Bool>
-}
+  canMint(accountUpdate: AccountUpdate): Promise<Bool>;
+  canChangeAdmin(admin: PublicKey): Promise<Bool>;
+  canPause(): Promise<Bool>;
+  canResume(): Promise<Bool>;
+};
 
-export interface FungibleTokenAdminDeployProps extends Exclude<DeployArgs, undefined> {
-  adminPublicKey: PublicKey
+export interface FungibleTokenAdminDeployProps
+  extends Exclude<DeployArgs, undefined> {
+  adminPublicKey: PublicKey;
 }
 
 /** A contract that grants permissions for administrative actions on a token.
@@ -32,18 +33,22 @@ export interface FungibleTokenAdminDeployProps extends Exclude<DeployArgs, undef
  * The advantage is that third party applications that only use the token in a non-privileged way
  * can integrate against the unchanged token contract.
  */
-export class FungibleTokenAdmin extends SmartContract implements FungibleTokenAdminBase {
+export class FungibleTokenAdmin
+  extends SmartContract
+  implements FungibleTokenAdminBase
+{
   @state(PublicKey)
-  private adminPublicKey = State<PublicKey>()
+  private adminPublicKey = State<PublicKey>();
 
   async deploy(props: FungibleTokenAdminDeployProps) {
-    await super.deploy(props)
-    this.adminPublicKey.set(props.adminPublicKey)
+    await super.deploy(props);
+    this.adminPublicKey.set(props.adminPublicKey);
     this.account.permissions.set({
       ...Permissions.default(),
-      setVerificationKey: Permissions.VerificationKey.impossibleDuringCurrentVersion(),
+      setVerificationKey:
+        Permissions.VerificationKey.impossibleDuringCurrentVersion(),
       setPermissions: Permissions.impossible(),
-    })
+    });
   }
 
   /** Update the verification key.
@@ -51,40 +56,40 @@ export class FungibleTokenAdmin extends SmartContract implements FungibleTokenAd
    */
   @method
   async updateVerificationKey(vk: VerificationKey) {
-    this.account.verificationKey.set(vk)
+    this.account.verificationKey.set(vk);
   }
 
   private async ensureAdminSignature() {
     const admin = await Provable.witnessAsync(PublicKey, async () => {
-      let pk = await this.adminPublicKey.fetch()
-      assert(pk !== undefined, "could not fetch admin public key")
-      return pk
-    })
-    this.adminPublicKey.requireEquals(admin)
-    return AccountUpdate.createSigned(admin)
+      let pk = await this.adminPublicKey.fetch();
+      assert(pk !== undefined, "could not fetch admin public key");
+      return pk;
+    });
+    this.adminPublicKey.requireEquals(admin);
+    return AccountUpdate.createSigned(admin);
   }
 
   @method.returns(Bool)
   public async canMint(_accountUpdate: AccountUpdate) {
-    await this.ensureAdminSignature()
-    return Bool(true)
+    await this.ensureAdminSignature();
+    return Bool(true);
   }
 
   @method.returns(Bool)
   public async canChangeAdmin(_admin: PublicKey) {
-    await this.ensureAdminSignature()
-    return Bool(true)
+    await this.ensureAdminSignature();
+    return Bool(true);
   }
 
   @method.returns(Bool)
   public async canPause(): Promise<Bool> {
-    await this.ensureAdminSignature()
-    return Bool(true)
+    await this.ensureAdminSignature();
+    return Bool(true);
   }
 
   @method.returns(Bool)
   public async canResume(): Promise<Bool> {
-    await this.ensureAdminSignature()
-    return Bool(true)
+    await this.ensureAdminSignature();
+    return Bool(true);
   }
 }

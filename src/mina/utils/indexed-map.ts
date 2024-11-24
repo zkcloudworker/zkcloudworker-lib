@@ -1,5 +1,5 @@
 import { Experimental, Field } from "o1js";
-import { bigintToBase64, bigintFromBase64 } from "../../cloud";
+import { bigintToBase64, bigintFromBase64, sleep } from "../../cloud";
 import { pinJSON } from "../storage/pinata";
 
 const { IndexedMerkleMap } = Experimental;
@@ -16,13 +16,28 @@ export interface IndexedMapSerialized {
 export async function loadIndexedMerkleMap(params: {
   url: string;
   type: ReturnType<typeof IndexedMerkleMap>;
+  timeout?: number;
+  attempts?: number;
 }) {
-  const { url, type } = params;
-  const response = await fetch(url);
+  const { url, type, timeout = 60000, attempts = 5 } = params;
+  let attempt = 0;
+  const start = Date.now();
+  let response = await fetch(url);
+  while (!response.ok && attempt < attempts && Date.now() - start < timeout) {
+    attempt++;
+    await sleep(5000 * attempt); // handle rate limiting
+    response = await fetch(url);
+  }
   if (!response.ok) {
     throw new Error("Failed to fetch IndexedMerkleMap");
   }
-  const serializedIndexedMap = (await response.json()) as IndexedMapSerialized;
+
+  const json = await response.json();
+  const serializedIndexedMap = (
+    json as unknown as { map: IndexedMapSerialized }
+  ).map;
+  if (!serializedIndexedMap)
+    throw new Error("wrong IndexedMerkleMap json format");
   const map = deserializeIndexedMerkleMapInternal({
     serializedIndexedMap,
     type,
@@ -42,7 +57,7 @@ export async function saveIndexedMerkleMap(params: {
   const { map, name = "indexed-map", keyvalues, auth } = params;
   const serialized = serializeIndexedMap(map);
   const ipfsHash = await pinJSON({
-    data: serialized,
+    data: { map: serialized },
     name,
     keyvalues,
     auth,
