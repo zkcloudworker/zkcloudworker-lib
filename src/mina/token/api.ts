@@ -1,6 +1,6 @@
-import { blockchain, Cloud, JobStatus } from "../../cloud";
-import { zkCloudWorkerClient } from "../api/api";
-import { zkCloudWorker } from "../../cloud/worker";
+import { blockchain, Cloud, JobStatus } from "../../cloud/index.js";
+import { zkCloudWorkerClient } from "../api/api.js";
+import { zkCloudWorker } from "../../cloud/worker/index.js";
 
 export interface FungibleTokenDeployParams {
   txType: "deploy";

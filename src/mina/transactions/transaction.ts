@@ -1,5 +1,5 @@
 import { Field, PublicKey, Transaction, Mina, UInt64 } from "o1js";
-import { fieldToBase64, fieldFromBase64 } from "../utils/base64";
+import { fieldToBase64, fieldFromBase64 } from "../utils/base64.js";
 
 interface ForestSerialized {
   length: number;

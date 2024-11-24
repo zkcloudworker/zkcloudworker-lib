@@ -1,10 +1,10 @@
 import axios, { all } from "axios";
 import chalk from "chalk";
-import { sleep } from "../../cloud/utils";
-import { LocalCloud, LocalStorage } from "../local/local";
-import config from "../../cloud/config";
-import { zkCloudWorker, Cloud, JobData } from "../../cloud/worker";
-import { blockchain } from "../../cloud/networks";
+import { sleep } from "../../cloud/utils/index.js";
+import { LocalCloud, LocalStorage } from "../local/local.js";
+import config from "../../cloud/config.js";
+import { zkCloudWorker, Cloud, JobData } from "../../cloud/worker/index.js";
+import { blockchain } from "../../cloud/networks.js";
 const { ZKCLOUDWORKER_AUTH, ZKCLOUDWORKER_API } = config;
 
 /**

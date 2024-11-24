@@ -1,6 +1,7 @@
 {
   "name": "zkcloudworker",
   "description": "zkCloudWorker library",
+  "type": "module",
   "keywords": [
     "cloud",
     "proofs",
@@ -16,13 +17,12 @@
     "web3",
     "zero knowledge"
   ],
-  "version": "0.17.7",
+  "version": "0.18.2",
   "homepage": "https://docs.zkcloudworker.com",
   "repository": "git@zkcloudworker.github.com:zkcloudworker/zkcloudworker-lib.git",
   "main": "src/index.ts",
   "author": "dfst.io",
   "license": "Apache-2.0",
-  "type": "module",
   "scripts": {
     "compile": "rm -rf dist/lib && tsc && tsc --build tsconfig.web.json",
     "login": "yarn npm login",

@@ -1,5 +1,5 @@
 import { Field } from "o1js";
-import { toBase, fromBase } from "../../cloud/utils/base64";
+import { toBase, fromBase } from "../../cloud/utils/base64.js";
 
 // URL friendly base64 encoding
 const TABLE =

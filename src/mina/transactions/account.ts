@@ -1,4 +1,4 @@
-import { fetchMinaAccount } from "..";
+import { fetchMinaAccount } from "../index.js";
 import { Mina, PublicKey, Field } from "o1js";
 
 export async function accountExists(

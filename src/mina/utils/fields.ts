@@ -1,5 +1,5 @@
 import { Field, Poseidon } from "o1js";
-import { fieldToBase64, fieldFromBase64 } from "./base64";
+import { fieldToBase64, fieldFromBase64 } from "./base64.js";
 
 /**
  * Serialize fields to a string using base64 URL-friendly encoding

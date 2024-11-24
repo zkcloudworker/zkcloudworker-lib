@@ -16,7 +16,7 @@ import {
   Storage,
   sleep,
   loadIndexedMerkleMap,
-} from "../..";
+} from "../../index.js";
 
 const { IndexedMerkleMap } = Experimental;
 type IndexedMerkleMap = Experimental.IndexedMerkleMap;

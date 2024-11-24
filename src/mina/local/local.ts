@@ -10,8 +10,8 @@ import {
   Cloud,
   Local,
   zkCloudWorker,
-} from "../../cloud";
-import { ApiCommand } from "../api/api";
+} from "../../cloud/index.js";
+import { ApiCommand } from "../api/api.js";
 
 /**
  * LocalCloud is a cloud that runs on the local machine for testing and development

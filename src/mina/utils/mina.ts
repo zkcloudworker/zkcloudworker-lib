@@ -19,7 +19,12 @@ import {
   Lightnet,
   CircuitString,
 } from "o1js";
-import { networks, blockchain, MinaNetwork, Local } from "../../cloud";
+import {
+  networks,
+  blockchain,
+  MinaNetwork,
+  Local,
+} from "../../cloud/networks.js";
 
 /**
  * MinaNetworkInstance is the data structure for a Mina network instance, keeping track of the keys, network, and network ID hash.

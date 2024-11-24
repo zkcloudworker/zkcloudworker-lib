@@ -1,7 +1,7 @@
 import { checkZkappTransaction } from "o1js";
 import { Mina } from "o1js";
-import { sleep, blockchain } from "../../cloud";
-import { fetchMinaAccount, getCurrentNetwork } from "..";
+import { sleep, blockchain } from "../../cloud/index.js";
+import { fetchMinaAccount, getCurrentNetwork } from "../index.js";
 
 /**
  * The function `sendTx` sends a transaction, checks account updates, and waits for

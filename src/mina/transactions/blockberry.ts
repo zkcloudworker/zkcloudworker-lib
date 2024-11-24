@@ -1,4 +1,4 @@
-import { BlockBerryChain } from "./chain";
+import { BlockBerryChain } from "./chain.js";
 
 export async function getZkAppTxsFromBlockBerry(params: {
   account: string;
