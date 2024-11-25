@@ -1,6 +1,7 @@
 import { Experimental, Field } from "o1js";
-import { bigintToBase64, bigintFromBase64, sleep } from "../../cloud";
-import { pinJSON } from "../storage/pinata";
+import { bigintToBase64, bigintFromBase64 } from "../../cloud/utils/base64.js";
+import { sleep } from "../../cloud/utils/utils.js";
+import { pinJSON } from "../storage/pinata.js";
 
 const { IndexedMerkleMap } = Experimental;
 type IndexedMerkleMap = Experimental.IndexedMerkleMap;

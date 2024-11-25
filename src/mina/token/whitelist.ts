@@ -11,12 +11,12 @@ import {
 } from "o1js";
 import {
   serializeIndexedMap,
-  createIpfsURL,
-  pinJSON,
-  Storage,
-  sleep,
   loadIndexedMerkleMap,
-} from "../..";
+} from "../utils/indexed-map.js";
+import { sleep } from "../../cloud/utils/utils.js";
+import { Storage } from "../storage/storage.js";
+import { createIpfsURL } from "../storage/ipfs.js";
+import { pinJSON } from "../storage/pinata.js";
 
 const { IndexedMerkleMap } = Experimental;
 type IndexedMerkleMap = Experimental.IndexedMerkleMap;
@@ -30,6 +30,10 @@ export class WhitelistedAddress extends Struct({
   address: PublicKey,
   amount: UInt64, // Maximum permitted amount of the transaction
 }) {}
+
+export type WhitelistedAddressList =
+  | WhitelistedAddress[]
+  | { address: string; amount?: number }[];
 
 export class Whitelist extends Struct({
   /** The root hash of the Merkle tree representing the whitelist. */

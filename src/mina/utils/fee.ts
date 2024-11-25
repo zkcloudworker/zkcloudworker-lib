@@ -1,5 +1,5 @@
 import { UInt64 } from "o1js";
-import config from "../../cloud/config";
+import config from "../../cloud/config.js";
 
 /**
  * Calculate the fee for a transaction

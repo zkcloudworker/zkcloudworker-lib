@@ -1,5 +1,5 @@
-import { BlockBerryChain } from "./chain";
-import { getZkAppTxFromBlockBerry } from "./blockberry";
+import { BlockBerryChain } from "./chain.js";
+import { getZkAppTxFromBlockBerry } from "./blockberry.js";
 const TIMEOUT = 1000 * 60 * 21;
 
 export async function txStatusBlockberry(params: {

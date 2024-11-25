@@ -1,11 +1,12 @@
-import { BlockBerryChain } from "./chain";
+import { BlockBerryChain } from "./chain.js";
 import {
   getZkAppTxsFromBlockBerry,
   getPaymentTxsFromBlockBerry,
-} from "./blockberry";
-import { fetchMinaAccount, getCurrentNetwork } from "..";
+} from "./blockberry.js";
+import { fetchMinaAccount } from "../utils/fetch.js";
+import { getCurrentNetwork } from "../utils/mina.js";
 import { Mina, PublicKey } from "o1js";
-import { blockchain } from "../../cloud";
+import { blockchain } from "../../cloud/networks.js";
 
 export async function getNonce(params: {
   account: string;

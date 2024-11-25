@@ -1,4 +1,4 @@
-import { blockchain } from "../../cloud/networks";
+import { blockchain } from "../../cloud/networks.js";
 import { SmartContract } from "o1js";
 
 /**

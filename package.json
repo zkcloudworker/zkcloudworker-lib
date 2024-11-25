@@ -1,41 +1,67 @@
 {
   "name": "zkcloudworker",
-  "description": "zkCloudWorker library",
-  "keywords": [
-    "cloud",
-    "proofs",
-    "proving",
-    "minanft",
-    "socialcap",
-    "library",
-    "TypeScript",
-    "mina",
-    "zkapp",
-    "zk",
-    "blockchain",
-    "web3",
-    "zero knowledge"
-  ],
-  "version": "0.17.7",
-  "homepage": "https://docs.zkcloudworker.com",
-  "repository": "git@zkcloudworker.github.com:zkcloudworker/zkcloudworker-lib.git",
-  "main": "src/index.ts",
-  "author": "dfst.io",
-  "license": "Apache-2.0",
+  "version": "0.18.7",
   "type": "module",
+  "description": "zkCloudWorker library",
+  "author": "zkCloudWorker",
+  "license": "Apache-2.0",
+  "homepage": "https://docs.zkcloudworker.com",
   "scripts": {
     "compile": "rm -rf dist/lib && tsc && tsc --build tsconfig.web.json",
     "login": "yarn npm login",
-    "publish": "yarn compile && cd dist && yarn npm publish --access public && cd .."
+    "publish": "yarn compile && yarn npm publish --access public"
+  },
+  "keywords": [
+    "javascript",
+    "typescript",
+    "mina-protocol",
+    "zkcloudworker",
+    "cloudworker",
+    "cloud",
+    "proving"
+  ],
+  "bugs": {
+    "url": "https://github.com/zkcloudworker/zkcloudworker-lib/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zkcloudworker/zkcloudworker-lib.git"
+  },
+  "main": "dist/web/index.js",
+  "exports": {
+    "types": {
+      "node": "./dist/ts/index.d.ts",
+      "default": "./dist/web/index.d.ts"
+    },
+    "browser": "./dist/web/index.js",
+    "node": {
+      "import": "./dist/ts/index.js",
+      "require": "./dist/ts/index.js"
+    },
+    "default": "./dist/ts/index.js"
+  },
+  "types": "dist/web/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
   },
   "dependencies": {
     "axios": "^1.7.7",
-    "chalk": "^4.1.2",
+    "chalk": "^4.1.2"
+  },
+  "peerDependencies": {
     "o1js": "^2.1.0"
   },
   "devDependencies": {
-    "@types/node": "^22.9.1",
-    "typescript": "5.7.2"
+    "@types/node": "^22.9.3",
+    "o1js": "^2.1.0",
+    "typescript": "^5.7.2"
   },
-  "packageManager": "yarn@4.5.1"
+  "packageManager": "yarn@4.5.2"
 }
