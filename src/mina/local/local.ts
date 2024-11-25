@@ -1,16 +1,14 @@
 import {
-  makeString,
-  blockchain,
-  TransactionMetadata,
   CloudTransaction,
   DeployerKeyPair,
-  TaskData,
-  JobData,
-  JobEvent,
   Cloud,
-  Local,
-  zkCloudWorker,
-} from "../../cloud/index.js";
+} from "../../cloud/worker/cloud.js";
+import { JobData, JobEvent } from "../../cloud/worker/job.js";
+import { TaskData } from "../../cloud/worker/task.js";
+import { zkCloudWorker } from "../../cloud/worker/worker.js";
+import { TransactionMetadata } from "../../cloud/worker/transaction.js";
+import { makeString } from "../../cloud/utils/utils.js";
+import { blockchain, Local } from "../../cloud/networks.js";
 import { ApiCommand } from "../api/api.js";
 
 /**

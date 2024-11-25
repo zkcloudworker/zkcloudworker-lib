@@ -3,7 +3,8 @@ import {
   getZkAppTxsFromBlockBerry,
   getPaymentTxsFromBlockBerry,
 } from "./blockberry.js";
-import { fetchMinaAccount, getCurrentNetwork } from "../index.js";
+import { fetchMinaAccount } from "../utils/fetch.js";
+import { getCurrentNetwork } from "../utils/mina.js";
 import { Mina, PublicKey } from "o1js";
 import { blockchain } from "../../cloud/networks.js";
 

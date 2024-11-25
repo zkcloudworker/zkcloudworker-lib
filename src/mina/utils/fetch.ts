@@ -5,7 +5,7 @@ import {
   fetchAccount,
   checkZkappTransaction,
 } from "o1js";
-import { sleep } from "../../cloud/utils/index.js";
+import { sleep } from "../../cloud/utils/utils.js";
 
 /**
  * Fetches the Mina account for a given public key with error handling
