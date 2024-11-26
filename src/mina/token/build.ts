@@ -186,7 +186,6 @@ export async function buildTokenTransaction(params: {
   txType: FungibleTokenTransactionType;
   chain: blockchain;
   fee: UInt64;
-  sender: PublicKey;
   nonce: number;
   memo?: string;
   tokenAddress: PublicKey;
@@ -215,7 +214,6 @@ export async function buildTokenTransaction(params: {
     txType,
     chain,
     fee,
-    sender,
     nonce,
     tokenAddress,
     from,
@@ -228,26 +226,27 @@ export async function buildTokenTransaction(params: {
     provingFee,
   } = params;
   console.log(txType, "tx for", tokenAddress.toBase58());
-  console.log("Sender:", sender.toBase58());
 
-  if (
-    txType === "offer" ||
-    txType === "bid" || // direction is money direction as no token is moving
-    txType === "mint" ||
-    txType === "transfer" ||
-    txType === "sell" ||
-    txType === "whitelistOffer" ||
-    txType === "whitelistBid"
-  ) {
-    if (sender.toBase58() != from.toBase58()) throw new Error("Invalid sender");
-  }
+  let sender = from;
+  // if (
+  //   txType === "offer" ||
+  //   txType === "bid" || // direction is money direction as no token is moving
+  //   txType === "mint" ||
+  //   txType === "transfer" ||
+  //   txType === "sell" ||
+  //   txType === "whitelistOffer" ||
+  //   txType === "whitelistBid"
+  // ) {
+  //   if (sender.toBase58() != from.toBase58()) throw new Error("Invalid sender");
+  // }
   if (
     txType === "buy" ||
     txType === "withdrawOffer" ||
     txType === "withdrawBid" // direction is money direction as no token is moving
   ) {
-    if (sender.toBase58() != to.toBase58()) throw new Error("Invalid sender");
+    sender = to;
   }
+  console.log("Sender:", sender.toBase58());
 
   await fetchMinaAccount({
     publicKey: sender,

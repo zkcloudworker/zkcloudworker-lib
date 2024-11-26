@@ -134,5 +134,15 @@ export class Whitelist extends Struct({
             storage: Storage.fromString(hash),
         });
     }
+    toString() {
+        return JSON.stringify({ root: this.root.toJSON(), storage: this.storage.toString() }, null, 2);
+    }
+    static fromString(str) {
+        const json = JSON.parse(str);
+        return new Whitelist({
+            root: Field.fromJSON(json.root),
+            storage: Storage.fromString(json.storage),
+        });
+    }
 }
 //# sourceMappingURL=whitelist.js.map

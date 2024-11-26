@@ -302,5 +302,7 @@ export declare class Whitelist extends Whitelist_base {
         attempts?: number;
         auth?: string;
     }): Promise<Whitelist>;
+    toString(): string;
+    static fromString(str: string): Whitelist;
 }
 export {};
