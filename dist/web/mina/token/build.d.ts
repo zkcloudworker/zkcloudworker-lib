@@ -26,6 +26,11 @@ export declare function buildTokenDeployTransaction(params: {
     tokenVerificationKey: VerificationKey;
     whitelist: string | undefined;
 }>;
+export declare function getTokenTransactionSender(params: {
+    txType: FungibleTokenTransactionType;
+    from: PublicKey;
+    to: PublicKey;
+}): PublicKey;
 export declare function buildTokenTransaction(params: {
     txType: FungibleTokenTransactionType;
     chain: blockchain;
