@@ -14,7 +14,7 @@ export interface FungibleTokenDeployParams {
     whitelist?: {
         address: string;
         amount?: number;
-    }[];
+    }[] | string;
     sendTransaction: boolean;
     developerAddress?: string;
     developerFee?: number;
@@ -33,7 +33,7 @@ export interface FungibleTokenTransactionParams {
     whitelist?: {
         address: string;
         amount?: number;
-    }[];
+    }[] | string;
     sendTransaction: boolean;
     developerAddress?: string;
     developerFee?: number;

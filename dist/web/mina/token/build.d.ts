@@ -13,7 +13,7 @@ export declare function buildTokenDeployTransaction(params: {
     uri: string;
     symbol: string;
     memo?: string;
-    whitelist?: WhitelistedAddressList;
+    whitelist?: WhitelistedAddressList | string;
     developerAddress?: PublicKey;
     developerFee?: UInt64;
     provingKey: PublicKey;
@@ -24,12 +24,12 @@ export declare function buildTokenDeployTransaction(params: {
     isWhitelisted: boolean;
     adminVerificationKey: VerificationKey;
     tokenVerificationKey: VerificationKey;
+    whitelist: string | undefined;
 }>;
 export declare function buildTokenTransaction(params: {
     txType: FungibleTokenTransactionType;
     chain: blockchain;
     fee: UInt64;
-    sender: PublicKey;
     nonce: number;
     memo?: string;
     tokenAddress: PublicKey;
@@ -37,7 +37,7 @@ export declare function buildTokenTransaction(params: {
     to: PublicKey;
     amount?: UInt64;
     price?: UInt64;
-    whitelist?: WhitelistedAddressList;
+    whitelist?: WhitelistedAddressList | string;
     developerAddress?: PublicKey;
     developerFee?: UInt64;
     provingKey: PublicKey;
@@ -52,6 +52,7 @@ export declare function buildTokenTransaction(params: {
     tokenVerificationKey: VerificationKey;
     offerVerificationKey: VerificationKey;
     bidVerificationKey: VerificationKey;
+    whitelist: string | undefined;
 }>;
 export declare function getTokenSymbolAndAdmin(params: {
     tokenAddress: PublicKey;

@@ -36,7 +36,7 @@ export async function buildTokenDeployTransaction(params: {
   uri: string;
   symbol: string;
   memo?: string;
-  whitelist?: WhitelistedAddressList;
+  whitelist?: WhitelistedAddressList | string;
   developerAddress?: PublicKey;
   developerFee?: UInt64;
   provingKey: PublicKey;
@@ -47,6 +47,7 @@ export async function buildTokenDeployTransaction(params: {
   isWhitelisted: boolean;
   adminVerificationKey: VerificationKey;
   tokenVerificationKey: VerificationKey;
+  whitelist: string | undefined;
 }> {
   const {
     fee,
@@ -63,9 +64,8 @@ export async function buildTokenDeployTransaction(params: {
     provingFee,
     decimals,
     chain,
-    whitelist,
   } = params;
-  const isWhitelisted = whitelist !== undefined;
+  const isWhitelisted = params.whitelist !== undefined;
   if (memo && typeof memo !== "string")
     throw new Error("Memo must be a string");
   if (memo && memo.length > 30)
@@ -118,8 +118,10 @@ export async function buildTokenDeployTransaction(params: {
   }
 
   console.log("Sender balance:", await accountBalanceMina(sender));
-  const whitelistedAddresses = whitelist
-    ? await Whitelist.create({ list: whitelist, name: symbol })
+  const whitelist = params.whitelist
+    ? typeof params.whitelist === "string"
+      ? Whitelist.fromString(params.whitelist)
+      : await Whitelist.create({ list: params.whitelist, name: symbol })
     : undefined;
 
   const zkToken = new tokenContract(tokenAddress);
@@ -140,13 +142,13 @@ export async function buildTokenDeployTransaction(params: {
           amount: developerFee,
         });
       }
-      if (isWhitelisted && !whitelistedAddresses) {
+      if (isWhitelisted && !whitelist) {
         throw new Error("Whitelisted addresses not found");
       }
       await zkAdmin.deploy({
         adminPublicKey: sender,
         verificationKey: adminVerificationKey,
-        whitelist: whitelistedAddresses!,
+        whitelist: whitelist!,
       });
       zkAdmin.account.zkappUri.set(uri);
       await zkToken.deploy({
@@ -176,6 +178,7 @@ export async function buildTokenDeployTransaction(params: {
       hash: Field(tokenVerificationKey.hash),
       data: tokenVerificationKey.data,
     },
+    whitelist: whitelist?.toString(),
   };
 }
 
@@ -183,7 +186,6 @@ export async function buildTokenTransaction(params: {
   txType: FungibleTokenTransactionType;
   chain: blockchain;
   fee: UInt64;
-  sender: PublicKey;
   nonce: number;
   memo?: string;
   tokenAddress: PublicKey;
@@ -191,7 +193,7 @@ export async function buildTokenTransaction(params: {
   to: PublicKey;
   amount?: UInt64;
   price?: UInt64;
-  whitelist?: WhitelistedAddressList;
+  whitelist?: WhitelistedAddressList | string;
   developerAddress?: PublicKey;
   developerFee?: UInt64;
   provingKey: PublicKey;
@@ -206,12 +208,12 @@ export async function buildTokenTransaction(params: {
   tokenVerificationKey: VerificationKey;
   offerVerificationKey: VerificationKey;
   bidVerificationKey: VerificationKey;
+  whitelist: string | undefined;
 }> {
   const {
     txType,
     chain,
     fee,
-    sender,
     nonce,
     tokenAddress,
     from,
@@ -222,27 +224,29 @@ export async function buildTokenTransaction(params: {
     developerFee,
     provingKey,
     provingFee,
-    whitelist,
   } = params;
   console.log(txType, "tx for", tokenAddress.toBase58());
-  console.log("Sender:", sender.toBase58());
 
-  if (
-    txType === "offer" ||
-    txType === "bid" || // direction is money direction as no token is moving
-    txType === "mint" ||
-    txType === "transfer" ||
-    txType === "sell"
-  ) {
-    if (sender.toBase58() != from.toBase58()) throw new Error("Invalid sender");
-  }
+  let sender = from;
+  // if (
+  //   txType === "offer" ||
+  //   txType === "bid" || // direction is money direction as no token is moving
+  //   txType === "mint" ||
+  //   txType === "transfer" ||
+  //   txType === "sell" ||
+  //   txType === "whitelistOffer" ||
+  //   txType === "whitelistBid"
+  // ) {
+  //   if (sender.toBase58() != from.toBase58()) throw new Error("Invalid sender");
+  // }
   if (
     txType === "buy" ||
     txType === "withdrawOffer" ||
     txType === "withdrawBid" // direction is money direction as no token is moving
   ) {
-    if (sender.toBase58() != to.toBase58()) throw new Error("Invalid sender");
+    sender = to;
   }
+  console.log("Sender:", sender.toBase58());
 
   await fetchMinaAccount({
     publicKey: sender,
@@ -272,13 +276,15 @@ export async function buildTokenTransaction(params: {
     (txType === "whitelistAdmin" ||
       txType === "whitelistBid" ||
       txType === "whitelistOffer") &&
-    !whitelist
+    !params.whitelist
   ) {
     throw new Error("Whitelist is required");
   }
 
-  const whitelistedAddresses = whitelist
-    ? await Whitelist.create({ list: whitelist, name: symbol })
+  const whitelist = params.whitelist
+    ? typeof params.whitelist === "string"
+      ? Whitelist.fromString(params.whitelist)
+      : await Whitelist.create({ list: params.whitelist, name: symbol })
     : undefined;
 
   const zkToken = new tokenContract(tokenAddress);
@@ -298,6 +304,9 @@ export async function buildTokenTransaction(params: {
     force: (
       [
         "offer",
+        "whitelistOffer",
+        "bid",
+        "whitelistBid",
         "sell",
         "transfer",
         "withdrawOffer",
@@ -334,6 +343,7 @@ export async function buildTokenTransaction(params: {
     (
       [
         "bid",
+        "whitelistBid",
       ] satisfies FungibleTokenTransactionType[] as FungibleTokenTransactionType[]
     ).includes(txType)
       ? from
@@ -417,7 +427,7 @@ export async function buildTokenTransaction(params: {
         if (isNewAccount) {
           await offerContractDeployment.deploy({
             verificationKey: offerVerificationKey,
-            whitelist: whitelistedAddresses ?? Whitelist.empty(),
+            whitelist: whitelist ?? Whitelist.empty(),
           });
           offerContract.account.zkappUri.set(`Offer for ${symbol}`);
           await offerContract.initialize(sender, tokenAddress, amount, price);
@@ -450,7 +460,7 @@ export async function buildTokenTransaction(params: {
         if (isNewAccount) {
           await bidContractDeployment.deploy({
             verificationKey: bidVerificationKey,
-            whitelist: whitelistedAddresses ?? Whitelist.empty(),
+            whitelist: whitelist ?? Whitelist.empty(),
           });
           bidContract.account.zkappUri.set(`Bid for ${symbol}`);
           await bidContract.initialize(tokenAddress, amount, price);
@@ -477,18 +487,18 @@ export async function buildTokenTransaction(params: {
         break;
 
       case "whitelistAdmin":
-        if (!whitelistedAddresses) throw new Error("Whitelist is required");
-        await whitelistedAdminContract.updateWhitelist(whitelistedAddresses);
+        if (!whitelist) throw new Error("Whitelist is required");
+        await whitelistedAdminContract.updateWhitelist(whitelist);
         break;
 
       case "whitelistBid":
-        if (!whitelistedAddresses) throw new Error("Whitelist is required");
-        await bidContract.updateWhitelist(whitelistedAddresses);
+        if (!whitelist) throw new Error("Whitelist is required");
+        await bidContract.updateWhitelist(whitelist);
         break;
 
       case "whitelistOffer":
-        if (!whitelistedAddresses) throw new Error("Whitelist is required");
-        await offerContract.updateWhitelist(whitelistedAddresses);
+        if (!whitelist) throw new Error("Whitelist is required");
+        await offerContract.updateWhitelist(whitelist);
         await zkToken.approveAccountUpdate(offerContract.self);
         break;
 
@@ -512,6 +522,7 @@ export async function buildTokenTransaction(params: {
     },
     offerVerificationKey,
     bidVerificationKey,
+    whitelist: whitelist?.toString(),
   };
 }
 
