@@ -1,13 +1,13 @@
 {
   "name": "zkcloudworker",
-  "version": "0.18.7",
+  "version": "0.18.15",
   "type": "module",
   "description": "zkCloudWorker library",
   "author": "zkCloudWorker",
   "license": "Apache-2.0",
   "homepage": "https://docs.zkcloudworker.com",
   "scripts": {
-    "compile": "rm -rf dist/lib && tsc && tsc --build tsconfig.web.json",
+    "compile": "rm -rf dist/lib && tsc && tsc --build tsconfig.web.json && node build-cjs.js",
     "login": "yarn npm login",
     "publish": "yarn compile && yarn npm publish --access public"
   },
@@ -29,18 +29,15 @@
   },
   "main": "dist/web/index.js",
   "exports": {
-    "types": {
-      "node": "./dist/ts/index.d.ts",
-      "default": "./dist/web/index.d.ts"
-    },
+    "types": "./dist/node/index.d.ts",
     "browser": "./dist/web/index.js",
     "node": {
-      "import": "./dist/ts/index.js",
-      "require": "./dist/ts/index.js"
+      "import": "./dist/node/index.js",
+      "require": "./dist/node/index.cjs"
     },
-    "default": "./dist/ts/index.js"
+    "default": "./dist/web/index.js"
   },
-  "types": "dist/web/index.d.ts",
+  "types": "./dist/node/index.d.ts",
   "files": [
     "dist",
     "src",
@@ -60,6 +57,7 @@
   },
   "devDependencies": {
     "@types/node": "^22.9.3",
+    "esbuild": "^0.24.0",
     "o1js": "^2.1.0",
     "typescript": "^5.7.2"
   },
