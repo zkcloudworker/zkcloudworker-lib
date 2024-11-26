@@ -297,10 +297,7 @@ export declare class Whitelist extends Whitelist_base {
             amount?: number;
         }[];
         name?: string;
-        keyvalues?: {
-            key: string;
-            value: string;
-        }[];
+        keyvalues?: object;
         timeout?: number;
         attempts?: number;
         auth?: string;

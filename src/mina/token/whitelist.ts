@@ -115,14 +115,14 @@ export class Whitelist extends Struct({
   static async create(params: {
     list: WhitelistedAddress[] | { address: string; amount?: number }[];
     name?: string;
-    keyvalues?: { key: string; value: string }[];
+    keyvalues?: object;
     timeout?: number;
     attempts?: number;
     auth?: string;
   }): Promise<Whitelist> {
     const {
       name = "whitelist.json",
-      keyvalues = [{ key: "library", value: "zkcloudworker" }],
+      keyvalues,
       timeout = 60 * 1000,
       attempts = 5,
       auth,
@@ -156,6 +156,12 @@ export class Whitelist extends Struct({
     };
     let attempt = 0;
     const start = Date.now();
+    if (process.env.DEBUG === "true")
+      console.log(
+        "Whitelist.create:",
+        { json, name, keyvalues, auth },
+        json.whitelist
+      );
     let hash = await pinJSON({
       data: json,
       name,
@@ -177,6 +183,22 @@ export class Whitelist extends Struct({
     return new Whitelist({
       root: map.root,
       storage: Storage.fromString(hash),
+    });
+  }
+
+  toString(): string {
+    return JSON.stringify(
+      { root: this.root.toJSON(), storage: this.storage.toString() },
+      null,
+      2
+    );
+  }
+
+  static fromString(str: string): Whitelist {
+    const json = JSON.parse(str);
+    return new Whitelist({
+      root: Field.fromJSON(json.root),
+      storage: Storage.fromString(json.storage),
     });
   }
 }

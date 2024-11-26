@@ -86,7 +86,7 @@ export class Whitelist extends Struct({
      * @returns A new `Whitelist` instance.
      */
     static async create(params) {
-        const { name = "whitelist.json", keyvalues = [{ key: "library", value: "zkcloudworker" }], timeout = 60 * 1000, attempts = 5, auth, } = params;
+        const { name = "whitelist.json", keyvalues, timeout = 60 * 1000, attempts = 5, auth, } = params;
         const list = typeof params.list[0].address === "string"
             ? params.list.map((item) => new WhitelistedAddress({
                 address: PublicKey.fromBase58(item.address),
@@ -109,6 +109,8 @@ export class Whitelist extends Struct({
         };
         let attempt = 0;
         const start = Date.now();
+        if (process.env.DEBUG === "true")
+            console.log("Whitelist.create:", { json, name, keyvalues, auth }, json.whitelist);
         let hash = await pinJSON({
             data: json,
             name,
