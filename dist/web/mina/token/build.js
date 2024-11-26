@@ -106,27 +106,19 @@ export async function buildTokenDeployTransaction(params) {
         whitelist: whitelist?.toString(),
     };
 }
+export function getTokenTransactionSender(params) {
+    const { txType, from, to } = params;
+    if (txType === "buy" ||
+        txType === "withdrawOffer" ||
+        txType === "withdrawBid") {
+        return to;
+    }
+    return from;
+}
 export async function buildTokenTransaction(params) {
     const { txType, chain, fee, nonce, tokenAddress, from, to, amount, price, developerAddress, developerFee, provingKey, provingFee, } = params;
     console.log(txType, "tx for", tokenAddress.toBase58());
-    let sender = from;
-    // if (
-    //   txType === "offer" ||
-    //   txType === "bid" || // direction is money direction as no token is moving
-    //   txType === "mint" ||
-    //   txType === "transfer" ||
-    //   txType === "sell" ||
-    //   txType === "whitelistOffer" ||
-    //   txType === "whitelistBid"
-    // ) {
-    //   if (sender.toBase58() != from.toBase58()) throw new Error("Invalid sender");
-    // }
-    if (txType === "buy" ||
-        txType === "withdrawOffer" ||
-        txType === "withdrawBid" // direction is money direction as no token is moving
-    ) {
-        sender = to;
-    }
+    const sender = getTokenTransactionSender({ txType, from, to });
     console.log("Sender:", sender.toBase58());
     await fetchMinaAccount({
         publicKey: sender,
