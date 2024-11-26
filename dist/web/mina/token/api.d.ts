@@ -11,11 +11,15 @@ export interface FungibleTokenDeployParams {
     uri: string;
     serializedTransaction: string;
     signedData: string;
+    whitelist?: {
+        address: string;
+        amount?: number;
+    }[];
     sendTransaction: boolean;
     developerAddress?: string;
     developerFee?: number;
 }
-export type FungibleTokenTransactionType = "mint" | "transfer" | "bid" | "offer" | "buy" | "sell" | "withdrawBid" | "withdrawOffer";
+export type FungibleTokenTransactionType = "mint" | "transfer" | "bid" | "offer" | "buy" | "sell" | "withdrawBid" | "withdrawOffer" | "whitelistBid" | "whitelistOffer" | "whitelistAdmin";
 export interface FungibleTokenTransactionParams {
     txType: FungibleTokenTransactionType;
     tokenAddress: string;
@@ -24,8 +28,12 @@ export interface FungibleTokenTransactionParams {
     signedData: string;
     from: string;
     to: string;
-    amount: number;
+    amount?: number;
     price?: number;
+    whitelist?: {
+        address: string;
+        amount?: number;
+    }[];
     sendTransaction: boolean;
     developerAddress?: string;
     developerFee?: number;

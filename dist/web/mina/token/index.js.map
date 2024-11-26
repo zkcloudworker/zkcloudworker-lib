@@ -1,1 +1,1 @@
-{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/mina/token/index.ts"],"names":[],"mappings":"AAAA,cAAc,oBAAoB,CAAC;AACnC,cAAc,yBAAyB,CAAC;AACxC,cAAc,UAAU,CAAC;AACzB,cAAc,SAAS,CAAC;AACxB,cAAc,gBAAgB,CAAC"}
+{"version":3,"file":"index.js","sourceRoot":"","sources":["../../../../src/mina/token/index.ts"],"names":[],"mappings":"AAAA,cAAc,UAAU,CAAC;AACzB,cAAc,UAAU,CAAC;AACzB,cAAc,YAAY,CAAC;AAC3B,cAAc,UAAU,CAAC;AACzB,cAAc,YAAY,CAAC;AAC3B,cAAc,YAAY,CAAC;AAC3B,cAAc,SAAS,CAAC;AACxB,cAAc,gBAAgB,CAAC"}
