@@ -1,5 +1,6 @@
 import * as esbuild from "esbuild";
 import path from "node:path";
+import { platform } from "node:process";
 
 const entry = "./src/index.ts";
 
