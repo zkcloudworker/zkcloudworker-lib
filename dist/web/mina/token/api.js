@@ -49,12 +49,76 @@ export class TokenAPI {
         console.log("waitForJobResult result:", deployResult?.result?.result?.slice(0, 50));
         return deployResult?.result?.result ?? "error";
     }
+    // async getResult(jobId: string): Promise<FungibleTokenJobResult> {
+    //   try {
+    //     const callResult = await this.client.jobResult({ jobId });
+    //     let jobStatus: JobStatus | "unknown" = "unknown";
+    //     if (callResult?.result && typeof callResult?.result !== "string")
+    //       jobStatus = callResult.result.jobStatus ?? "unknown";
+    //     if (!callResult.success) {
+    //       //console.error("Job result error", jobId, JSON.stringify(callResult));
+    //       return {
+    //         success: false,
+    //         error: callResult?.error,
+    //         jobStatus,
+    //       };
+    //     }
+    //     if (callResult.error)
+    //       return {
+    //         success: false,
+    //         error: callResult.error,
+    //         jobStatus,
+    //       };
+    //     const jobResult = callResult.result?.result;
+    //     if (!jobResult) return { success: true, jobStatus };
+    //     if (typeof jobResult !== "string")
+    //       return {
+    //         success: false,
+    //         error: `Job result is not a string: ${String(jobResult)}`,
+    //         jobStatus,
+    //       };
+    //     if (jobResult.toLowerCase().startsWith("error"))
+    //       return {
+    //         success: false,
+    //         error: jobResult,
+    //         jobStatus,
+    //       };
+    //     try {
+    //       const { success, tx, hash, error } = JSON.parse(jobResult);
+    //       if (success === undefined)
+    //         return {
+    //           success: false,
+    //           tx,
+    //           hash,
+    //           error,
+    //           jobStatus,
+    //         };
+    //       return { success, tx, hash, error, jobStatus };
+    //     } catch (e: any) {
+    //       return {
+    //         success: false,
+    //         error: `Error parsing job result: ${jobResult} ${e?.message ?? ""}`,
+    //         jobStatus,
+    //       };
+    //     }
+    //   } catch (e: any) {
+    //     return {
+    //       success: false,
+    //       error: `Error getting job result: ${e?.message ?? ""}`,
+    //       jobStatus: "unknown",
+    //     };
+    //   }
+    // }
     async getResult(jobId) {
         try {
             const callResult = await this.client.jobResult({ jobId });
-            const jobStatus = callResult?.success === true
-                ? callResult?.result?.jobStatus
-                : undefined;
+            // const jobStatus: JobStatus | undefined =
+            //   callResult?.success === true
+            //     ? callResult?.result?.jobStatus
+            //     : undefined;
+            const jobStatus = typeof callResult?.result === "string"
+                ? undefined
+                : callResult?.result?.jobStatus;
             if (!callResult.success) {
                 return {
                     success: false,
@@ -92,12 +156,17 @@ export class TokenAPI {
             catch (e) {
                 return {
                     success: false,
-                    error: `Error parsing job result: ${jobResult}`,
+                    error: `Error parsing job result: ${jobResult} ${e?.message ?? ""}`,
+                    jobStatus,
                 };
             }
         }
         catch (e) {
-            return { success: false, error: `Error getting job result: ${e}` };
+            return {
+                success: false,
+                error: `Error getting job result: ${e?.message ?? ""}`,
+                jobStatus: undefined,
+            };
         }
     }
 }
