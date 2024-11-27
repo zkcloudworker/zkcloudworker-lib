@@ -266,9 +266,10 @@ export async function buildTokenTransaction(params: {
   const whitelistedAdminContract = new FungibleTokenWhitelistedAdmin(
     adminContractAddress
   );
-  const tokenContract = isWhitelisted
-    ? WhitelistedFungibleToken
-    : FungibleToken;
+  const tokenContract =
+    isWhitelisted && txType === "mint"
+      ? WhitelistedFungibleToken
+      : FungibleToken;
 
   if (
     (txType === "whitelistAdmin" ||
