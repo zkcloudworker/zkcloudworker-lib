@@ -134,7 +134,7 @@ export async function buildTokenTransaction(params) {
     });
     const memo = params.memo ?? `${txType} ${symbol}`;
     const whitelistedAdminContract = new FungibleTokenWhitelistedAdmin(adminContractAddress);
-    const tokenContract = isWhitelisted
+    const tokenContract = isWhitelisted && txType === "mint"
         ? WhitelistedFungibleToken
         : FungibleToken;
     if ((txType === "whitelistAdmin" ||
