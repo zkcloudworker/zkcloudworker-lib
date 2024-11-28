@@ -1,15 +1,15 @@
 {
   "name": "zkcloudworker",
-  "version": "0.18.29",
+  "version": "0.19.0",
   "type": "module",
   "description": "zkCloudWorker library",
   "author": "zkCloudWorker",
   "license": "Apache-2.0",
   "homepage": "https://docs.zkcloudworker.com",
   "scripts": {
-    "compile": "rm -rf dist/lib && tsc && tsc --build tsconfig.web.json && node build-cjs.js",
+    "build": "rm -rf dist/lib && tsc && tsc --build tsconfig.web.json && node build-cjs.js",
     "login": "yarn npm login",
-    "publish": "yarn compile && yarn npm publish --access public"
+    "publish": "yarn build && yarn npm publish --access public"
   },
   "keywords": [
     "javascript",
