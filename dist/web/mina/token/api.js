@@ -112,10 +112,7 @@ export class TokenAPI {
     async getResult(jobId) {
         try {
             const callResult = await this.client.jobResult({ jobId });
-            // const jobStatus: JobStatus | undefined =
-            //   callResult?.success === true
-            //     ? callResult?.result?.jobStatus
-            //     : undefined;
+            // TODO: filter the repo and developer
             const jobStatus = typeof callResult?.result === "string"
                 ? undefined
                 : callResult?.result?.jobStatus;
