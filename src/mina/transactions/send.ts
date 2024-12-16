@@ -111,7 +111,7 @@ export async function sendTx(params: {
 
     if (txSent.status === "pending" && wait !== false && chain !== "zeko") {
       if (verbose) console.log(`Waiting for tx inclusion...`);
-      const txIncluded = await txSent.safeWait();
+      let txIncluded = await txSent.safeWait();
       if (txIncluded.status === "included")
         if (verbose)
           console.log(
@@ -141,8 +141,20 @@ export async function sendTx(params: {
           if (
             newNonce &&
             Number(newNonce.toBigint()) > Number(nonce.toBigint())
-          )
-            return txIncluded;
+          ) {
+            const txIncluded = await txSent.safeWait();
+            if (txIncluded.status === "included") return txIncluded;
+            else if (txIncluded.status === "rejected") {
+              // We never should see this error as the nonce is updated, so we retry
+              await sleep(10000);
+              const txIncluded = await txSent.safeWait();
+              if (txIncluded.status === "included") return txIncluded;
+              console.error(
+                `internal error: ${chain} tx rejected: hash: ${txIncluded.hash} status: ${txIncluded.status} errors: ${txIncluded.errors}`
+              );
+              return txIncluded;
+            }
+          }
           if (verbose)
             console.log(
               `Waiting for ${chain} to update state for ${Math.floor(

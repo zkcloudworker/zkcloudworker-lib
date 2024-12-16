@@ -27,10 +27,14 @@ export async function fetchMinaAccount(params: {
   let result = { account: undefined };
   while (Date.now() - startTime < timeout) {
     try {
-      const result = await fetchAccount({
-        publicKey,
-        tokenId,
-      });
+      const result = await fetchAccount(
+        {
+          publicKey,
+          tokenId,
+        },
+        undefined,
+        { timeout: 5 * 1000 }
+      );
       return result;
     } catch (error: any) {
       if (force === true)

@@ -1,7 +1,48 @@
 import { Field, PublicKey, Mina, UInt64 } from "o1js";
 import { fieldToBase64, fieldFromBase64 } from "../utils/base64.js";
-export function transactionParams(serializedTransaction, signedJson) {
-    const { sender, nonce, tx } = JSON.parse(serializedTransaction);
+export function createTransactionPayloads(tx) {
+    const transaction = tx.toJSON();
+    const txJSON = JSON.parse(transaction);
+    const signedData = JSON.stringify({ zkappCommand: txJSON });
+    const proverPayload = serializeTransaction(tx);
+    const fee = tx.transaction.feePayer.body.fee.toJSON();
+    const sender = tx.transaction.feePayer.body.publicKey.toBase58();
+    const nonce = Number(tx.transaction.feePayer.body.nonce.toBigint());
+    const memo = tx.transaction.memo;
+    const minaSignerPayload = {
+        zkappCommand: txJSON,
+        feePayer: {
+            feePayer: sender,
+            fee,
+            nonce,
+            memo,
+        },
+    };
+    const walletPayload = {
+        transaction,
+        nonce,
+        onlySign: true,
+        feePayer: {
+            fee,
+            memo,
+        },
+    };
+    return {
+        sender,
+        nonce,
+        memo,
+        fee,
+        walletPayload,
+        minaSignerPayload,
+        proverPayload,
+        signedData,
+        transaction,
+    };
+}
+export function transactionParams(params) {
+    const { proverPayload, signedData } = params;
+    const signedJson = JSON.parse(signedData);
+    const { sender, tx } = JSON.parse(proverPayload);
     const transaction = Mina.Transaction.fromJSON(JSON.parse(tx));
     const memo = transaction.transaction.memo;
     return {
@@ -11,17 +52,19 @@ export function transactionParams(serializedTransaction, signedJson) {
         memo,
     };
 }
-export function deserializeTransaction(serializedTransaction, txNew, signedJson) {
-    //console.log("new transaction", txNew);
-    const { tx, blindingValues, length, forestJSONs } = JSON.parse(serializedTransaction);
+export function parseTransactionPayloads(params) {
+    const { txNew } = params;
+    const proverPayload = "payloads" in params ? params.payloads.proverPayload : params.proverPayload;
+    const signedData = "payloads" in params ? params.payloads.signedData : params.signedData;
+    const signedJson = JSON.parse(signedData);
+    const { tx, blindingValues, length, forestJSONs } = JSON.parse(proverPayload);
     const transaction = Mina.Transaction.fromJSON(JSON.parse(tx));
     const forests = forestJSONs.map((f) => JSON.parse(f));
-    //console.log("transaction", transaction);
     if (length !== txNew.transaction.accountUpdates.length) {
-        throw new Error("New Transaction length mismatch");
+        throw new Error(`New Transaction length mismatch: ${length} !== ${txNew.transaction.accountUpdates.length}`);
     }
     if (length !== transaction.transaction.accountUpdates.length) {
-        throw new Error("Serialized Transaction length mismatch");
+        throw new Error(`Serialized Transaction length mismatch: ${length} !== ${transaction.transaction.accountUpdates.length}`);
     }
     for (let i = 0; i < length; i++) {
         transaction.transaction.accountUpdates[i].lazyAuthorization =

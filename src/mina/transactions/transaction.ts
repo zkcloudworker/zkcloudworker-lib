@@ -1,5 +1,49 @@
 import { Field, PublicKey, Transaction, Mina, UInt64 } from "o1js";
+import { TransactionPayloads } from "@minatokens/api";
 import { fieldToBase64, fieldFromBase64 } from "../utils/base64.js";
+
+export function createTransactionPayloads(
+  tx: Mina.Transaction<false, false> | Mina.Transaction<false, true>
+): TransactionPayloads {
+  const transaction = tx.toJSON();
+  const txJSON = JSON.parse(transaction);
+  const signedData = JSON.stringify({ zkappCommand: txJSON });
+  const proverPayload = serializeTransaction(tx);
+  const fee = tx.transaction.feePayer.body.fee.toJSON();
+  const sender = tx.transaction.feePayer.body.publicKey.toBase58();
+  const nonce = Number(tx.transaction.feePayer.body.nonce.toBigint());
+  const memo = tx.transaction.memo;
+  const minaSignerPayload = {
+    zkappCommand: txJSON,
+    feePayer: {
+      feePayer: sender,
+      fee,
+      nonce,
+      memo,
+    },
+  };
+  const walletPayload = {
+    transaction,
+    nonce,
+    onlySign: true,
+    feePayer: {
+      fee,
+      memo,
+    },
+  };
+
+  return {
+    sender,
+    nonce,
+    memo,
+    fee,
+    walletPayload,
+    minaSignerPayload,
+    proverPayload,
+    signedData,
+    transaction,
+  };
+}
 
 interface ForestSerialized {
   length: number;
@@ -13,15 +57,21 @@ interface ForestSerialized {
 }
 
 export function transactionParams(
-  serializedTransaction: string,
-  signedJson: any
+  params:
+    | {
+        proverPayload: string;
+        signedData: string;
+      }
+    | TransactionPayloads
 ): {
   fee: UInt64;
   sender: PublicKey;
   nonce: number;
   memo: string;
 } {
-  const { sender, nonce, tx } = JSON.parse(serializedTransaction);
+  const { proverPayload, signedData } = params;
+  const signedJson = JSON.parse(signedData);
+  const { sender, tx } = JSON.parse(proverPayload);
   const transaction = Mina.Transaction.fromJSON(JSON.parse(tx));
   const memo = transaction.transaction.memo;
   return {
@@ -32,25 +82,39 @@ export function transactionParams(
   };
 }
 
-export function deserializeTransaction(
-  serializedTransaction: string,
-  txNew: Mina.Transaction<false, false>,
-  signedJson: any
+export function parseTransactionPayloads(
+  params:
+    | {
+        proverPayload: string;
+        signedData: string;
+        txNew: Mina.Transaction<false, false> | Mina.Transaction<false, true>;
+      }
+    | {
+        payloads: TransactionPayloads;
+        txNew: Mina.Transaction<false, false> | Mina.Transaction<false, true>;
+      }
 ): Transaction<false, true> {
-  //console.log("new transaction", txNew);
-  const { tx, blindingValues, length, forestJSONs } = JSON.parse(
-    serializedTransaction
-  );
+  const { txNew } = params;
+  const proverPayload =
+    "payloads" in params ? params.payloads.proverPayload : params.proverPayload;
+  const signedData =
+    "payloads" in params ? params.payloads.signedData : params.signedData;
+  const signedJson = JSON.parse(signedData);
+  const { tx, blindingValues, length, forestJSONs } = JSON.parse(proverPayload);
   const transaction = Mina.Transaction.fromJSON(JSON.parse(tx));
   const forests: ForestSerialized[] = forestJSONs.map(
     (f: string) => JSON.parse(f) as ForestSerialized
   );
-  //console.log("transaction", transaction);
+
   if (length !== txNew.transaction.accountUpdates.length) {
-    throw new Error("New Transaction length mismatch");
+    throw new Error(
+      `New Transaction length mismatch: ${length} !== ${txNew.transaction.accountUpdates.length}`
+    );
   }
   if (length !== transaction.transaction.accountUpdates.length) {
-    throw new Error("Serialized Transaction length mismatch");
+    throw new Error(
+      `Serialized Transaction length mismatch: ${length} !== ${transaction.transaction.accountUpdates.length}`
+    );
   }
   for (let i = 0; i < length; i++) {
     transaction.transaction.accountUpdates[i].lazyAuthorization =
@@ -106,7 +170,7 @@ export function deserializeTransaction(
 }
 
 export function serializeTransaction(
-  tx: Mina.Transaction<false, false>
+  tx: Mina.Transaction<false, false> | Mina.Transaction<false, true>
 ): string {
   const length = tx.transaction.accountUpdates.length;
   let i;
