@@ -19,7 +19,7 @@ export async function fetchMinaAccount(params) {
             const result = await fetchAccount({
                 publicKey,
                 tokenId,
-            });
+            }, undefined, { timeout: 5 * 1000 });
             return result;
         }
         catch (error) {

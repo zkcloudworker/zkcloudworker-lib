@@ -1,4 +1,3 @@
-import axios from "axios";
 import chalk from "chalk";
 import { sleep } from "../../cloud/utils/index.js";
 import { LocalCloud, LocalStorage } from "../local/local.js";
@@ -435,8 +434,21 @@ export class zkCloudWorkerClient {
                 webhook: this.webhook, // TODO: implement webhook code on AWS
             };
             try {
-                const response = await axios.post(this.endpoint, apiData);
-                return { success: true, data: response.data };
+                const response = await fetch(this.endpoint, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(apiData),
+                });
+                if (!response.ok) {
+                    return {
+                        success: false,
+                        error: `fetch error: ${response.statusText} status: ${response.status}`,
+                    };
+                }
+                const data = await response.json();
+                return { success: true, data: data };
             }
             catch (error) {
                 console.error("apiHub error:", error.message ?? error);

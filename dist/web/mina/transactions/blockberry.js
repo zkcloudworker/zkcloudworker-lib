@@ -8,7 +8,13 @@ export async function getZkAppTxsFromBlockBerry(params) {
         },
     };
     try {
-        const response = await fetch(`https://api.blockberry.one/mina-${chain}/v1/zkapps/accounts/${account}/txs?size=10&orderBy=DESC&sortBy=AGE`, options);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
+        const response = await fetch(`https://api.blockberry.one/mina-${chain}/v1/zkapps/accounts/${account}/txs?size=10&orderBy=DESC&sortBy=AGE`, {
+            ...options,
+            signal: controller.signal,
+        });
+        clearTimeout(timeoutId); // Clear the timeout if the fetch completes successfully
         if (!response.ok) {
             console.error("Cannot fetch zkApp txs for account:", account, chain, response.statusText);
             return undefined;
@@ -32,9 +38,15 @@ export async function getPaymentTxsFromBlockBerry(params) {
         },
     };
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
         const response = await fetch(`https://api.blockberry.one/mina-${chain}/v1/accounts/` +
             account +
-            "/txs?page=0&size=1&orderBy=DESC&sortBy=AGE&direction=OUT", options);
+            "/txs?page=0&size=1&orderBy=DESC&sortBy=AGE&direction=OUT", {
+            ...options,
+            signal: controller.signal,
+        });
+        clearTimeout(timeoutId); // Clear the timeout if the fetch completes successfully
         if (!response.ok) {
             console.error("Cannot fetch payment txs for account:", account, chain, response.statusText);
             return undefined;
@@ -58,7 +70,13 @@ export async function getZkAppTxFromBlockBerry(params) {
         },
     };
     try {
-        const response = await fetch(`https://api.blockberry.one/mina-${chain}/v1/zkapps/txs/${hash}`, options);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
+        const response = await fetch(`https://api.blockberry.one/mina-${chain}/v1/zkapps/txs/${hash}`, {
+            ...options,
+            signal: controller.signal,
+        });
+        clearTimeout(timeoutId); // Clear the timeout if the fetch completes successfully
         if (response.ok) {
             const result = await response.json();
             return result;
@@ -83,7 +101,13 @@ export async function getZkAppFromBlockBerry(params) {
         },
     };
     try {
-        const response = await fetch(`https://api.blockberry.one/mina-${chain}/v1/zkapps/${account}`, options);
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 seconds timeout
+        const response = await fetch(`https://api.blockberry.one/mina-${chain}/v1/zkapps/${account}`, {
+            ...options,
+            signal: controller.signal,
+        });
+        clearTimeout(timeoutId); // Clear the timeout if the fetch completes successfully
         if (response.ok) {
             const result = await response.json();
             return result;
