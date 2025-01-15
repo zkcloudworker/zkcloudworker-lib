@@ -15,9 +15,11 @@ import { blockchain } from "../../cloud/networks.js";
 export declare function sendTx(params: {
     tx: Mina.Transaction<false, true> | Mina.Transaction<true, true>;
     description?: string;
+    retry?: number;
     verbose?: boolean;
     wait?: boolean;
     chain?: blockchain;
+    delay?: number;
 }): Promise<Mina.IncludedTransaction | Mina.PendingTransaction | Mina.RejectedTransaction | undefined>;
 export declare function getTxStatusFast(params: {
     hash: string;
