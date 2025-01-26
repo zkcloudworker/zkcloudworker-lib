@@ -24,7 +24,7 @@ declare function getDeployer(): Mina.TestPublicKey | undefined;
  * @param deployersNumber the number of deployers to use for the network (only for local and lightnet networks)
  * @returns the Mina network instance
  */
-declare function initBlockchain(instance: blockchain, deployersNumber?: number): Promise<MinaNetworkInstance>;
+declare function initBlockchain(instance: blockchain, deployersNumber?: number, proofsEnabled?: boolean): Promise<MinaNetworkInstance>;
 /**
  * Fetches the account balance for a given public key
  * @param address the public key
