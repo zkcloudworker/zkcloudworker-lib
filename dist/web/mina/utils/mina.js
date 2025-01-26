@@ -30,7 +30,7 @@ function getDeployer() {
  * @param deployersNumber the number of deployers to use for the network (only for local and lightnet networks)
  * @returns the Mina network instance
  */
-async function initBlockchain(instance, deployersNumber = 0) {
+async function initBlockchain(instance, deployersNumber = 0, proofsEnabled = true) {
     /*
     if (instance === "mainnet") {
       throw new Error("Mainnet is not supported yet by zkApps");
@@ -48,7 +48,7 @@ async function initBlockchain(instance, deployersNumber = 0) {
     // await used for compatibility with future versions of o1js
     if (instance === "local") {
         const local = await Mina.LocalBlockchain({
-            proofsEnabled: true,
+            proofsEnabled,
         });
         Mina.setActiveInstance(local);
         if (deployersNumber > local.testAccounts.length)

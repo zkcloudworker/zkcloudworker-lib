@@ -74,7 +74,8 @@ function getDeployer(): Mina.TestPublicKey | undefined {
  */
 async function initBlockchain(
   instance: blockchain,
-  deployersNumber: number = 0
+  deployersNumber: number = 0,
+  proofsEnabled: boolean = true
 ): Promise<MinaNetworkInstance> {
   /*
   if (instance === "mainnet") {
@@ -95,7 +96,7 @@ async function initBlockchain(
   // await used for compatibility with future versions of o1js
   if (instance === "local") {
     const local = await Mina.LocalBlockchain({
-      proofsEnabled: true,
+      proofsEnabled,
     });
     Mina.setActiveInstance(local);
     if (deployersNumber > local.testAccounts.length)

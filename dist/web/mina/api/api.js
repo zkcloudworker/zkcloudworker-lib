@@ -26,7 +26,7 @@ export class zkCloudWorkerClient {
         const chain = params.chain ?? "devnet";
         this.chain = chain;
         this.endpoint =
-            chain === "devnet" || chain === "zeko"
+            chain === "devnet" || chain === "zeko" || chain === "mainnet"
                 ? ZKCLOUDWORKER_API + chain
                 : undefined;
         this.webhook = webhook;
@@ -424,7 +424,7 @@ export class zkCloudWorkerClient {
         }
         else {
             if (this.endpoint === undefined)
-                throw new Error("zkCloudWorker supports only devnet and zeko chains in the cloud.");
+                throw new Error("zkCloudWorker supports only mainnet, devnet and zeko chains in the cloud.");
             const apiData = {
                 auth: ZKCLOUDWORKER_AUTH,
                 command: command,

@@ -20,9 +20,11 @@ import { getCurrentNetwork } from "../utils/mina.js";
 export async function sendTx(params: {
   tx: Mina.Transaction<false, true> | Mina.Transaction<true, true>;
   description?: string;
+  retry?: number;
   verbose?: boolean;
   wait?: boolean;
   chain?: blockchain;
+  delay?: number;
 }): Promise<
   | Mina.IncludedTransaction
   | Mina.PendingTransaction
@@ -35,6 +37,8 @@ export async function sendTx(params: {
     verbose = true,
     wait = true,
     chain = getCurrentNetwork().network.chainId,
+    delay = chain === "zeko" || chain === "lightnet" ? 5000 : 60000,
+    retry = 30,
   } = params;
   // flatten accountUpdates
   const accountUpdates = JSON.parse(tx.toJSON()).accountUpdates;
@@ -79,9 +83,10 @@ export async function sendTx(params: {
   try {
     let txSent;
     let sent = false;
-    while (!sent) {
+    let attempt = 1;
+    while (!sent && attempt <= retry) {
       txSent = await tx.safeSend();
-      if (txSent.status == "pending") {
+      if (txSent.status === "pending") {
         sent = true;
         if (verbose)
           console.log(
@@ -89,42 +94,38 @@ export async function sendTx(params: {
               txSent.status
             }`
           );
-      } else if (chain === "zeko") {
-        if (verbose) console.log("Retrying Zeko tx");
-        await sleep(10000);
-      } else {
+      } else if (chain !== "local") {
+        attempt++;
         console.error(
-          `${description} tx NOT sent: hash: ${txSent?.hash} status: ${txSent?.status}`,
-          txSent.errors
+          `${description} tx NOT sent: hash: ${txSent?.hash} status: ${
+            txSent?.status
+          }, errors: ${String(txSent.errors ?? "")}`
         );
-        return txSent;
-      }
+        if (verbose) console.log(`Retrying ${chain} tx, retry:`, attempt);
+        await sleep(10000 * attempt);
+      } else attempt = retry + 1; // local chain - do not retry
     }
     if (txSent === undefined) throw new Error("txSent is undefined");
-    if (txSent.errors.length > 0) {
+    if ((txSent.errors?.length ?? 0) > 0) {
       console.error(
         `${description ?? ""} tx error: hash: ${txSent.hash} status: ${
           txSent.status
-        }  errors: ${txSent.errors}`
+        }  errors: ${String(txSent.errors ?? "")}`
       );
     }
 
     if (txSent.status === "pending" && wait !== false && chain !== "zeko") {
       if (verbose) console.log(`Waiting for tx inclusion...`);
       let txIncluded = await txSent.safeWait();
-      if (txIncluded.status === "included")
-        if (verbose)
-          console.log(
-            `${description ?? ""} tx included into block: hash: ${
-              txIncluded.hash
-            } status: ${txIncluded.status}`
-          );
-        else
-          console.error(
-            `${description ?? ""} tx NOT included into block: hash: ${
-              txIncluded.hash
-            } status: ${txIncluded.status}`
-          );
+      if (txIncluded.status !== "included") {
+        console.error(
+          `${description ?? ""} tx NOT included into block: hash: ${
+            txIncluded.hash
+          } status: ${txIncluded.status}, errors: ${String(
+            txIncluded.errors ?? ""
+          )}`
+        );
+      }
       if (chain !== "local") {
         // we still wait for the tx to be included in the block by checking the nonce
         // even in the case of tx NOT included
@@ -142,15 +143,36 @@ export async function sendTx(params: {
             newNonce &&
             Number(newNonce.toBigint()) > Number(nonce.toBigint())
           ) {
-            const txIncluded = await txSent.safeWait();
-            if (txIncluded.status === "included") return txIncluded;
-            else if (txIncluded.status === "rejected") {
-              // We never should see this error as the nonce is updated, so we retry
-              await sleep(10000);
-              const txIncluded = await txSent.safeWait();
-              if (txIncluded.status === "included") return txIncluded;
+            let txIncluded = await txSent.safeWait();
+            if (txIncluded.status === "included") {
+              if (verbose)
+                console.log(
+                  `${description ?? ""} tx included into block: hash: ${
+                    txIncluded.hash
+                  } status: ${txIncluded.status}`
+                );
+              if (delay > 0) await sleep(delay);
+              return txIncluded;
+            } else if (txIncluded.status === "rejected") {
+              // We never should see this error as the nonce is updated (except when tx failed due to a preconditions),
+              // so we retry to check if the tx is included
               console.error(
-                `internal error: ${chain} tx rejected: hash: ${txIncluded.hash} status: ${txIncluded.status} errors: ${txIncluded.errors}`
+                `tx rejected: ${chain}: hash: ${txIncluded.hash} status: ${txIncluded.status} errors: ${txIncluded.errors}`
+              );
+              await sleep(30000);
+              txIncluded = await txSent.safeWait();
+              if (txIncluded.status === "included") {
+                if (verbose)
+                  console.log(
+                    `${description ?? ""} tx included into block: hash: ${
+                      txIncluded.hash
+                    } status: ${txIncluded.status}`
+                  );
+                if (delay > 0) await sleep(delay);
+                return txIncluded;
+              }
+              console.error(
+                `tx failed: ${chain}: hash: ${txIncluded.hash} status: ${txIncluded.status} errors: ${txIncluded.errors}`
               );
               return txIncluded;
             }
@@ -161,13 +183,19 @@ export async function sendTx(params: {
                 (Date.now() - started) / 1000
               )} sec...`
             );
-          await sleep(10000);
+          await sleep(30000);
         }
         // finally, if the tx is still not included, show an error
         console.error(
           `${chain} do not reflect nonce update for tx ${txIncluded.hash} with status ${txIncluded.status}`
         );
       }
+      if (verbose)
+        console.log(
+          `${description ?? ""} tx included into block: hash: ${
+            txIncluded.hash
+          } status: ${txIncluded.status}`
+        );
       return txIncluded;
     } else return txSent;
   } catch (error) {

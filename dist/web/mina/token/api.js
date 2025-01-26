@@ -19,14 +19,15 @@ export class TokenAPI {
             const transaction = JSON.stringify(tx, null, 2);
             transactions.push(transaction);
         }
-        const { txType, symbol } = params[0];
+        const { request, symbol } = params[0];
+        const { txType } = request;
         const answer = await this.client.execute({
             developer: "DFST",
             repo: "token-launchpad",
             transactions,
             task: "prove",
             args: JSON.stringify({ tokenAddress: params[0].request.tokenAddress }),
-            metadata: `${params.length > 1 ? "airdrop" : txType} token${symbol ? ` ${symbol}` : ""}${params.length > 1 ? ` (${params.length} txs)` : ""}`,
+            metadata: `${params.length > 1 ? "airdrop" : txType.replace(/^token:/, "")} token${symbol ? ` ${symbol}` : ""}${params.length > 1 ? ` (${params.length} txs)` : ""}`,
         });
         const jobId = answer.jobId;
         if (jobId === undefined)
