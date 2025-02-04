@@ -1,6 +1,6 @@
 {
   "name": "zkcloudworker",
-  "version": "0.23.14",
+  "version": "0.24.0",
   "type": "module",
   "description": "zkCloudWorker library",
   "author": "zkCloudWorker",
@@ -9,7 +9,7 @@
   "scripts": {
     "build": "rm -rf dist/lib && tsc && tsc --build tsconfig.web.json && node build-cjs.js",
     "login": "yarn npm login",
-    "publish": "yarn build && yarn npm publish --access public"
+    "release": "yarn build && yarn npm publish --access public"
   },
   "keywords": [
     "javascript",
@@ -49,17 +49,17 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@minatokens/api": "^0.9.7",
+    "@minatokens/api": "^0.16.2",
     "chalk": "^4.1.2"
   },
   "peerDependencies": {
     "o1js": "^2.1.0"
   },
   "devDependencies": {
-    "@types/node": "^22.10.2",
+    "@types/node": "^22.13.1",
     "esbuild": "^0.24.2",
     "o1js": "^2.2.0",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "packageManager": "yarn@4.5.2"
 }
