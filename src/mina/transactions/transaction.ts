@@ -1,5 +1,5 @@
 import { Field, PublicKey, Transaction, Mina, UInt64 } from "o1js";
-import { TransactionPayloads } from "@minatokens/api";
+import { TransactionPayloads } from "@silvana-one/api";
 import { fieldToBase64, fieldFromBase64 } from "../utils/base64.js";
 
 export function createTransactionPayloads(
