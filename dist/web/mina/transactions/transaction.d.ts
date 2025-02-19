@@ -1,5 +1,5 @@
 import { PublicKey, Transaction, Mina, UInt64 } from "o1js";
-import { TransactionPayloads } from "@minatokens/api";
+import { TransactionPayloads } from "@silvana-one/api";
 export declare function createTransactionPayloads(tx: Mina.Transaction<false, false> | Mina.Transaction<false, true>): TransactionPayloads;
 export declare function transactionParams(params: {
     proverPayload: string;

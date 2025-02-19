@@ -180,28 +180,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hey-api/client-fetch@npm:^0.5.6":
-  version: 0.5.6
-  resolution: "@hey-api/client-fetch@npm:0.5.6"
-  checksum: 10c0/befb29685d25c2220d7eb45e92e45bafed531c30dbc27d2fd602c5a684fe6ac622ff4d954d03ed6a80d6236c9c7ad9c7ff0a883ebde83f3c62ec8d8a226cdf46
+"@hey-api/client-fetch@npm:^0.8.1":
+  version: 0.8.1
+  resolution: "@hey-api/client-fetch@npm:0.8.1"
+  checksum: 10c0/19623187cdb85dbe0a38a817671ce4561489cb13377492fd9ee1c19f4650895f990a719b023109ca1d1595171b62db58da6ea2ebb10ddb4cc6b77d239f8f3b71
   languageName: node
   linkType: hard
 
-"@minatokens/api@npm:^0.16.2":
-  version: 0.16.2
-  resolution: "@minatokens/api@npm:0.16.2"
+"@silvana-one/api@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@silvana-one/api@npm:0.1.2"
   dependencies:
-    "@hey-api/client-fetch": "npm:^0.5.6"
-  checksum: 10c0/6f98f5e34d6405182eea54af43ec086389c4c10691284379a79f424e4f4acc2a279ac21fb3509978c6b3e806bcddef8dd35e46018c2ce6795fa3ec9d2874048f
+    "@hey-api/client-fetch": "npm:^0.8.1"
+  checksum: 10c0/24241bbeff532914c22c02701ad3323263dfccfd9c4dca60e4a37cecd0234d7f3f142b03caee05e0ab0f7bac7b130419826709387ca7d9140d39df03a54457af
   languageName: node
   linkType: hard
 
 "@types/node@npm:^22.13.1":
-  version: 22.13.1
-  resolution: "@types/node@npm:22.13.1"
+  version: 22.13.4
+  resolution: "@types/node@npm:22.13.4"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10c0/d4e56d41d8bd53de93da2651c0a0234e330bd7b1b6d071b1a94bd3b5ee2d9f387519e739c52a15c1faa4fb9d97e825b848421af4b2e50e6518011e7adb4a34b7
+  checksum: 10c0/3a234fa7766a3efc382cf81f66f474c26cdab2f54f43f757634c81c0444eb2160c2dabbde9741e4983078a318a88515b65416b5f1ab5478548579d7b3ead1d95
   languageName: node
   linkType: hard
 
@@ -479,7 +479,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zkcloudworker@workspace:."
   dependencies:
-    "@minatokens/api": "npm:^0.16.2"
+    "@silvana-one/api": "npm:^0.1.2"
     "@types/node": "npm:^22.13.1"
     chalk: "npm:^4.1.2"
     esbuild: "npm:^0.24.2"

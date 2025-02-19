@@ -1,7 +1,7 @@
 import { blockchain, Cloud, JobStatus } from "../../cloud/index.js";
 import { zkCloudWorkerClient } from "../api/api.js";
 import { zkCloudWorker } from "../../cloud/worker/index.js";
-import { TokenTransaction, JobResult } from "@minatokens/api";
+import { TokenTransaction, JobResult } from "@silvana-one/api";
 
 export class TokenAPI {
   readonly client: zkCloudWorkerClient;
@@ -44,9 +44,11 @@ export class TokenAPI {
       transactions,
       task: "prove",
       args: JSON.stringify({ tokenAddress: params[0].request.tokenAddress }),
-      metadata: `${params.length > 1 ? "airdrop" : txType.replace(/^token:/, "")} token${
-        symbol ? ` ${symbol}` : ""
-      }${params.length > 1 ? ` (${params.length} txs)` : ""}`,
+      metadata: `${
+        params.length > 1 ? "airdrop" : txType.replace(/^token:/, "")
+      } token${symbol ? ` ${symbol}` : ""}${
+        params.length > 1 ? ` (${params.length} txs)` : ""
+      }`,
     });
     const jobId = answer.jobId;
     if (jobId === undefined)
