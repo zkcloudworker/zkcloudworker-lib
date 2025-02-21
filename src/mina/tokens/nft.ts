@@ -46,7 +46,13 @@ export class NftAPI {
       }),
       metadata: `${params.length > 1 ? "mint" : txType.replace(/^nft:/, "")} ${
         symbol ? ` ${symbol}` : ""
-      }${params.length > 1 ? ` (${params.length} txs)` : ""}`,
+      } ${
+        params.length > 1
+          ? `(${params.length} txs)`
+          : txType === "nft:launch"
+          ? "Collection " + request.collectionName
+          : request.nftMintParams.name
+      }`,
     });
     const jobId = answer.jobId;
     if (jobId === undefined)
