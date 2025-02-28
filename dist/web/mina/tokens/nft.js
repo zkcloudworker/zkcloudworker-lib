@@ -13,7 +13,7 @@ export class NftAPI {
     async proveTransaction(params) {
         return this.proveTransactions([params]);
     }
-    async proveTransactions(params) {
+    async proveTransactions(params, name) {
         const transactions = [];
         for (const tx of params) {
             const transaction = JSON.stringify(tx, null, 2);
@@ -33,7 +33,9 @@ export class NftAPI {
                 ? `(${params.length} txs)`
                 : txType === "nft:launch"
                     ? "Collection " + request.collectionName
-                    : request.nftMintParams.name}`,
+                    : txType === "nft:mint"
+                        ? request.nftMintParams.name
+                        : name ?? ""}`,
         });
         const jobId = answer.jobId;
         if (jobId === undefined)

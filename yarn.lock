@@ -187,21 +187,21 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@silvana-one/api@npm:^0.1.9":
-  version: 0.1.9
-  resolution: "@silvana-one/api@npm:0.1.9"
+"@silvana-one/api@npm:^0.1.22":
+  version: 0.1.22
+  resolution: "@silvana-one/api@npm:0.1.22"
   dependencies:
     "@hey-api/client-fetch": "npm:^0.8.1"
-  checksum: 10c0/ec784cf4bf8f29622ba2f254f4becb2b6d076c46b45d8c3fd16bab7d5da34f1e83ddfe71e31287276ba6b63f3931d65f7f1eec74d7cd65b7bce665e51caf5670
+  checksum: 10c0/56de430b315d8b15db9956f37f539e25f34fc5ea9648187f71389cac65baaa098512ba145f3236a30c528a8affa49303be2440c18d625c2aa4984671aafa5024
   languageName: node
   linkType: hard
 
-"@types/node@npm:^22.13.4":
-  version: 22.13.4
-  resolution: "@types/node@npm:22.13.4"
+"@types/node@npm:^22.13.5":
+  version: 22.13.5
+  resolution: "@types/node@npm:22.13.5"
   dependencies:
     undici-types: "npm:~6.20.0"
-  checksum: 10c0/3a234fa7766a3efc382cf81f66f474c26cdab2f54f43f757634c81c0444eb2160c2dabbde9741e4983078a318a88515b65416b5f1ab5478548579d7b3ead1d95
+  checksum: 10c0/a2e7ed7bb0690e439004779baedeb05159c5cc41ef6d81c7a6ebea5303fde4033669e1c0e41ff7453b45fd2fea8dbd55fddfcd052950c7fcae3167c970bca725
   languageName: node
   linkType: hard
 
@@ -479,8 +479,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "zkcloudworker@workspace:."
   dependencies:
-    "@silvana-one/api": "npm:^0.1.9"
-    "@types/node": "npm:^22.13.4"
+    "@silvana-one/api": "npm:^0.1.22"
+    "@types/node": "npm:^22.13.5"
     chalk: "npm:^4.1.2"
     esbuild: "npm:^0.25.0"
     o1js: "npm:^2.2.0"

@@ -10,7 +10,7 @@ export declare class NftAPI {
         chain: blockchain;
     });
     proveTransaction(params: NftTransaction): Promise<string | undefined>;
-    proveTransactions(params: NftTransaction[]): Promise<string | undefined>;
+    proveTransactions(params: NftTransaction[], name?: string): Promise<string | undefined>;
     waitForJobResults(params: {
         jobId: string;
         maxAttempts?: number;
