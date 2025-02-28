@@ -26,7 +26,8 @@ export class NftAPI {
   }
 
   async proveTransactions(
-    params: NftTransaction[]
+    params: NftTransaction[],
+    name?: string
   ): Promise<string | undefined> {
     const transactions: string[] = [];
     for (const tx of params) {
@@ -51,7 +52,9 @@ export class NftAPI {
           ? `(${params.length} txs)`
           : txType === "nft:launch"
           ? "Collection " + request.collectionName
-          : request.nftMintParams.name
+          : txType === "nft:mint"
+          ? request.nftMintParams.name
+          : name ?? ""
       }`,
     });
     const jobId = answer.jobId;

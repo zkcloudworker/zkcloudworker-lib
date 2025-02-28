@@ -1,6 +1,6 @@
 {
   "name": "zkcloudworker",
-  "version": "0.25.5",
+  "version": "0.25.7",
   "type": "module",
   "description": "zkCloudWorker library",
   "author": "zkCloudWorker",
@@ -49,14 +49,14 @@
     "node": ">=20.0.0"
   },
   "dependencies": {
-    "@silvana-one/api": "^0.1.9",
+    "@silvana-one/api": "^0.1.22",
     "chalk": "^4.1.2"
   },
   "peerDependencies": {
     "o1js": "^2.2.0"
   },
   "devDependencies": {
-    "@types/node": "^22.13.4",
+    "@types/node": "^22.13.5",
     "esbuild": "^0.25.0",
     "o1js": "^2.2.0",
     "typescript": "^5.7.3"
