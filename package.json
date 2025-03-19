@@ -1,6 +1,6 @@
 {
   "name": "zkcloudworker",
-  "version": "0.25.11",
+  "version": "0.25.12",
   "type": "module",
   "description": "zkCloudWorker library",
   "author": "zkCloudWorker",
@@ -53,7 +53,7 @@
     "chalk": "^4.1.2"
   },
   "peerDependencies": {
-    "o1js": "^2.2.0"
+    "o1js": "^2.3.0"
   },
   "devDependencies": {
     "@types/node": "^22.13.10",
